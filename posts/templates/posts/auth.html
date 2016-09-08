@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+  <meta charset="utf-8">
+  <!-- Put this script tag to the <head> of your page -->
+<script type="text/javascript" src="//vk.com/js/api/openapi.js?127"></script>
+<script type="text/javascript">
+  VK.init({apiId: 5617320});
+</script>
+</head>
+  <body>
+    <a href="https://oauth.vk.com/authorize?client_id=5617320&redirect_uri=127.0.0.1:8000/usr&display=page&response_type=code">Войти через vk.com<a/>
+      <!-- Put this div tag to the place, where Auth block will be -->
+      <div id="vk_auth"></div>
+      <script type="text/javascript">
+      VK.Widgets.Auth("vk_auth", {width: "400px", authUrl: '/dev/Login'});
+      </script>
+  </body>
+</html>

@@ -1,22 +1,7 @@
-from __future__ import unicode_literals
-
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from django.utils.encoding import python_2_unicode_compatible
-import hashlib
 from django.conf import settings
-# Create your models here.
-@python_2_unicode_compatible
-class VK_User(AbstractBaseUser):
-    uid = models.IntegerField(primary_key=True, unique=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    photo_rec_url = models.CharField(max_length=200)
-    have_active_post = models.BooleanField(default=False)
-    last_point = models.CharField(max_length=100, default="")
-    USERNAME_FIELD = 'uid'
-    def __str__(self):
-        return "%s %s %d" % (self.first_name, self.last_name, self.uid)
+from django.contrib.auth.hashers import check_password
+from posts.models import VK_User
+import hashlib
 
 class HashBackend(object):
 

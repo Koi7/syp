@@ -27,6 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'posts.VK_User'
+AUTHENTICATION_BACKENDS = ['posts.models.HashBackend',]
+
+#social auth
+VK_APP_ID = '5617320'
+VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'
 
 # Application definition
 

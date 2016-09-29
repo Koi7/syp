@@ -5,7 +5,14 @@
   <meta charset="utf-8">
 </head>
   <body>
-    <h3>{{first_name}}, нет постов... пока</h3>
-    <a href="http://127.0.0.1/logout">Выход</a>
+    <h3>{{request.user.first_name}}, нет постов... пока</h3>
+    <nav>
+      <ul>
+        <li><a href="{%  url 'posts'%}">Посты</a>
+        <li><a href="http://127.0.0.1/posts/liked">Лайкнутые</a>
+        <li><a href="http://127.0.0.1/posts/create">Новый пост</a>
+        <li><a href="{% url 'logout_view' %}">Выход</a>
+      </ul>
+    </nav>
   </body>
 </html>

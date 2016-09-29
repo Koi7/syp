@@ -18,9 +18,9 @@ from django.contrib import admin
 from posts import views
 
 urlpatterns = [
-    url(r'^$', views.index),
-    url(r'^login', views.verify_hash),
+    url(r'^$', views.index, name='index'),
+    url(r'^login', views.verify_hash, name='verify_hash'),
     url(r'^admin', admin.site.urls),
-    url(r'^posts', views.posts),
-    url(r'^logout', views.logout_view),
+    url(r'^posts', views.posts, name='posts'),
+    url(r'^logout', views.logout_view, name='logout_view'),
 ]

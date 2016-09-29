@@ -1,33 +1,32 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 import hashlib
-from django.conf import settings
 # Create your models here.
 class VKUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
     has_active_post = models.BooleanField(default=False)
     last_point = models.CharField(max_length=100, default="")
-'''
-@python_2_unicode_compatible
-class VK_User(AbstractBaseUser):
-    uid = models.IntegerField(primary_key=True, unique=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    photo_rec = models.CharField(max_length=200)
-    has_active_post = models.BooleanField(default=False)
-    last_point = models.CharField(max_length=100, default="")
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=True)
-    has_module_perms
-    USERNAME_FIELD = 'uid'
-    def __str__(self):
-        return "%s %s %d" % (self.first_name, self.last_name, self.uid)
-'''
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        VKUser.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.vkuser.save()
+
+class SearchPost(models.Model):
+    content = models.CharField(max_length=500)
+    pub_date = models.DateTimeFiled()
+
+
 class HashBackend(object):
 
     def authenticate(self, uid, hash):

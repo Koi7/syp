@@ -22,10 +22,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.vkuser.save()
 
-class SearchPost(models.Model):
-    content = models.CharField(max_length=500)
-    pub_date = models.DateTimeFiled()
-
 
 class HashBackend(object):
 

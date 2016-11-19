@@ -1,12 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from posts.models import HashBackend
+from django.conf import settings
 
 # User tests.
 def anonimous_check(user):
@@ -18,7 +17,8 @@ def index(request):
     """
         View for default page of unlogged user.
     """
-    return render(request, 'posts/auth.html', {})
+    context = {'APP_ID': settings.VK_APP_ID}
+    return render(request, 'posts/auth.html', context)
 
 @user_passes_test(anonimous_check, login_url='/posts')
 def verify_hash(request):

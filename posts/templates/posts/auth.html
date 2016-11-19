@@ -1,20 +1,36 @@
+{% load static from staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Page Title</title>
-  <meta charset="utf-8">
-  <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
-  <script type="text/javascript">
-    VK.init({apiId: {{APP_ID}}});
-  </script>
+    <title>Page Title</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
+    <script type="text/javascript" src="{% static 'posts/js/jquery-3.1.1.min.js' %}"></script>
+    <script type="text/javascript">
+      VK.init({apiId: {{APP_ID}}});
+    </script>
 </head>
-  <body>
-      <h1>Time is going...</h1>
-      <div id="vk_auth"></div>
-      <script type="text/javascript">
-        VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
-        alert('user '+data['uid']+' authorized');
-        } });
+    <body>
+        <h1>Time is going...</h1>
+        <div id="vk_auth"></div>
+        <script type="text/javascript">
+          VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
+              $.ajax({
+              type: 'POST',
+              url: 'http://koi.pythonanywhere.com/login',
+              data: {
+                  uid: data.uid,
+                  first_name: data.first_name,
+                  last_name: data.last_name,
+                  photo_rec: data.photo_rec,
+                  hash: data.hash
+              },
+              success: function(data){
+                if (data.success == true)
+                    window.location = "http://koi.pythonanywhere.com/posts";
+              }
+          });
+          } });
       </script>
-  </body>
+    </body>
 </html>

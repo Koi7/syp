@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'syp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'search',
-        'PORT': '5432',
-        'USER': 'postgres',
-        'PASSWORD': '19941995koikoi'
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'koi.mysql.pythonanywhere-services.com',
+        'NAME': 'syp',
+        'USER': 'koi',
+        'PASSWORD': 'mysql19941995'
     }
 }
 

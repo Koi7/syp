@@ -17,7 +17,7 @@ def index(request):
     """
         View for default page of unlogged user.
     """
-    return render(request, 'posts/posts.html', {'run': 56})
+    return render(request, 'posts/auth.html', {'run': 56})
 
 @user_passes_test(anonimous_check, login_url='/posts')
 def verify_hash(request):

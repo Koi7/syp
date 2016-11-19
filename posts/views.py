@@ -17,7 +17,10 @@ def index(request):
     """
         View for default page of unlogged user.
     """
-    return render(request, 'posts/auth.html', {'run': 56})
+    context = {
+        'APP_ID': settings.VK_APP_ID
+    }
+    return render(request, 'posts/auth.html', context)
 
 @user_passes_test(anonimous_check, login_url='/posts')
 def verify_hash(request):

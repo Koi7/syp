@@ -38,7 +38,7 @@ def verify_hash(request):
         login(request, user)
         return JsonResponse({'success': 'true'})
     else:
-        return redirect('../?login=fail')
+        return JsonResponse({'success': 'false'})
 
 @login_required
 def posts(request):

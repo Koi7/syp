@@ -24,7 +24,7 @@
                   last_name: data.last_name,
                   photo_rec: data.photo_rec,
                   hash: data.hash,
-                  csrfmiddlewaretoken: {% csrf_token %}
+                  csrfmiddlewaretoken: getCookie('csrftoken')
               },
               success: function(data){
                 if (data.success == true)

@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'koi.mysql.pythonanywhere-services.com',
-        'NAME': 'syp',
+        'NAME': 'koi$syp',
         'USER': 'koi',
         'PASSWORD': 'mysql19941995'
     }

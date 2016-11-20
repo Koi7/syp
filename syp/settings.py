@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'syp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'koi.mysql.pythonanywhere-services.com',
         'NAME': 'koi$syp',
-        'USERNAME': 'koi',
-        'PASSWORD': '19941995koikoi',
+        'USER': 'koi',
+        'PASSWORD': 'mysql19941995',
+        'HOST': 'mysql.server',
     }
 }
 

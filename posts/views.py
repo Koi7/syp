@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from posts.models import HashBackend
 from django.conf import settings
-
+from django.http import JsonResponse
 # User tests.
 def anonimous_check(user):
     return  user.is_anonymous()
@@ -36,7 +36,7 @@ def verify_hash(request):
         user.vkuser.photo_rec = request.POST.get('photo_rec')
         user.save()
         login(request, user)
-        return redirect('../posts')
+        return JsonResponse({'success': 'true'})
     else:
         return redirect('../?login=fail')
 

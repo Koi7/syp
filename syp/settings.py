@@ -83,7 +83,7 @@ DATABASES = {
         'HOST': 'koi.mysql.pythonanywhere-services.com',
         'NAME': 'koi$syp',
         'USER': 'koi',
-        'PASSWORD': 'mysql19941995'
+        'PASSWORD': '19941995koikoi',
     }
 }
 

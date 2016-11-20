@@ -17,7 +17,7 @@
           VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
               $.ajax({
               type: 'POST',
-              url: 'http://koi.pythonanywhere.com/login',
+              url: '/login',
               data: {
                   uid: data.uid,
                   first_name: data.first_name,

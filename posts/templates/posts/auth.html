@@ -19,7 +19,7 @@
           VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
               $.ajax({
               type: 'POST',
-              url: '/login/',
+              url: 'login',
               data: {
                   uid: data.uid,
                   first_name: data.first_name,
@@ -31,7 +31,8 @@
               success: function(data){
                 if (data.success == true)
                     window.location = "http://koi.pythonanywhere.com/posts";
-              }
+              },
+              dataType: 'json'
           });
           } });
       </script>

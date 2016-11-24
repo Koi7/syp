@@ -26,7 +26,8 @@ SECRET_KEY = 'ep@*$m-$2i_zq0kp#@z466-=-i_=1afb%&nqp%jo%0y8k^o-2r'
 DEBUG = True
 
 ALLOWED_HOSTS = ['koi.pythonanywhere.com']
-AUTHENTICATION_BACKENDS = ['posts.models.HashBackend']
+AUTHENTICATION_BACKENDS = ['posts.models.HashBackend',
+                           'django.contrib.auth.backends.ModelBackend',]
 #social auth
 VK_APP_ID = '5617320'
 VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'

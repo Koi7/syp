@@ -28,8 +28,9 @@
                   hash: data.hash,
                   csrfmiddlewaretoken: getCookie('csrftoken')
               },
-              success: function(data){
-                    alert(data['success']);
+              success: function(response){
+                    if (response['success'] == true)
+                        window.location = 'posts'
               },
               dataType: 'json'
           });

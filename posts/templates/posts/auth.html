@@ -29,8 +29,9 @@
                   csrfmiddlewaretoken: getCookie('csrftoken')
               },
               success: function(response){
-                    if (response['success'] == true)
+                    if (response['success']){
                         alert('success');
+                    }
               },
               dataType: 'json'
           });

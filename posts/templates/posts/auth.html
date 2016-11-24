@@ -29,7 +29,7 @@
                   csrfmiddlewaretoken: getCookie('csrftoken')
               },
               success: function(data){
-                    alert(data);
+                    alert(data['success']);
               },
               dataType: 'json'
           });

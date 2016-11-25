@@ -38,11 +38,11 @@ def verify_hash(request):
         user.vkuser.photo_rec = request.GET.get('photo_rec')
         user.save()
         login(request, user)
-        return JsonResponse({'success': 'true'})
-        #return redirect('GETs')
+        #return JsonResponse({'success': 'true'})
+        return redirect('GETs')
     else:
-        return JsonResponse({'success': 'false'})
-        #return redirect('index')
+        #return JsonResponse({'success': 'false'})
+        return redirect('index')
 
 @login_required
 def posts(request):

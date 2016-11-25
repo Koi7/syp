@@ -37,7 +37,7 @@ def verify_hash(request):
         user.last_name = request.GET.get('last_name')
         user.vkuser.photo_rec = request.GET.get('photo_rec')
         user.save()
-        login(request, user, backend=hash_backend)
+        login(request, user)
         return JsonResponse({'success': 'true'})
         #return redirect('posts')
     else:

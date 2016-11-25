@@ -4,7 +4,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
-from posts.models import HashBackend
 from django.conf import settings
 from django.http import JsonResponse
 # User tests.
@@ -30,8 +29,7 @@ def verify_hash(request):
     """
     #return JsonResponse({'success': request.POST.get('first_name')})
 
-    hash_backend = HashBackend()
-    user = authenticate(hash_backend, request.GET.get('uid'), request.GET.get('hash'))
+    user = authenticate(request.GET.get('uid'), request.GET.get('hash'))
     if user is not None:
         user.first_name = request.GET.get('first_name')
         user.last_name = request.GET.get('last_name')

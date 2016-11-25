@@ -29,7 +29,7 @@ def verify_hash(request):
     """
     #return JsonResponse({'success': request.POST.get('first_name')})
 
-    user = authenticate(uid=request.POST.POST('uid'), hash=request.POST.POST('hash'))
+    user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
     if user is not None:
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')

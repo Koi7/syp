@@ -31,9 +31,9 @@ def verify_hash(request):
 
     user = authenticate(uid=request.POST.POST('uid'), hash=request.POST.POST('hash'))
     if user is not None:
-        user.first_name = request.POST.POST('first_name')
-        user.last_name = request.POST.POST('last_name')
-        user.vkuser.photo_rec = request.POST.POST('photo_rec')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.vkuser.photo_rec = request.POST.get('photo_rec')
         user.save()
         login(request, user)
         return JsonResponse({'success': 'true'})

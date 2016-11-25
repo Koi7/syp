@@ -39,7 +39,7 @@ def verify_hash(request):
         user.save()
         login(request, user)
         #return JsonResponse({'success': 'true'})
-        return redirect('GETs')
+        return redirect('posts')
     else:
         #return JsonResponse({'success': 'false'})
         return redirect('index')

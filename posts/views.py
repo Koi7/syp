@@ -31,11 +31,11 @@ def verify_hash(request):
     #return JsonResponse({'success': request.POST.get('first_name')})
 
     hash_backend = HashBackend()
-    user = HashBackend.authenticate(hash_backend, request.GET.get('uid'), request.GET.get('hash'))
+    user = HashBackend.authenticate(hash_backend, request.POST.get('uid'), request.POST.get('hash'))
     if user is not None:
-        user.first_name = request.GET.get('first_name')
-        user.last_name = request.GET.get('last_name')
-        user.vkuser.photo_rec = request.GET.get('photo_rec')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.vkuser.photo_rec = request.POST.get('photo_rec')
         user.save()
         login(request, user)
         return JsonResponse({'success': 'true'})

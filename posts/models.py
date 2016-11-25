@@ -23,7 +23,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class HashBackend(object):
-
     def authenticate(self, uid, hash):
         md5 = hashlib.md5()
         md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)

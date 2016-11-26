@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.signals import user_logged_in
+from urllib2 import urlopen
 import hashlib
+
 #Create your models here.
 class VKUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -22,6 +24,13 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.vkuser.save()
+
+@receiver(user_logged_in, sender=User)
+def update_user_profile(sender):
+    vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + sender.username + "&fields=photo_50&v=5.60"
+    json = urlopen(vk_api_request_url).read()
+    sender.vkuser.photo_rec = json[0]['photo_50']
+    sender.save()
 
 class HashBackend(object):
     def authenticate(self, uid, hash):

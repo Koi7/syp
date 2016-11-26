@@ -11,7 +11,7 @@ class VKUser(models.Model):
     photo_rec = models.CharField(max_length=200)
     has_active_post = models.BooleanField(default=False)
     last_point = models.CharField(max_length=100, default="")
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

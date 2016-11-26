@@ -30,7 +30,7 @@ def update_user_profile(sender, instance, **kwargs):
     vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + instance.username + "&fields=photo_50&v=5.60"
     json = urlopen(vk_api_request_url).read()
     instance.vkuser.photo_rec = json[0]['photo_50']
-    sender.save()
+    instance.save()
 
 class HashBackend(object):
     def authenticate(self, uid, hash):

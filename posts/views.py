@@ -27,8 +27,6 @@ def verify_hash(request):
         Takes URL from vk.com redirect and tries to login user or create new user.
         Checks md5 checksum.
     """
-    #return JsonResponse({'success': request.POST.get('first_name')})
-
     user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
     if user is not None:
         user.first_name = request.POST.get('first_name')
@@ -37,10 +35,8 @@ def verify_hash(request):
         user.save()
         login(request, user)
         return JsonResponse({'success': 'true'})
-        #return redirect('posts')
     else:
-        return JsonResponse({'success': 'false'})
-        #return redirect('index')
+        return JsonResponse({'fail': 'true'})
 
 @login_required
 def posts(request):

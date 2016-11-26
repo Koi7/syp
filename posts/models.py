@@ -14,23 +14,22 @@ class VKUser(models.Model):
     has_active_post = models.BooleanField(default=False)
     last_point = models.CharField(max_length=100, default="")
     age = models.IntegerField(default=0)
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            VKUser.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        VKUser.objects.create(user=instance)
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.vkuser.save()
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.vkuser.save()
-
-@receiver(user_logged_in, sender=User)
-def update_user_profile(sender, instance, **kwargs):
-    vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + instance.username + "&fields=photo_50&v=5.60"
-    import urllib2
-    json = urllib2.urlopen(vk_api_request_url).read()
-    instance.vkuser.photo_rec = json[0]['photo_50']
-    instance.vkuser.save()
+    @receiver(user_logged_in, sender=User)
+    def update_user_profile(sender, instance, **kwargs):
+        vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + instance.username + "&fields=photo_50&v=5.60"
+        import urllib2
+        json = urllib2.urlopen(vk_api_request_url).read()
+        instance.vkuser.photo_rec = json[0]['photo_50']
+        instance.vkuser.save()
 
 
 class HashBackend(object):

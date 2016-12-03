@@ -32,7 +32,8 @@ class VKUser(models.Model):
         instance.vkuser.photo_rec = json[0]['photo_50']
         instance.vkuser.save()
         '''
-        
+        return None
+
 
 class HashBackend(object):
     def authenticate(self, uid, hash):

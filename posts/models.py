@@ -24,7 +24,7 @@ class VKUser(models.Model):
         instance.vkuser.save()
 
     @receiver(user_logged_in, sender=User)
-    def update_user_profile(sender, instance, **kwargs):
+    def update_user_profile(instance, **kwargs):
         '''
         vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + instance.username + "&fields=photo_50&v=5.60"
         import urllib2

@@ -27,8 +27,8 @@ class VKUser(models.Model):
     def update_user_profile(user, **kwargs):
         vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50&v=5.60"
         import json
-        data = json.loads("{id: 210700286,first_name: 'Lindsey',last_name: 'Stirling',city: {id: 5331,title: 'Los Angeles'},photo_50: 'https://pp.vk.me/...f6e/4-funfNRMwg.jpg',verified: 1}]")
-        user.vkuser.photo_rec = data.photo_50
+        data = json.loads('{"one" : "1", "two" : "https://pp.vk.me/c631329/v631329286/23f6e/4-funfNRMwg.jpg", "three" : "3"}')
+        user.vkuser.photo_rec = data.two
         user.vkuser.save()
 
 

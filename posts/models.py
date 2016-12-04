@@ -28,7 +28,7 @@ class VKUser(models.Model):
         vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50&v=5.60"
         import json
         data = json.loads('{"one" : "1", "two" : "https://pp.vk.me/c631329/v631329286/23f6e/4-funfNRMwg.jpg", "three" : "3"}')
-        user.vkuser.photo_rec = data.two
+        user.vkuser.photo_rec = data['two']
         user.vkuser.save()
 
 

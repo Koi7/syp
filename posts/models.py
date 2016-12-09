@@ -25,11 +25,12 @@ class VKUser(models.Model):
 
     @receiver(user_logged_in, sender=User)
     def update_user_profile(user, **kwargs):
-        vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50&v=5.60"
-        import json
-        data = json.loads('{"one" : "1", "two" : "https://pp.vk.me/c631329/v631329286/23f6e/4-funfNRMwg.jpg", "three" : "3"}')
-        user.vkuser.photo_rec = data['two']
-        user.vkuser.save()
+        if not user.is_superuser:
+            vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50&v=5.60"
+            import json
+            data = json.loads('{"one" : "1", "two" : "https://pp.vk.me/c631329/v631329286/23f6e/4-funfNRMwg.jpg", "three" : "3"}')
+            user.vkuser.photo_rec = data['two']
+            user.vkuser.save()
 
 
 class HashBackend(object):

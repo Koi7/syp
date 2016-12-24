@@ -31,7 +31,7 @@ class VKUser(models.Model):
             import urllib2
             #response = urllib2.urlopen(vk_api_request_url)
             data = json.loads('{"response": [{"id": 210700286,"first_name": "Lindsey","last_name": "Stirling","city": {"id": 5331,"title": "Los Angeles"},"photo_50": "https://pp.vk.me/...f6e/4-funfNRMwg.jpg","verified": 1}]}')
-            for user_data in data['request']:
+            for user_data in data['response']:
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.vkuser.save()
 

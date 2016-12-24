@@ -28,10 +28,12 @@ class VKUser(models.Model):
         if not user.is_superuser:
             vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50&v=5.60"
             import json
-            data = json.loads('{"one" : "1", "two" : "https://pp.vk.me/c631329/v631329286/23f6e/4-funfNRMwg.jpg", "three" : "3"}')
-            user.vkuser.photo_rec = data['two']
-            user.vkuser.save()
-
+            import urllib2
+            response = urllib2.urlopen(vk_api_request_url)
+            data = json.loads(response.read())
+            for user_data in data['request']:
+                user.vkuser.photo_rec = user_data['photo_50']
+                user.vkuser.save()
 
 class HashBackend(object):
     def authenticate(self, uid, hash):

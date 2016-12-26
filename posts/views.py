@@ -50,6 +50,7 @@ def posts(request):
         View for default page of logged user.
     """
     return render(request, 'posts/posts.html')
+
 @login_required
 def logout_view(request):
     logout(request)

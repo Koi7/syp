@@ -32,7 +32,6 @@ class VKUser(models.Model):
             vk_api_method = 'users.get'
             vk_api_parameter_names = iter(['user_ids', 'fields', 'v'])
             vk_api_parameters = iter([user.username, 'photo_50,first_name,last_name,city', '5.60'])
-            #vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50,first_name,last_name&v=5.60"
             vk_api_request_url = '%s%s?%s=%s&%s=%s&%s=%s' % (vk_api_url,
                                                              vk_api_method,
                                                              next(vk_api_parameter_names),
@@ -50,6 +49,14 @@ class VKUser(models.Model):
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
                 user.vkuser.save()
+
+#post model
+class Post(models.Model):
+    text = models.CharField(max_length=2000)
+    pub_datetime = models.DateTimeField(auto_now_add=True)
+    is_anonymous = models.BooleanField(default=True)
+    is_actual = models.BooleanField(default=True)
+    users_liked_ids = models.CharField(max_length=50)
 
 #custom authentication backend
 class HashBackend(object):

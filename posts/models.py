@@ -8,6 +8,8 @@ from django.contrib.auth.signals import user_logged_in
 import hashlib
 
 #Create your models here.
+
+#custom user one-to-one model
 class VKUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
@@ -26,7 +28,19 @@ class VKUser(models.Model):
     @receiver(user_logged_in, sender=User)
     def update_user_profile(user, **kwargs):
         if not user.is_superuser:
-            vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50,first_name,last_name&v=5.60"
+            vk_api_url = 'https://api.vk.com/method/'
+            vk_api_method = 'users.get'
+            vk_api_parameter_names = iter(['user_ids', 'fields', 'v'])
+            vk_api_parameters = iter([user.username, 'photo_50,first_name,last_name,city', '5.60'])
+            #vk_api_request_url = "https://api.vk.com/method/users.get?user_ids=" + user.username + "&fields=photo_50,first_name,last_name&v=5.60"
+            vk_api_request_url = '%s%s?%s=%s&%s=%s&%s=%s' % (vk_api_url,
+                                                             vk_api_method,
+                                                             next(vk_api_parameter_names),
+                                                             next(vk_api_parameters),
+                                                             next(vk_api_parameter_names),
+                                                             next(vk_api_parameters),
+                                                             next(vk_api_parameter_names),
+                                                             next(vk_api_parameters))
             import json
             import urllib2
             response = urllib2.urlopen(vk_api_request_url)
@@ -37,6 +51,7 @@ class VKUser(models.Model):
                 user.last_name = user_data['last_name']
                 user.vkuser.save()
 
+#custom authentication backend
 class HashBackend(object):
     def authenticate(self, uid, hash):
         md5 = hashlib.md5()

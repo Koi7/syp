@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
-from .forms import PostForm
 # User tests.
 def anonimous_check(user):
     return  user.is_anonymous()
@@ -41,8 +40,7 @@ def verify_hash(request):
 
 @login_required
 def add_post(request):
-    post_form = PostForm()
-    return render(request, 'posts/add_post.html', {'form': post_form})
+    return render(request, 'posts/add_post.html', )
 
 @login_required
 def posts(request):

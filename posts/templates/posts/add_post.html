@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Новый пост{% endblock %}
+
+{% block content %}
     <form>
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Добавить">
+        <table>
+        <tr>
+            <td>Текст:</td>
+            <td><textarea maxlength="2000"></textarea></td>
+        </tr>
+        <tr>
+            <td>Анонимно:</td>
+            <td><input type="checkbox"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit"></td>
+        </tr>
+    </table>
     </form>
-</body>
-</html>
+{% endblock %}

@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Page Title</title>
-  <meta charset="utf-8">
-</head>
-  <body>
+
+{% extends "base.html" %}
+
+{% block title %}Посты{% endblock %}
+
+{% block content %}
     <img src="{{request.user.vkuser.photo_rec}}">
     <h3>{{request.user.first_name}}, нет постов... пока</h3>
-    <nav>
-      <ul>
-        <li><a href="{%  url 'posts'%}">Посты</a>
-        <li><a href="#">Лайкнутые</a>
-        <li><a href="{%  url 'add_post'%}">Новый пост</a>
-        <li><a href="{% url 'logout_view' %}">Выход</a>
-      </ul>
-    </nav>
-  </body>
-</html>
+{% endblock %}

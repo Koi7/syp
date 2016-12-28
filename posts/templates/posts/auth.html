@@ -31,7 +31,7 @@
                   first_name: data.first_name,
                   last_name: data.last_name,
                   photo_rec: data.photo_rec,
-                  place: getPlace(data.city.title)
+                  place: getPlace(data.city['title']),
                   hash: data.hash,
                   csrfmiddlewaretoken: getCookie('csrftoken')
               },

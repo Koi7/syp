@@ -39,7 +39,7 @@ function getDataAndRedirect() {
 }
 
 function getCity(uid){
-  city = '';
+  /*city = '';
   $.ajax({
               type: 'GET',
               url: 'https://api.vk.com/method/users.get?user_ids=' + uid + '&fields=city&v=5.60',
@@ -50,5 +50,6 @@ function getCity(uid){
               },
               dataType: 'json'
           });
-  return city;
+  return city;*/
+  return "Федосия";
 }

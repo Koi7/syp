@@ -17,7 +17,8 @@ def index(request):
         View for default page of unlogged user.
     """
     context = {
-        'APP_ID': settings.VK_APP_ID
+        'APP_ID': settings.VK_APP_ID,
+        'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
     }
     return render(request, 'posts/auth.html', context)
 

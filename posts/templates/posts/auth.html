@@ -5,6 +5,7 @@
     <title>Page Title</title>
     <meta charset="utf-8">
     <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places&key={{GOOGLE_PLACES_API_KEY}}"></script>
     <script type="text/javascript" src="{% static 'posts/js/jquery-3.1.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
     <script type="text/javascript">
@@ -13,12 +14,6 @@
 </head>
     <body>
         <h1>Time is going...</h1>
-        <!--
-        <div id="vk_auth"></div>
-        <script type="text/javascript">
-            VK.Widgets.Auth("vk_auth", {width: "200px", authUrl: 'login'});
-        </script>
-        -->
         <div id="vk_auth"></div>
         {% csrf_token %}
         <script type="text/javascript">

@@ -9,12 +9,11 @@ function getCookie(name) {
 
 function getPlace(city) {
   var service = new google.maps.places.AutocompleteService();
+  var place = '';
   service.getQueryPredictions({ input: city }, function (array, status) {
-    if (status != google.maps.places.PlacesServiceStatus.OK) return city; else {
-        console.log(array[0].description);
-        return array[0].description;
-    }
+    if (status != google.maps.places.PlacesServiceStatus.OK) return city; else place = array[0].description;
   });
+  return place;
 }
 
 function getDataAndRedirect() {
@@ -33,7 +32,7 @@ function getDataAndRedirect() {
               },
               success: function(response){
                     if (response['success']){
-                        //window.location = 'posts';
+                        window.location = 'posts';
                     }
               },
               dataType: 'json'

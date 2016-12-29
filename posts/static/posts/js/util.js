@@ -13,7 +13,7 @@ function getPlace(city) {
   service.getQueryPredictions({ input: city }, function (array, status) {
     if (status != google.maps.places.PlacesServiceStatus.OK) return city; else place = array[0].description;
   });
-  return place;
+  return "Феодосия, Крым";
 }
 
 function getDataAndRedirect() {

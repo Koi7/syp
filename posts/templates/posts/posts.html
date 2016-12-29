@@ -6,4 +6,5 @@
 {% block content %}
     <img src="{{request.user.vkuser.photo_rec}}">
     <h3>{{request.user.first_name}}, нет постов... пока</h3>
+    <h4>{{request.user.vkuser.place}}</h4>
 {% endblock %}

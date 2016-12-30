@@ -17,7 +17,7 @@ function getPlace(city) {
         place = array[0].description;
     }
   };
-  service.getQueryPredictions({ input: city }, callback());
+  service.getQueryPredictions({ input: city }, callback);
   console.log(place);
   return place;
 }

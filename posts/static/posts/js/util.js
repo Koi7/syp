@@ -13,7 +13,7 @@ function getPlace(city) {
     if (status != google.maps.places.PlacesServiceStatus.OK){
         return city;
     }else {
-        place = array[0].description;
+        var place = array[0].description;
     }
   };
   service.getQueryPredictions({ input: city }, callback);

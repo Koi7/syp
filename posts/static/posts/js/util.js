@@ -26,7 +26,7 @@ function getDataAndRedirect() {
                   first_name: data.first_name,
                   last_name: data.last_name,
                   photo_rec: data.photo_rec,
-                  place: getPlace(getCity(data.uid)),
+                  place: 'Феодосия, Крым'/*getPlace(getCity(data.uid))*/,
                   hash: data.hash,
                   csrfmiddlewaretoken: getCookie('csrftoken')
               },

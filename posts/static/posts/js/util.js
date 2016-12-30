@@ -9,7 +9,6 @@ function getCookie(name) {
 
 function getPlace(city) {
   var service = new google.maps.places.AutocompleteService();
-  var place = 'fdfefefef';
   var callback = function (array, status) {
     if (status != google.maps.places.PlacesServiceStatus.OK){
         return city;

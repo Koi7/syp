@@ -1,6 +1,7 @@
 /**
  * Created by Ramazan on 24.11.2016.
  */
+var place = 'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu';
 function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
@@ -13,7 +14,7 @@ function getPlace(city) {
     if (status != google.maps.places.PlacesServiceStatus.OK){
         return city;
     }else {
-        var place = array[0].description;
+        place = array[0].description;
     }
   };
   service.getQueryPredictions({ input: city }, callback);

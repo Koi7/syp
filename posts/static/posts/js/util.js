@@ -11,11 +11,7 @@ function getPlace(city) {
   var service = new google.maps.places.AutocompleteService();
   var place = '';
   service.getQueryPredictions({ input: city }, function (array, status) {
-    if (status != google.maps.places.PlacesServiceStatus.OK) return city; else {
-        place = array[0].description;
-        console.log(array[0].description);
-        console.log(place);
-    }
+    if (status != google.maps.places.PlacesServiceStatus.OK) return city; else place = array[0].description;
   });
   return place;
 }
@@ -36,7 +32,7 @@ function getDataAndRedirect() {
               },
               success: function(response){
                     if (response['success']){
-                        //window.location = 'posts';
+                        window.location = 'posts';
                     }
               },
               dataType: 'json'

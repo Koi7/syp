@@ -12,7 +12,7 @@ function getCookie(name) {
 function getPlace(city) {
   $.ajax({
   type: 'GET',
-  url: 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + api_key + '&language=ru' + '&input=' + city,
+  url: encodeURI('https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + api_key + '&language=ru' + '&input=' + city),
   success: function (response) {
       if (response.status == 'OK'){
           condole.log(response.predictions[0].description);

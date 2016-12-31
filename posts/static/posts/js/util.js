@@ -10,7 +10,7 @@ function getCookie(name) {
 }
 
 function getPlace(city) {
-  $ajax({
+  $.ajax({
   type: 'GET',
   url: 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + api_key + '&language=ru' + '&input=' + city,
   success: function (response) {

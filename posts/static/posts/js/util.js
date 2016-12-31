@@ -1,65 +1,30 @@
-/**
- * Created by Ramazan on 24.11.2016.
- */
-var place = 'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu';
-var api_key = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM';
 function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
-function getPlace(city) {
-  $.ajax({
-  type: 'GET',
-  url: encodeURI('https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + api_key + '&language=ru' + '&input=' + city),
-  success: function (response) {
-      if (response.status == 'OK'){
-          condole.log(response.predictions[0].description);
-          place = response.predictions[0].description;
-      }
-  }    
-  });
-  console.log(place);
-  return place;
-}
-
 function getDataAndRedirect() {
-  VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
-              $.ajax({
-              type: 'POST',
-              url: 'login',
-              data: {
-                  uid: data.uid,
-                  first_name: data.first_name,
-                  last_name: data.last_name,
-                  photo_rec: data.photo_rec,
-                  place: getPlace(getCity(data.uid)),
-                  hash: data.hash,
-                  csrfmiddlewaretoken: getCookie('csrftoken')
-              },
-              success: function(response){
-                    if (response['success']){
-                        //window.location = 'posts';
+    VK.Widgets.Auth("vk_auth", {
+        width: "200px", onAuth: function (data) {
+            $.ajax({
+                type: 'POST',
+                url: 'login',
+                data: {
+                    uid: data.uid,
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    photo_rec: data.photo_rec,
+                    hash: data.hash,
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                success: function (response) {
+                    if (response['success']) {
+                        window.location = 'posts';
                     }
-              },
-              dataType: 'json'
-          });
-          } });
-}
-
-function getCity(uid){
-  /*city = '';
-  $.ajax({
-              type: 'GET',
-              url: 'https://api.vk.com/method/users.get?user_ids=' + uid + '&fields=city&v=5.60',
-              success: function(response){
-                    response.forEach(function (item, i, arr) {
-                        city = item['city']['title'];
-                    })
-              },
-              dataType: 'json'
-          });
-  return city;*/
-  return "Федосия";
+                },
+                dataType: 'json'
+            });
+        }
+    });
 }

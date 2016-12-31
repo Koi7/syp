@@ -2,6 +2,7 @@
  * Created by Ramazan on 24.11.2016.
  */
 var place = 'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu';
+var api_key = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM';
 function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
@@ -9,15 +10,16 @@ function getCookie(name) {
 }
 
 function getPlace(city) {
-  var service = new google.maps.places.AutocompleteService();
-  var callback = function (array, status) {
-    if (status != google.maps.places.PlacesServiceStatus.OK){
-        return city;
-    }else {
-        place = array[0].description;
-    }
-  };
-  service.getQueryPredictions({ input: city }, callback);
+  $ajax({
+  type: 'GET',
+  url: 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + api_key + '&language=ru' + '&input=' + city,
+  success: function (response) {
+      if (response.status == 'OK'){
+          condole.log(response.predictions[0].description);
+          place = response.predictions[0].description;
+      }
+  }    
+  });
   console.log(place);
   return place;
 }

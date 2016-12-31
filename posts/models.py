@@ -43,12 +43,14 @@ class VKUser(models.Model):
                                                              next(vk_api_parameters))
             import json
             import urllib2
+            import requests
             response = urllib2.urlopen(vk_api_request_url)
             data = json.loads(response.read())
             for user_data in data['response']:
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
+                user.vkuser.place = json.loads(requests.get('https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + settings.GOOGLE_PLACES_API_KEY + '&language=ru&input=' + user_data['city']['title']).text)['predictions'][0]['description']
                 user.vkuser.save()
 
 #post model

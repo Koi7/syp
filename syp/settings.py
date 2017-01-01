@@ -21,7 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'ep@*$m-$2i_zq0kp#@z466-=-i_=1afb%&nqp%jo%0y8k^o-2r'
+# API
 GOOGLE_PLACES_API_KEY = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM'
+VK_API_URL = 'https://api.vk.com/method/'
+GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -84,7 +87,7 @@ DATABASES = {
         'USER': 'koi',
         'PASSWORD': '19941995koikoi',
         'HOST': 'koi.mysql.pythonanywhere-services.com',
-    }
+    },
 }
 
 
@@ -110,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'Europe/Moscow'
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
@@ -29,11 +31,10 @@ class VKUser(models.Model):
     @receiver(user_logged_in, sender=User)
     def update_user_profile(user, **kwargs):
         if not user.is_superuser:
-            vk_api_url = 'https://api.vk.com/method/'
             vk_api_method = 'users.get'
             vk_api_parameter_names = iter(['user_ids', 'fields', 'v'])
             vk_api_parameters = iter([user.username, 'photo_50,first_name,last_name,city', '5.60'])
-            vk_api_request_url = '%s%s?%s=%s&%s=%s&%s=%s' % (vk_api_url,
+            vk_api_request_url = '%s%s?%s=%s&%s=%s&%s=%s' % (settings.VK_API_URL,
                                                              vk_api_method,
                                                              next(vk_api_parameter_names),
                                                              next(vk_api_parameters),
@@ -50,7 +51,9 @@ class VKUser(models.Model):
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
-                user.vkuser.place = json.loads(requests.get('https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=' + settings.GOOGLE_PLACES_API_KEY + '&language=ru&input=' + user_data['city']['title']).text)['predictions'][0]['description']
+                #request to google places api
+                response = requests.get(settings.GOOGLE_API_URL, params={'input': user_data['city']['title'], 'language': settings.LANGUAGE_CODE[0:2], 'key': settings.GOOGLE_PLACES_API_KEY})
+                user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
                 user.vkuser.save()
 
 #post model

@@ -47,7 +47,7 @@ def add_post(request):
     if request.method == 'POST':
         post = Post()
         post.text = request.POST.get('text')
-        post.is_anonymous = request.POST.get('is_anonymous')
+        post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place
         post.save()
         return redirect('posts')

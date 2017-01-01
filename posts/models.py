@@ -46,14 +46,7 @@ class VKUser(models.Model):
                 user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
                 user.vkuser.save()
 
-#post model
-class Post(models.Model):
-    place = models.CharField(max_length=200, default="")
-    text = models.CharField(max_length=2000)
-    pub_datetime = models.DateTimeField(auto_now_add=True)
-    is_anonymous = models.BooleanField(default=True)
-    is_actual = models.BooleanField(default=True)
-    users_liked_ids = models.CharField(max_length=50)
+
 
 #custom authentication backend
 class HashBackend(object):

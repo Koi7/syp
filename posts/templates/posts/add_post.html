@@ -3,15 +3,15 @@
 {% block title %}Новый пост{% endblock %}
 
 {% block content %}
-    <form>
+    <form action="" method="POST">
         <table>
         <tr>
             <td>Текст:</td>
-            <td><textarea maxlength="2000"></textarea></td>
+            <td><textarea name="text" maxlength="2000"></textarea></td>
         </tr>
         <tr>
             <td>Анонимно:</td>
-            <td><input type="checkbox"></td>
+            <td><input name="is_anonymous" type="checkbox"></td>
         </tr>
         <tr>
             <td></td>

@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
+from models import Post
 # User tests.
 def anonimous_check(user):
     return  user.is_anonymous()
@@ -41,14 +42,27 @@ def verify_hash(request):
 
 @login_required
 def add_post(request):
-    return render(request, 'posts/add_post.html', )
+    if request.method == 'GET':
+        return render(request, 'posts/add_post.html', )
+    if request.method == 'POST':
+        post = Post()
+        post.text = request.POST.get('text')
+        post.is_anonymous = request.POST.get('is_anonymous')
+        post.place = request.user.vkuser.place
+        post.save()
+        return redirect('posts')
+
+
 
 @login_required
 def posts(request):
     """
         View for default page of logged user.
     """
-    return render(request, 'posts/posts.html')
+    context = {
+        'posts_list': Post.objects.filter(place=request.user.vkuser.place)
+    }
+    return render(request, 'posts/posts.html', context)
 
 @login_required
 def logout_view(request):

@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ep@*$m-$2i_zq0kp#@z466-=-i_=1afb%&nqp%jo%0y8k^o-2r'
 # API
 GOOGLE_PLACES_API_KEY = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM'
-VK_API_URL = 'https://api.vk.com/method/'
+VK_API_URL = 'https://api.vk.com/method/users.get'
 GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

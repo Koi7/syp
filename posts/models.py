@@ -43,10 +43,9 @@ class VKUser(models.Model):
                                                              next(vk_api_parameter_names),
                                                              next(vk_api_parameters))
             import json
-            import urllib2
             import requests
-            response = urllib2.urlopen(vk_api_request_url)
-            data = json.loads(response.read())
+            response = requests.get(settings.VK_API_URL, params={'v': '5.60', 'lang': settings.LANGUAGE_CODE[0:2], 'fields': 'photo_50,first_name,last_name,city', 'user_ids': user.username})
+            data = json.loads(response.text)
             for user_data in data['response']:
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.first_name = user_data['first_name']

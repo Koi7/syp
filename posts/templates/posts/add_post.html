@@ -3,8 +3,7 @@
 {% block title %}Новый пост{% endblock %}
 
 {% block content %}
-    <form action="" method="POST">
-        {{csrf_token}}
+    <form action="" method="POST">{% csrf_token %}
         <table>
         <tr>
             <td>Текст:</td>

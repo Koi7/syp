@@ -50,7 +50,7 @@ class VKUser(models.Model):
 
 #post model
 class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default='0')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     place = models.CharField(max_length=200, default="")
     text = models.CharField(max_length=2000)
     pub_datetime = models.DateTimeField(auto_now_add=True)

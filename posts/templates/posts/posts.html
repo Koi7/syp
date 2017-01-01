@@ -9,12 +9,12 @@
     <h4>{{request.user.vkuser.place}}</h4>
     {% for post in posts_list %}
         <ul>
-            <li>author: post.author</li>
-            <li>text: post.text</li>
-            <li>place: post.place</li>
-            <li>anon: post.is_anonymous</li>
-            <li>is actual: post.is_actual</li>
-            <li>pub date time: post.pub_datetime</li>
+            <li>author: </li>
+            <li>text: {{ post.text }}</li>
+            <li>place: {{ post.place }}</li>
+            <li>anon: {{ post.is_anonymous }}</li>
+            <li>is actual: {{ post.is_actual }}</li>
+            <li>pub date time: {{ post.pub_datetime }}</li>
         </ul>
     {% endfor %}
 {% endblock %}

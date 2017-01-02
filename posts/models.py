@@ -48,7 +48,7 @@ class VKUser(models.Model):
 
 # post model
 class Post(models.Model):
-    vkuser_id = models.CharField(max_length=20, default="")
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     place = models.CharField(max_length=200, default="")
     text = models.CharField(max_length=2000)
     pub_datetime = models.DateTimeField(auto_now_add=True)

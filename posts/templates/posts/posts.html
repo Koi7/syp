@@ -9,7 +9,7 @@
     <h4>{{request.user.vkuser.place}}</h4>
     {% for post in posts_list %}
         <ul>
-            <li>author: </li>
+            <li>author: {{ post.user_id }}</li>
             <li>text: {{ post.text }}</li>
             <li>place: {{ post.place }}</li>
             <li>anon: {{ post.is_anonymous }}</li>

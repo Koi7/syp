@@ -46,7 +46,7 @@ def add_post(request):
         return render(request, 'posts/add_post.html', )
     if request.method == 'POST':
         post = Post()
-        post.user_id = request.user.user_id
+        post.user_id = request.user.id
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place

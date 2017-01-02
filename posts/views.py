@@ -46,10 +46,13 @@ def add_post(request):
         return render(request, 'posts/add_post.html', )
     if request.method == 'POST':
         post = Post()
+        post.vkuser_id = request.user.username
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place
         post.save()
+        request.user.vkuser.has_active_post = True
+        request.user.save()
         return redirect('posts')
 
 

@@ -61,7 +61,7 @@ def spec_place_or_redirect_to_posts(request):
         If empty - redirects to specify place.
         If not empty - redirects ti posts view.
     """
-    if request.user.is_place_empty():
+    if request.user.vkuser.is_place_empty():
         return render(request, 'posts/specify_place.html', {'GOOGLE_API_KEY': settings.GOOGLE_PLACES_API_KEY})
     else:
         return redirect('posts')

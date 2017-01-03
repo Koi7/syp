@@ -40,7 +40,7 @@ class VKUser(models.Model):
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
                 #request to google places api
-                if user.place == '':
+                if user.vkuser.place == '':
                     response = requests.get(settings.GOOGLE_API_URL, params={'input': user_data['city']['title'],
                                                                             'language': settings.LANGUAGE_CODE[0:2],
                                                                             'key': settings.GOOGLE_PLACES_API_KEY})

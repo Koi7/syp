@@ -1,20 +1,18 @@
+{% extends "posts/base.html" %}
 {% load static from staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Page Title</title>
-    <meta charset="utf-8">
+{% block title %}Аутентификация{% endblock %}
+{% block scripts %}
     <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places&key={{GOOGLE_PLACES_API_KEY}}"></script>
     <script type="text/javascript" src="{% static 'posts/js/jquery-3.1.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
-    <script type="text/javascript" src="{% static 'posts/js/autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'posts/js/syp_auth.js' %}"></script>
     <script type="text/javascript">
-      VK.init({apiId: {{APP_ID}}});
+        VK.init({apiId: {{APP_ID}}});
     </script>
-</head>
-    <body>
-        <h1>Time is going...</h1>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+    <h1>Аутентификация</h1>
         <table>
             <tr>
                 <td>Место:</td>
@@ -23,29 +21,4 @@
         </table>
         <div id="vk_auth"></div>
         {% csrf_token %}
-        <script type="text/javascript">
-          {% comment %}VK.Widgets.Auth("vk_auth", {width: "200px", onAuth: function(data) {
-              $.ajax({
-              type: 'POST',
-              url: 'login',
-              data: {
-                  uid: data.uid,
-                  first_name: data.first_name,
-                  last_name: data.last_name,
-                  photo_rec: data.photo_rec,
-                  place: getPlace(data.city['title']),
-                  hash: data.hash,
-                  csrfmiddlewaretoken: getCookie('csrftoken')
-              },
-              success: function(response){
-                    if (response['success']){
-                        window.location = 'posts';
-                    }
-              },
-              dataType: 'json'
-          });
-          } });{% endcomment %}
-          //getDataAndRedirect()
-      </script>
-    </body>
-</html>
+{% endblock %}

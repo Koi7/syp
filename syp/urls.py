@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^login', views.verify_hash, name='verify_hash'),
     url(r'^admin', admin.site.urls),
     url(r'^posts', views.posts, name='posts'),
-    url(r'^specify_place', views.spec_place_or_redirect_to_posts, name='views.spec_place_or_redirect_to_posts'),
     url(r'^logout', views.logout_view, name='logout_view'),
     url(r'^add', views.add_post, name='add_post'),
 ]

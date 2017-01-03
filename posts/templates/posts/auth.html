@@ -8,12 +8,19 @@
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places&key={{GOOGLE_PLACES_API_KEY}}"></script>
     <script type="text/javascript" src="{% static 'posts/js/jquery-3.1.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'posts/js/autocomplete.js' %}"></script>
     <script type="text/javascript">
       VK.init({apiId: {{APP_ID}}});
     </script>
 </head>
     <body>
         <h1>Time is going...</h1>
+        <table>
+            <tr>
+                <td>Место:</td>
+                <td><input id="place" type="text" name="place" placeholder="укажите место"></td>
+            </tr>
+        </table>
         <div id="vk_auth"></div>
         {% csrf_token %}
         <script type="text/javascript">
@@ -38,7 +45,7 @@
               dataType: 'json'
           });
           } });{% endcomment %}
-          getDataAndRedirect()
+          //getDataAndRedirect()
       </script>
     </body>
 </html>

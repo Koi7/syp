@@ -54,9 +54,17 @@ def add_post(request):
         request.user.vkuser.has_active_post = True
         request.user.save()
         return redirect('posts')
-
-
-
+@login_required
+def spec_place_or_redirect_to_posts(request):
+    """
+        This view checks if user's place field is empty.
+        If empty - redirects to specify place.
+        If not empty - redirects ti posts view.
+    """
+    if request.user.is_place_empty():
+        return render(request, 'posts/specify_place.html', {'GOOGLE_API_KEY': settings.GOOGLE_PLACES_API_KEY})
+    else:
+        return redirect('posts')
 @login_required
 def posts(request):
     """

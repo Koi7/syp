@@ -1,0 +1,17 @@
+{% load static from staticfiles %}
+{% extends "posts/base.html" %}
+{% block title %}Уточнение места{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places&key={{ GOOGLE_API_KEY }}"></script>
+<script type="text/javascript" src="{% static 'posts/js/autocomplete.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <form action="" method="POST">{% csrf_token %}
+        <table>
+        <tr>
+            <td>Место:</td>
+            <td><input type="text" name="place" placeholder="укажите место"></td>
+        </tr>
+    </table>
+    </form>
+{% endblock %}

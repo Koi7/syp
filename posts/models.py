@@ -33,18 +33,23 @@ class VKUser(models.Model):
         if not user.is_superuser:
             response = requests.get(settings.VK_API_URL, params={'v': '5.60',
                                                                  'lang': settings.LANGUAGE_CODE[0:2],
-                                                                 'fields': 'photo_50,first_name,last_name,city',
+                                                                 'fields': 'photo_50,first_name,last_name,city,country',
                                                                  'user_ids': user.username})
             for user_data in json.loads(response.text)['response']:
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
                 #request to google places api
-                response = requests.get(settings.GOOGLE_API_URL, params={'input': user_data['city']['title'],
-                                                                         'language': settings.LANGUAGE_CODE[0:2],
-                                                                         'key': settings.GOOGLE_PLACES_API_KEY})
-                user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
+                if user.place == '':
+                    response = requests.get(settings.GOOGLE_API_URL, params={'input': user_data['city']['title'],
+                                                                            'language': settings.LANGUAGE_CODE[0:2],
+                                                                            'key': settings.GOOGLE_PLACES_API_KEY})
+                    places = json.loads(response.text)
+                    if places['status'] == "OK":
+                        user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
                 user.vkuser.save()
+    def is_place_empty(self):
+        return True if self.place == '' else False
 
 # post model
 class Post(models.Model):

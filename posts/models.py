@@ -45,8 +45,8 @@ class VKUser(models.Model):
                                                                             'language': settings.LANGUAGE_CODE[0:2],
                                                                             'key': settings.GOOGLE_PLACES_API_KEY})
                     places = json.loads(response.text)
-                    if places['status'] == "OK":
-                        user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
+                    #if places['status'] == "OK":
+                        #user.vkuser.place = json.loads(response.text)['predictions'][0]['description']
                 user.vkuser.save()
     def is_place_empty(self):
         return True if self.place == '' else False

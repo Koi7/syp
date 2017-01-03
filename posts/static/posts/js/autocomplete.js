@@ -7,7 +7,6 @@
 		var options = {
 			types: ['(regions)']
 		};
-		input.oninput = clear;
 		var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {

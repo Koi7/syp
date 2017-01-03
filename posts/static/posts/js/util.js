@@ -20,7 +20,7 @@ function getDataAndRedirect() {
                 },
                 success: function (response) {
                     if (response['success']) {
-                        window.location = 'posts';
+                        window.location = 'specify_place';
                     }
                 },
                 dataType: 'json'

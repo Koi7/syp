@@ -1,4 +1,3 @@
-google.maps.event.addDomListener(window, 'load', init);
 
 var init = function  () {
 	var input = document.getElementById("place");
@@ -13,7 +12,7 @@ var init = function  () {
 			initAuthWidjet(place.formatted_address);
 	    });
 };
-
+google.maps.event.addDomListener(window, 'load', init);
 function initAuthWidjet(formatted_address) {
     VK.Widgets.Auth("vk_auth", {
         width: "200px", onAuth: function (data) {

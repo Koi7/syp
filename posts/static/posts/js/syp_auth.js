@@ -11,7 +11,7 @@ var init = function  () {
 		    var place = autocomplete.getPlace();
             var index;
             for (var i = 0; i < place.formatted_address.length; i++){
-	            if (place.place.formatted_address.charCodeAt(i) == 769){
+	            if (place.formatted_address.charCodeAt(i) == 769){
   	                index = i;
                 }
             }

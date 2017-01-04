@@ -9,6 +9,13 @@ var init = function  () {
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		    var place = autocomplete.getPlace();
+            var index;
+            for (var i = 0; i < place.place.formatted_address.length; i++){
+	            if (place.place.formatted_address.charCodeAt(i) == 769){
+  	                index = i;
+                }
+            }
+            place.formatted_address = place.formatted_address.substring(0, index).concat(place.formatted_address.substring(index++));
 			initAuthWidjet(place.formatted_address);
 	    });
 };

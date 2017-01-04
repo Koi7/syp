@@ -43,6 +43,11 @@ def verify_hash(request):
 
 @login_required
 def add_post(request):
+    """
+        This view manages adding posts.
+        If GET - render form for adding post.
+        If POST - create and save new post.
+    """
     if request.method == 'GET':
         return render(request, 'posts/add_post.html', {'has_active_post': request.user.vkuser.has_active_post})
     if request.method == 'POST':

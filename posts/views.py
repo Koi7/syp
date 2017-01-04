@@ -58,7 +58,7 @@ def add_post(request):
 
 @login_required
 def delete_and_add_post(request):
-    post_to_delete = Post.objects.get(user=request.user.username)
+    post_to_delete = Post.objects.get(user=request.user)
     post_to_delete.delete()
     request.user.vkuser.has_active_post = True
     add_post(request)

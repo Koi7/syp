@@ -8,15 +8,15 @@ var init = function  () {
 		var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
-		    var place = autocomplete.getPlace();
+		    var place = autocomplete.getPlace().formatted_address;
             var index;
-            for (var i = 0; i < place.formatted_address.length; i++){
-	            if (place.formatted_address.charCodeAt(i) == 769){
+            for (var i = 0; i < place.length; i++){
+	            if (place.charCodeAt(i) == 769){
   	                index = i;
                 }
             }
-            place.formatted_address = place.formatted_address.substring(0, index).concat(place.formatted_address.substring(index++));
-			initAuthWidjet(place.formatted_address);
+            place = place.substring(0, index).concat(place.substring(index + 1));
+			initAuthWidjet(place);
 	    });
 };
 google.maps.event.addDomListener(window, 'load', init);

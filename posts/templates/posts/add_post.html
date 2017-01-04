@@ -4,23 +4,8 @@
 
 {% block content %}
     {% if has_active_post %}
-        <form action="{% url 'delete_and_add_post' %}" method="POST">{% csrf_token %}
-            <table>
-                <tr>
-                    <td>Текст:</td>
-                    <td><textarea name="text" maxlength="2000"></textarea></td>
-                </tr>
-                <tr>
-                    <td>Анонимно:</td>
-                    <td><input name="is_anonymous" type="checkbox"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit"></td>
-                </tr>
-            </table>
-        </form>
-    {% else %}
+        <h6>У вас уже есть актуальный пост. Если добавитье новый, то предыдущий станет не актуальным навсегда.</h6>
+    {% endif %}
         <form action="" method="POST">{% csrf_token %}
             <table>
                 <tr>
@@ -33,9 +18,8 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit"></td>
+                    <td><input type="submit" value="Отправить"></td>
                 </tr>
             </table>
         </form>
-    {% endif %}
 {% endblock %}

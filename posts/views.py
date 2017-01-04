@@ -51,6 +51,9 @@ def add_post(request):
     if request.method == 'GET':
         return render(request, 'posts/add_post.html', {'has_active_post': request.user.vkuser.has_active_post})
     if request.method == 'POST':
+        if request.user.vkuser.has_active_post:
+            actual_post = Post.objects.get(user=request.user, is_actual=True)
+            actual_post.is_actual = False
         post = Post()
         post.user = request.user
         post.text = request.POST.get('text')
@@ -62,19 +65,12 @@ def add_post(request):
         return redirect('posts')
 
 @login_required
-def delete_and_add_post(request):
-    post_to_delete = Post.objects.get(user=request.user)
-    post_to_delete.delete()
-    request.user.vkuser.has_active_post = True
-    return add_post(request)
-
-@login_required
 def posts(request):
     """
         View for default page of logged user.
     """
     context = {
-        'posts_list': Post.objects.filter(place=request.user.vkuser.place)
+        'posts_list': Post.objects.filter(place=request.user.vkuser.place, is_actual=True)
     }
     return render(request, 'posts/posts.html', context)
 

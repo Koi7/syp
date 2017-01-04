@@ -15,7 +15,9 @@ var init = function  () {
   	                index = i;
                 }
             }
-            place = place.substring(0, index).concat(place.substring(index + 1));
+            if (index != undefined){
+                place = place.substring(0, index).concat(place.substring(index + 1));
+            }
 			initAuthWidjet(place);
 	    });
 };

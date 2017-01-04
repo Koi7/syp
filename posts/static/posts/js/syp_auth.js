@@ -1,3 +1,5 @@
+google.maps.event.addDomListener(window, 'load', init);
+
 var init = function  () {
 	var input = document.getElementById("place");
 		input.value = "";
@@ -8,12 +10,11 @@ var init = function  () {
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		    var place = autocomplete.getPlace();
-			getDataAndRedirect(place.formatted_address);
+			initAuthWidjet(place.formatted_address);
 	    });
-	}
+};
 
-google.maps.event.addDomListener(window, 'load', init);
-function getDataAndRedirect(formatted_address) {
+function initAuthWidjet(formatted_address) {
     VK.Widgets.Auth("vk_auth", {
         width: "200px", onAuth: function (data) {
             $.ajax({

@@ -3,20 +3,40 @@
 {% block title %}Новый пост{% endblock %}
 
 {% block content %}
-    <form action="" method="POST">{% csrf_token %}
-        <table>
-        <tr>
-            <td>Текст:</td>
-            <td><textarea name="text" maxlength="2000"></textarea></td>
-        </tr>
-        <tr>
-            <td>Анонимно:</td>
-            <td><input name="is_anonymous" type="checkbox"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><input type="submit"></td>
-        </tr>
-    </table>
+    {% if has_active_post %}
+        <form action="{% url 'delete_and_add' %}" method="POST">{% csrf_token %}
+            <table>
+                <tr>
+                    <td>Текст:</td>
+                    <td><textarea name="text" maxlength="2000"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Анонимно:</td>
+                    <td><input name="is_anonymous" type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit"></td>
+                </tr>
+            </table>
+        </form>
+    {% else %}
+        <form action="" method="POST">{% csrf_token %}
+            <table>
+                <tr>
+                    <td>Текст:</td>
+                    <td><textarea name="text" maxlength="2000"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Анонимно:</td>
+                    <td><input name="is_anonymous" type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit"></td>
+                </tr>
+            </table>
     </form>
+    {% endif %}
+
 {% endblock %}

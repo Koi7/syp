@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^posts', views.posts, name='posts'),
     url(r'^logout', views.logout_view, name='logout_view'),
     url(r'^add', views.add_post, name='add_post'),
+    url(r'^delete_and_add', views.delete_and_add_post, name='delete_and_add_post')
 ]

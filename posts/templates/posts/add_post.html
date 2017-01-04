@@ -4,7 +4,7 @@
 
 {% block content %}
     {% if has_active_post %}
-        <form action="{% url 'delete_and_add' %}" method="POST">{% csrf_token %}
+        <form action="{% url 'delete_and_add_post' %}" method="POST">{% csrf_token %}
             <table>
                 <tr>
                     <td>Текст:</td>

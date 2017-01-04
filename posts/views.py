@@ -54,6 +54,7 @@ def add_post(request):
         if request.user.vkuser.has_active_post:
             actual_post = Post.objects.get(user=request.user, is_actual=True)
             actual_post.is_actual = False
+            actual_post.save()
         post = Post()
         post.user = request.user
         post.text = request.POST.get('text')

@@ -10,7 +10,7 @@ var init = function  () {
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		    var place = autocomplete.getPlace();
             var index;
-            for (var i = 0; i < place.place.formatted_address.length; i++){
+            for (var i = 0; i < place.formatted_address.length; i++){
 	            if (place.place.formatted_address.charCodeAt(i) == 769){
   	                index = i;
                 }

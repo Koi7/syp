@@ -76,7 +76,7 @@ def edit_post(request, post_id):
     if request.method == 'GET':
         context = {
             'text': post_to_edit.text,
-            'is_anonymous': 'on' if post_to_edit.is_anonymous else 'off',
+            'is_anonymous': post_to_edit.is_anonymous,
         }
         return render(request, 'posts/edit_post.html', context)
     if request.method == 'POST':

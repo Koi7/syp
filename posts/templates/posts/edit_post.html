@@ -3,17 +3,15 @@
 {% block title %}Редактирование{% endblock %}
 
 {% block content %}
-        <h4>{{ text }}</h4>
-        <h4>{{ is_anonymous }}</h4>
         <form action="" method="POST">{% csrf_token %}
             <table>
                 <tr>
                     <td>Текст:</td>
-                    <td><textarea name="text" maxlength="2000" content="{{ text }}"></textarea></td>
+                    <td><textarea name="text" maxlength="2000">{{ text }}</textarea></td>
                 </tr>
                 <tr>
                     <td>Анонимно:</td>
-                    <td><input name="is_anonymous" type="checkbox" value="{{ is_anonymous }}"></td>
+                    <td><input name="is_anonymous" type="checkbox" {% if is_anonymous %}checked{% endif %}></td>
                 </tr>
                 <tr>
                     <td></td>

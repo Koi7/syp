@@ -15,6 +15,10 @@
             <li>anon: {{ post.is_anonymous }}</li>
             <li>is actual: {{ post.is_actual }}</li>
             <li>pub date time: {{ post.pub_datetime }}</li>
+            <li><a href="{% url 'edit_post' %}/post.id/">Редактировать</a></li>
+            <li><a href="#">Удалить</a></li>
+            <li><a href="#">Сделать не актуальным</a></li>
+            <li><a href="#">Лайк</a></li>
         </ul>
     {% endfor %}
 {% endblock %}

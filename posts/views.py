@@ -98,7 +98,7 @@ def posts(request):
     context = {
         'posts_list': Post.objects.filter(place=request.user.vkuser.place, is_actual=True)
     }
-    return render(request, 'posts/posts.html')
+    return render(request, 'posts/posts.html', context)
 
 
 @login_required

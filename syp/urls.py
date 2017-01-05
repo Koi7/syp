@@ -25,4 +25,4 @@ urlpatterns = [
     url(r'^logout', views.logout_view, name='logout_view'),
 ]
 
-handler404 = 'views.404_view'
+handler404 = 'views.not_found'

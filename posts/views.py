@@ -74,7 +74,7 @@ def posts(request):
     context = {
         'posts_list': Post.objects.filter(place=request.user.vkuser.place, is_actual=True)
     }
-    return render(request, 'posts/posts.html', context)
+    return render(request, 'posts/posts.html')
 
 @login_required
 def logout_view(request):

@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^logout', views.logout_view, name='logout_view'),
     url(r'^posts/add', views.add_post, name='add_post'),
 #    url(r'^posts/delete', views.add_post, name='delete_post'),
-    url(r'^posts/edit', views.add_post, name='edit_post'),
+    url(r'^posts/edit/(?P<post_id>[0-9]+)', views.edit_post, name='edit_post'),
 #    url(r'^posts/like', views.add_post, name='like_post'),
 #    url(r'^posts/make_none_actual', views.add_post, name='make_none_actual_post'),
 ]

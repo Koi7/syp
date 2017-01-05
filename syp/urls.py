@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^admin', admin.site.urls),
     url(r'^posts', views.posts, name='posts'),
     url(r'^logout', views.logout_view, name='logout_view'),
-    url(r'^posts/add', views.add_post, name='add_post'),
+    url(r'^add', views.add_post, name='add_post'),
 ]

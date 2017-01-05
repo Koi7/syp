@@ -1,0 +1,25 @@
+{% extends "posts/base.html" %}
+
+{% block title %}Редактирование{% endblock %}
+
+{% block content %}
+    {% if has_active_post %}
+        <h6>У вас уже есть актуальный пост. Если добавитье новый, то предыдущий станет не актуальным навсегда.</h6>
+    {% endif %}
+        <form action="" method="POST">{% csrf_token %}
+            <table>
+                <tr>
+                    <td>Текст:</td>
+                    <td><textarea name="text" maxlength="2000" content="{{ text }}"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Анонимно:</td>
+                    <td><input name="is_anonymous" type="checkbox" value="{{ is_anonymous }}"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Сохранить"></td>
+                </tr>
+            </table>
+        </form>
+{% endblock %}

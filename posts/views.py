@@ -70,6 +70,22 @@ def add_post(request):
         return redirect('posts')
 
 
+@login_required
+def edit_post(request, post_id):
+    post_to_edit = Post.objects.get(id=post_id)
+    if request.method == 'GET':
+        context = {
+            'text': post_to_edit.text,
+            'is_anonymous': 'on' if post_to_edit.is_anonymous else 'off',
+        }
+        return render(request, 'posts/edit_post.html', context)
+    if request.method == 'POST':
+        post_to_edit.text = request.POST.get('text')
+        post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
+        post_to_edit.save()
+        return redirect('posts')
+
+
 def not_found(request):
     return HttpResponse('<div style="margin: 0 auto"><h1>НИХУЯ НЕТ</h2></div>')
 

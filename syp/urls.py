@@ -24,3 +24,5 @@ urlpatterns = [
     url(r'^posts/', include('posts.urls')),
     url(r'^logout', views.logout_view, name='logout_view'),
 ]
+
+handler404 = 'views.404_view'

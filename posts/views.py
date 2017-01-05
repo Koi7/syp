@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate
@@ -7,9 +8,12 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
 from models import Post
+
+
 # User tests.
 def anonimous_check(user):
-    return  user.is_anonymous()
+    return user.is_anonymous()
+
 
 # Create your views here.
 @user_passes_test(anonimous_check, login_url='/posts')
@@ -22,6 +26,7 @@ def index(request):
         'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
     }
     return render(request, 'posts/auth.html', context)
+
 
 @user_passes_test(anonimous_check, login_url='/posts')
 def verify_hash(request):
@@ -41,7 +46,8 @@ def verify_hash(request):
     else:
         return JsonResponse({'fail': 'true'})
 
-#post CRUD operations
+
+# post CRUD operations
 
 @login_required
 def add_post(request):
@@ -62,6 +68,11 @@ def add_post(request):
         request.user.save()
         return redirect('posts')
 
+
+def not_found(request):
+    return HttpResponse('<div style="margin: 0 auto"><h1>НИХУЯ НЕТ</h2></div>')
+
+
 @login_required
 def posts(request):
     """
@@ -71,6 +82,7 @@ def posts(request):
         'posts_list': Post.objects.filter(place=request.user.vkuser.place, is_actual=True)
     }
     return render(request, 'posts/posts.html')
+
 
 @login_required
 def logout_view(request):

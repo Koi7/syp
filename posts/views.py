@@ -41,6 +41,7 @@ def verify_hash(request):
     else:
         return JsonResponse({'fail': 'true'})
 
+#post CRUD operations
 @login_required
 def add_post(request):
     """
@@ -64,6 +65,25 @@ def add_post(request):
         request.user.vkuser.has_active_post = True
         request.user.save()
         return redirect('posts')
+
+@login_required
+def delete_post(request):
+    Post.objects.get(id=request.POST.get('post_id')).delete()
+    return redirect('posts')
+def edit_post(request):
+    if request.method == 'GET':
+        post_to_edit = Post.objects.get(id=request.GET.get('post_id'))
+        context = {
+            'text': post_to_edit.text,
+            'is_anonymous': 'on' if post_to_edit.is_anonymous else 'off',
+        }
+        return render(request, 'posts/edit_post.html', context)
+    if request.method == 'POST':
+        post_to_edit =  Post.objects.get(id=request.POST.get('post_id'))
+        post_to_edit.text = request.POST.get('text')
+        post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
+        post_to_edit.save()
+        return  redirect('posts')
 
 @login_required
 def posts(request):

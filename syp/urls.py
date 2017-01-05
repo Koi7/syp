@@ -18,7 +18,7 @@ from django.contrib import admin
 from posts import views
 
 urlpatterns = [
-    url(r'^auth', views.index, name='index'),
+    url(r'^$', views.index, name='index'),
     url(r'^login', views.verify_hash, name='verify_hash'),
     url(r'^admin', admin.site.urls),
     url(r'^posts/', include('posts.urls')),

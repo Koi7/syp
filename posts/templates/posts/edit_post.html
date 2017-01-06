@@ -3,7 +3,7 @@
 {% block title %}Редактирование{% endblock %}
 
 {% block content %}
-        <form action="" method="POST">{% csrf_token %}
+        <form action="{% url 'save_editions' %}" method="POST">{% csrf_token %}
             <table>
                 <tr>
                     <td>Текст:</td>

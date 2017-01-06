@@ -72,14 +72,18 @@ def add_post(request):
 
 @login_required
 def edit_post(request):
-    post_to_edit = Post.objects.get(id=get_post_id(request))
     if request.method == 'GET':
+        post_to_edit = Post.objects.get(id=get_post_id(request))
         context = {
             'text': post_to_edit.text,
             'is_anonymous': post_to_edit.is_anonymous,
         }
         return render(request, 'posts/edit_post.html', context)
+
+@login_required
+def save_editions(request):
     if request.method == 'POST':
+        post_to_edit = Post.objects.get(id=get_post_id(request))
         post_to_edit.text = request.POST.get('text')
         post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post_to_edit.save()

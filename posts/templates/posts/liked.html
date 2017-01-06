@@ -7,7 +7,7 @@
     <table>
         {% for like in post.liked %}
             <tr>
-                <td><img src="{{ like.user.photo_rec }}" alt=""></td>
+                <td><img src="{{ like.user.vkuser.photo_rec }}" alt=""></td>
                 <td>{{ like.user.first_name }}</td>
                 <td>{{ like.user.last_name }}</td>
             </tr>

@@ -54,6 +54,14 @@ class Post(models.Model):
     is_actual = models.BooleanField(default=True)
     users_liked_ids = models.CharField(max_length=50)
 
+    @property
+    def likes(self):
+        return self.like_set.all().count()
+
+    @property
+    def liked(self):
+        return self.like_set.all()
+
 
 class Like(models.Model):
     user = models.ForeignKey(User)

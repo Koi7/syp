@@ -29,7 +29,7 @@
                 </form>
             {% endif %}
             <li><a href="#">Лайк</a></li>
-            <li>Лайки: {%  post.like_set.all().count() %}</li>
+            <li>Лайки: {{ post.likes }}</li>
         </ul>
     {% endfor %}
 {% endblock %}

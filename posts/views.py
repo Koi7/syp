@@ -85,6 +85,13 @@ def edit_post(request, post_id):
         post_to_edit.save()
         return redirect('posts')
 
+@login_required
+def delete_post(request):
+    if request.method == 'POST':
+        post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
+        if request.user == post_to_delete.user:
+            post_to_delete.delete()
+    return redirect('posts')
 
 def not_found(request):
     return HttpResponse('<div style="margin: 0 auto"><h1>НИХУЯ НЕТ</h2></div>')

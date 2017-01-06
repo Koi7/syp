@@ -16,7 +16,12 @@
             <li>is actual: {{ post.is_actual }}</li>
             <li>pub date time: {{ post.pub_datetime }}</li>
             <li><a href="edit/{{ post.id }}/">Редактировать</a></li>
-            <li><a href="#">Удалить</a></li>
+            {% if request.user.id == post.user.id %}
+                <form action="{% url 'delete_post' %}" method="POST">
+                    <textarea name="post_id" style="display: none">{{ post_id }}</textarea>
+                    <input type="submit" value="Удалить">
+                </form>
+            {% endif %}
             <li><a href="#">Сделать не актуальным</a></li>
             <li><a href="#">Лайк</a></li>
         </ul>

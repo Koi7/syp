@@ -120,7 +120,7 @@ def posts(request):
         View for default page of logged user.
     """
     context = {
-        'posts_list': Post.objects.filter(place=request.user.vkuser.place, is_actual=True)
+        'posts_list': Post.objects.filter(place=request.user.vkuser.place)
     }
     return render(request, 'posts/posts.html', context)
 

@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^add', views.add_post, name='add_post'),
     url(r'^edit/(?P<post_id>[0-9]+)/$', views.edit_post, name='edit_post'),
     url(r'^delete', views.delete_post, name='delete_post'),
+    url(r'^make_not_relevant', views.make_post_not_relevant, name='make_post_not_relevant'),
 ]

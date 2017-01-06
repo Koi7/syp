@@ -85,10 +85,11 @@ def edit_post(request, post_id):
         post_to_edit.save()
         return redirect('posts')
 
+
 @login_required
 def delete_post(request):
     if request.method == 'POST':
-        post_to_delete = Post.objects.get(id=int(request.POST.get('post_id')))
+        post_to_delete = Post.objects.get(id=get_post_id(request))
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False
@@ -96,8 +97,21 @@ def delete_post(request):
             post_to_delete.delete()
     return redirect('posts')
 
+
+@login_required
+def make_post_not_relevant(request):
+    if request.method == 'POST':
+        post = Post.objects.get(id=get_post_id(request))
+        if request.user == post.user:
+            post.is_actual = False
+            request.user.vkuser.has_active_post = False
+            post.save()
+            request.user.save()
+    return redirect('posts')
+
+
 def not_found(request):
-    return HttpResponse('<div style="margin: 0 auto"><h1>НИХУЯ НЕТ</h2></div>')
+    return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
 
 
 @login_required
@@ -115,3 +129,8 @@ def posts(request):
 def logout_view(request):
     logout(request)
     return redirect('../')
+
+
+# utils
+def get_post_id(request):
+    return int(request.POST.get('post_id'))

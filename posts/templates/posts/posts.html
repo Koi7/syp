@@ -22,8 +22,12 @@
                     <input type="hidden" name="post_id" value="{{ post.id }}">
                     <input type="submit" value="Удалить">
                 </form>
+                <form action="{% url 'make_post_not_relevant' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Сделать неактуальным">
+                </form>
             {% endif %}
-            <li><a href="#">Сделать не актуальным</a></li>
             <li><a href="#">Лайк</a></li>
         </ul>
     {% endfor %}

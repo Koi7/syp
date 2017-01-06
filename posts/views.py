@@ -74,21 +74,23 @@ def add_post(request):
 def edit_post(request, post_id):
     if request.method == 'GET':
         post_to_edit = Post.objects.get(id=post_id)
-        context = {
-            'text': post_to_edit.text,
-            'is_anonymous': post_to_edit.is_anonymous,
-            'post_id': post_to_edit.id,
-        }
-        return render(request, 'posts/edit_post.html', context)
+        if request.user == post_to_edit.user:
+            context = {
+                'text': post_to_edit.text,
+                'is_anonymous': post_to_edit.is_anonymous,
+                'post_id': post_to_edit.id,
+            }
+            return render(request, 'posts/edit_post.html', context)
 
 @login_required
 def save_editions(request):
     if request.method == 'POST':
         post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
-        post_to_edit.text = request.POST.get('text')
-        post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
-        post_to_edit.save()
-        return redirect('posts')
+        if request.user == post_to_edit.user:
+            post_to_edit.text = request.POST.get('text')
+            post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
+            post_to_edit.save()
+            return redirect('posts')
 
 
 @login_required
@@ -121,6 +123,8 @@ def like_post(request):
         like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
         if created:
             like_obj.save()
+        else:
+            like_obj.delete()
     return redirect('posts')
 
 

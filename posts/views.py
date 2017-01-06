@@ -118,6 +118,7 @@ def like_post(request):
             like_obj.save()
     return redirect('posts')
 
+
 @login_required
 def liked(request, post_id):
     post = Post.objects.get(id=post_id)
@@ -125,6 +126,7 @@ def liked(request, post_id):
         'post': post,
     }
     return render(request, 'posts/liked.html', context)
+
 
 def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')

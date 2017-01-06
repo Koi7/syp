@@ -71,9 +71,9 @@ def add_post(request):
 
 
 @login_required
-def edit_post(request):
+def edit_post(request, post_id):
     if request.method == 'GET':
-        post_to_edit = Post.objects.get(id=get_post_id(request))
+        post_to_edit = Post.objects.get(id=post_id)
         context = {
             'text': post_to_edit.text,
             'is_anonymous': post_to_edit.is_anonymous,

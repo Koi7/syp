@@ -77,6 +77,7 @@ def edit_post(request, post_id):
         context = {
             'text': post_to_edit.text,
             'is_anonymous': post_to_edit.is_anonymous,
+            'post_id': post_to_edit.id,
         }
         return render(request, 'posts/edit_post.html', context)
 

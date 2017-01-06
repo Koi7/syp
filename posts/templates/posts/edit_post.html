@@ -6,6 +6,10 @@
         <form action="{% url 'save_editions' %}" method="POST">{% csrf_token %}
             <table>
                 <tr>
+                    <td><input type="hidden" name="post_id" value="{{ post.id }}"></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <td>Текст:</td>
                     <td><textarea name="text" maxlength="2000">{{ text }}</textarea></td>
                 </tr>

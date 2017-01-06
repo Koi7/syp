@@ -84,7 +84,7 @@ def edit_post(request, post_id):
 @login_required
 def save_editions(request):
     if request.method == 'POST':
-        post_to_edit = Post.objects.get(id=get_post_id(request))
+        post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
         post_to_edit.text = request.POST.get('text')
         post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post_to_edit.save()

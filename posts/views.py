@@ -125,11 +125,12 @@ def like_post(request):
 
 @login_required
 def liked(request, post_id):
-    post = Post.objects.get(id=post_id)
-    context = {
-        'post': post,
-    }
-    return render(request, 'posts/liked.html', context)
+    if request.method == 'GET':
+        post = Post.objects.get(id=post_id)
+        context = {
+            'post': post,
+        }
+        return render(request, 'posts/liked.html', context)
 
 
 def not_found(request):

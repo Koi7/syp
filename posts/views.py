@@ -88,7 +88,7 @@ def edit_post(request, post_id):
 @login_required
 def delete_post(request):
     if request.method == 'POST':
-        post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
+        post_to_delete = Post.objects.get(id=int(request.POST.get('post_id')))
         if request.user == post_to_delete.user:
             post_to_delete.delete()
     return redirect('posts')

@@ -92,6 +92,7 @@ def delete_post(request):
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False
+                request.user.save()
             post_to_delete.delete()
     return redirect('posts')
 

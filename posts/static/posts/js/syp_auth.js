@@ -18,6 +18,9 @@ var init = function  () {
             if (index != undefined){
                 place = place.substring(0, index).concat(place.substring(index + 1));
             }
+            if ($("div#vk_auth > iframe") != undefined){
+                $("div#vk_auth > iframe").remove();
+            }
 			initAuthWidjet(place);
 	    });
 };

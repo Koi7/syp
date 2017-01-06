@@ -112,8 +112,8 @@ def make_post_not_relevant(request):
 
 def like_post(request):
     if request.method == 'POST':
-        like_obj = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
-        if like_obj:
+        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
+        if created:
             like_obj.save()
     return redirect('posts')
 

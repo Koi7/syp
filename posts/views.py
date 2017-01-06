@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
-from models import Post
+from models import Post, Like
 
 
 # User tests.
@@ -107,6 +107,14 @@ def make_post_not_relevant(request):
             request.user.vkuser.has_active_post = False
             post.save()
             request.user.save()
+    return redirect('posts')
+
+
+def like_post(request):
+    if request.method == 'POST':
+        like_obj = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
+        if like_obj:
+            like_obj.save()
     return redirect('posts')
 
 

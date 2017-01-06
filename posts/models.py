@@ -9,9 +9,10 @@ import hashlib
 import json
 import requests
 
-#Create your models here.
 
-#custom user one-to-one model
+# Create your models here.
+
+# custom user one-to-one model
 class VKUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
@@ -19,6 +20,7 @@ class VKUser(models.Model):
     last_place = models.CharField(max_length=200, default="")
     place = models.CharField(max_length=200, default="")
     age = models.IntegerField(default=0)
+
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
@@ -41,6 +43,7 @@ class VKUser(models.Model):
                 user.last_name = user_data['last_name']
                 user.vkuser.save()
 
+
 # post model
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -51,7 +54,14 @@ class Post(models.Model):
     is_actual = models.BooleanField(default=True)
     users_liked_ids = models.CharField(max_length=50)
 
-#custom authentication backend
+
+class Like(models.Model):
+    user = models.ForeignKey(User)
+    post = models.ForeignKey(Post)
+    created = models.DateTimeField(auto_now_add=True)
+
+
+# custom authentication backend
 class HashBackend(object):
     def authenticate(self, uid, hash):
         md5 = hashlib.md5()

@@ -90,6 +90,8 @@ def delete_post(request):
     if request.method == 'POST':
         post_to_delete = Post.objects.get(id=int(request.POST.get('post_id')))
         if request.user == post_to_delete.user:
+            if post_to_delete.is_actual:
+                request.user.vkuser.has_active_post = False
             post_to_delete.delete()
     return redirect('posts')
 

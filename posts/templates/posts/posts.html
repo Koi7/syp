@@ -28,7 +28,13 @@
                     <input type="submit" value="Сделать неактуальным">
                 </form>
             {% endif %}
-            <li><a href="#">Лайк</a></li>
+            <li>
+                <form action="{% url 'like_post' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Лайк">
+                </form>
+            </li>
             <li>Лайки: {{ post.likes }}</li>
         </ul>
     {% endfor %}

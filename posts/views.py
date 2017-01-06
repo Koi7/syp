@@ -71,8 +71,8 @@ def add_post(request):
 
 
 @login_required
-def edit_post(request, post_id):
-    post_to_edit = Post.objects.get(id=post_id)
+def edit_post(request):
+    post_to_edit = Post.objects.get(id=get_post_id(request))
     if request.method == 'GET':
         context = {
             'text': post_to_edit.text,
@@ -110,6 +110,7 @@ def make_post_not_relevant(request):
     return redirect('posts')
 
 
+@login_required
 def like_post(request):
     if request.method == 'POST':
         like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
@@ -117,6 +118,13 @@ def like_post(request):
             like_obj.save()
     return redirect('posts')
 
+@login_required
+def liked(request, post_id):
+    post = Post.objects.get(id=post_id)
+    context = {
+        'post': post,
+    }
+    return render(request, 'posts/liked.html', context)
 
 def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')

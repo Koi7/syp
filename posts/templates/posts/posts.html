@@ -15,8 +15,12 @@
             <li>anon: {{ post.is_anonymous }}</li>
             <li>is actual: {{ post.is_actual }}</li>
             <li>pub date time: {{ post.pub_datetime }}</li>
-            <li><a href="edit/{{ post.id }}/">Редактировать</a></li>
             {% if request.user.id == post.user.id %}
+                <form action="{% url 'edit_post' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Редактировать">
+                </form>
                 <form action="{% url 'delete_post' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="post_id" value="{{ post.id }}">
@@ -36,6 +40,7 @@
                 </form>
             </li>
             <li>Лайки: {{ post.likes }}</li>
+            <li><a href="{% url 'liked' %}/{{ post.id }}"></a></li>
         </ul>
     {% endfor %}
 {% endblock %}

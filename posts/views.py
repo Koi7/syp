@@ -9,7 +9,7 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
 from models import Post, Like
-
+from datetime import datetime
 
 # User tests.
 def anonimous_check(user):
@@ -35,10 +35,10 @@ def verify_hash(request):
         Takes URL from vk.com redirect and tries to login user or create new user.
         Checks md5 checksum.
     """
-    user, existed = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
+    user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
     if user is not None:
         json = None
-        if not existed:
+        if user.vkuser.place == "":
             user.first_name = request.POST.get('first_name')
             user.last_name = request.POST.get('last_name')
             user.vkuser.photo_rec = request.POST.get('photo_rec')

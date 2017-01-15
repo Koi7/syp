@@ -33,7 +33,7 @@
                 </form>
             </li>
             <li>Лайки: {{ post.likes }}</li>
-            <lo><a href="{% url 'who_liked' %}/{{ post.id }}/">Кто лайкнул?</a></lo>
+            <lo><a href="{% url who_liked post.id %}">Кто лайкнул?</a></lo>
         </ul>
     {% endfor %}
 {% endblock %}

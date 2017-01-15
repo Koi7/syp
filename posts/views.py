@@ -9,7 +9,6 @@ from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
 from models import Post, Like
-from datetime import datetime
 
 # User tests.
 def anonimous_check(user):

@@ -11,7 +11,6 @@ var init = function  () {
 
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 		    var place = autocomplete.getPlace();
-			alert(place);
             $.ajax({
                 type: 'POST',
                 url: 'specify_place',

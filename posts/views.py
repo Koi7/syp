@@ -17,7 +17,7 @@ def anonimous_check(user):
 
 
 # Create your views here.
-@user_passes_test(anonimous_check, login_url='/posts')
+@user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None)
 def index(request):
     """
         View for default page of unlogged user.

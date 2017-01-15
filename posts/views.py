@@ -60,7 +60,10 @@ def verify_hash(request):
 @login_required(redirect_field_name=None)
 def specify_place(request):
     if request.method == 'GET':
-        return render(request, 'posts/specify_place.html')
+        context = {
+            'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
+        }
+        return render(request, 'posts/specify_place.html', context)
     if request.method == 'POST':
         request.user.vkuser.place = request.POST.get('formatted_address')
         request.user.save()

@@ -50,7 +50,7 @@ def verify_hash(request):
 
 # post CRUD operations
 
-@login_required
+@login_required(redirect_field_name=None)
 def add_post(request):
     if request.method == 'GET':
         return render(request, 'posts/add_post.html', {'has_active_post': request.user.vkuser.has_active_post})
@@ -70,7 +70,7 @@ def add_post(request):
         return redirect('posts')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def edit_post(request, post_id):
     if request.method == 'GET':
         post_to_edit = Post.objects.get(id=post_id)
@@ -82,7 +82,7 @@ def edit_post(request, post_id):
             }
             return render(request, 'posts/edit_post.html', context)
 
-@login_required
+@login_required(redirect_field_name=None)
 def save_editions(request):
     if request.method == 'POST':
         post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
@@ -93,7 +93,7 @@ def save_editions(request):
             return redirect('posts')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def delete_post(request):
     if request.method == 'POST':
         post_to_delete = Post.objects.get(id=get_post_id(request))
@@ -105,7 +105,7 @@ def delete_post(request):
     return redirect('posts')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def make_post_not_relevant(request):
     if request.method == 'POST':
         post = Post.objects.get(id=get_post_id(request))
@@ -117,7 +117,7 @@ def make_post_not_relevant(request):
     return redirect('posts')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def like_post(request):
     if request.method == 'POST':
         like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
@@ -128,7 +128,7 @@ def like_post(request):
     return redirect('posts')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def liked(request, post_id):
     if request.method == 'GET':
         post = Post.objects.get(id=post_id)
@@ -142,7 +142,7 @@ def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def posts(request):
     """
         View for default page of logged user.
@@ -153,7 +153,7 @@ def posts(request):
     return render(request, 'posts/posts.html', context)
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def logout_view(request):
     logout(request)
     return redirect('../')

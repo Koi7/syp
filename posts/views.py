@@ -37,16 +37,21 @@ def verify_hash(request):
     """
     user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
     if user is not None:
-        json = None
         if user.vkuser.place == "":
             user.first_name = request.POST.get('first_name')
             user.last_name = request.POST.get('last_name')
             user.vkuser.photo_rec = request.POST.get('photo_rec')
             user.vkuser.place = request.POST.get('place')
             user.save()
-            json = JsonResponse({'success': 'true', 'redirect': 'specify_place'})
+            json = JsonResponse({
+                'success': True,
+                'redirect': 'specify_place',
+            })
         else:
-            json = JsonResponse({'success': 'true', 'redirect': 'posts'})
+            json = JsonResponse({
+                'success': True,
+                'redirect': 'posts',
+            })
         login(request, user)
         return json
     else:
@@ -57,6 +62,13 @@ def verify_hash(request):
 def specify_place(request):
     if request.method == 'GET':
         return render(request, 'posts/specify_place.html')
+    if request.method == 'POST':
+        request.user.vkuser.place = request.POST.get('formatted_address')
+        request.user.save()
+        return JsonResponse({
+            'success': True,
+            'redirect': 'posts',
+        })
 
 # post CRUD operations
 

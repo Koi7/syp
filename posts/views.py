@@ -142,7 +142,7 @@ def who_liked(request, post_id):
 @login_required(redirect_field_name=None)
 def liked(request):
     if request.method == 'GET':
-        users_like_objects = Like.objects.get(user=request.user)
+        users_like_objects = Like.objects.filter(user=request.user)
         liked_posts_list = []
         for like in users_like_objects:
             liked_posts_list.append(Post.objects.get(user=request.user, post_id=like.post_id))

@@ -44,12 +44,12 @@ def verify_hash(request):
             user.vkuser.place = request.POST.get('place')
             user.save()
             json = JsonResponse({
-                'success': True,
+                'success': 'true',
                 'redirect': 'specify_place',
             })
         else:
             json = JsonResponse({
-                'success': True,
+                'success': 'true',
                 'redirect': 'posts',
             })
         login(request, user)
@@ -66,7 +66,7 @@ def specify_place(request):
         request.user.vkuser.place = request.POST.get('formatted_address')
         request.user.save()
         return JsonResponse({
-            'success': True,
+            'success': 'true',
             'redirect': 'posts',
         })
 

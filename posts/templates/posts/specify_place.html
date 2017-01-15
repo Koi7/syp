@@ -1,0 +1,20 @@
+{% extends "posts/base.html" %}
+{% load static from staticfiles %}
+{% block title %}Аутентификация{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places&key={{GOOGLE_PLACES_API_KEY}}"></script>
+    <script type="text/javascript" src="{% static 'posts/js/specify_place.js' %}"></script>
+{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+    <h1>Укажите место</h1>
+    <form action="" method="POST">
+        <table>
+            <tr>
+                <td>Место:</td>
+                <td><input type="text" id="place" placeholder="например Севастополь" name="place"></td>
+            </tr>
+        </table>
+    </form>
+    {% csrf_token %}
+{% endblock %}

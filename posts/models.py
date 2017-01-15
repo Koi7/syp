@@ -74,13 +74,16 @@ class HashBackend(object):
     def authenticate(self, uid, hash):
         md5 = hashlib.md5()
         md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
+        existed = False
         if md5.hexdigest() == hash:
             try:
                 vk_user = User.objects.get(username=uid)
+                existed = True
             except User.DoesNotExist:
                 vk_user = User(username=uid)
                 vk_user.save()
-            return vk_user
+                existed = False
+            return vk_user, existed
 
     def get_user(self, user_id):
         try:

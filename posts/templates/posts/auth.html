@@ -13,12 +13,10 @@
 {% block sidebar %}{% endblock %}
 {% block content %}
     <h1>Аутентификация</h1>
-        <table>
-            <tr>
-                <td>Место:</td>
-                <td><input id="place" type="text" name="place" placeholder="укажите место"></td>
-            </tr>
-        </table>
-        <div id="vk_auth"></div>
-        {% csrf_token %}
+    <div id="vk_auth">
+        <script type="application/javascript">
+            initAuthWidjet();
+        </script>
+    </div>
+    {% csrf_token %}
 {% endblock %}

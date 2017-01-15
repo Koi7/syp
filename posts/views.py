@@ -35,18 +35,28 @@ def verify_hash(request):
         Takes URL from vk.com redirect and tries to login user or create new user.
         Checks md5 checksum.
     """
-    user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
+    user, existed = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
     if user is not None:
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.vkuser.photo_rec = request.POST.get('photo_rec')
-        user.vkuser.place = request.POST.get('place')
-        user.save()
+        json = None
+        if not existed:
+            user.first_name = request.POST.get('first_name')
+            user.last_name = request.POST.get('last_name')
+            user.vkuser.photo_rec = request.POST.get('photo_rec')
+            user.vkuser.place = request.POST.get('place')
+            user.save()
+            json = JsonResponse({'success': 'true', 'redirect': 'specify_place'})
+        else:
+            json = JsonResponse({'success': 'true', 'redirect': 'posts'})
         login(request, user)
-        return JsonResponse({'success': 'true'})
+        return json
     else:
         return JsonResponse({'fail': 'true'})
 
+
+@login_required(redirect_field_name=None)
+def specify_place(request):
+    if request.method == 'GET':
+        return render(request, 'posts/specify_place.html')
 
 # post CRUD operations
 

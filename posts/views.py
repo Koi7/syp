@@ -65,7 +65,7 @@ def specify_place(request):
         request.user.vkuser.place = request.POST.get('formatted_address')
         request.user.save()
         return JsonResponse({
-            'success': 'true',
+            'success': request.POST.get('formatted_address'),
             'redirect': 'posts',
         })
 

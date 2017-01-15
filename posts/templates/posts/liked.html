@@ -1,16 +1,39 @@
 
 {% extends "posts/base.html" %}
 
-{% block title %}Лайкнувшие{% endblock %}
+{% block title %}Мне понравились{% endblock %}
 
 {% block content %}
-    <table>
-        {% for like in post.liked %}
-            <tr>
-                <td><img src="{{ like.user.vkuser.photo_rec }}" alt=""></td>
-                <td>{{ like.user.first_name }}</td>
-                <td>{{ like.user.last_name }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% for post in liked_posts %}
+        <ul>
+            <li>author: {{ post.user.id }}</li>
+            <li>text: {{ post.text }}</li>
+            <li>place: {{ post.place }}</li>
+            <li>anon: {{ post.is_anonymous }}</li>
+            <li>is actual: {{ post.is_actual }}</li>
+            <li>pub date time: {{ post.pub_datetime }}</li>
+            {% if request.user.id == post.user.id %}
+                <li><a href="edit/{{ post.id }}/">Редактировать</a></li>
+                <form action="{% url 'delete_post' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Удалить">
+                </form>
+                <form action="{% url 'make_post_not_relevant' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Сделать неактуальным">
+                </form>
+            {% endif %}
+            <li>
+                <form action="{% url 'like_post' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    <input type="submit" value="Лайк">
+                </form>
+            </li>
+            <li>Лайки: {{ post.likes }}</li>
+            <lo><a href="liked/{{ post.id }}/">Кто лайкнул?</a></lo>
+        </ul>
+    {% endfor %}
 {% endblock %}

@@ -1,0 +1,16 @@
+
+{% extends "posts/base.html" %}
+
+{% block title %}Лайкнувшие{% endblock %}
+
+{% block content %}
+    <table>
+        {% for like in post.liked %}
+            <tr>
+                <td><img src="{{ like.user.vkuser.photo_rec }}" alt=""></td>
+                <td>{{ like.user.first_name }}</td>
+                <td>{{ like.user.last_name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

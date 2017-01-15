@@ -82,6 +82,7 @@ def edit_post(request, post_id):
             }
             return render(request, 'posts/edit_post.html', context)
 
+
 @login_required(redirect_field_name=None)
 def save_editions(request):
     if request.method == 'POST':
@@ -129,11 +130,24 @@ def like_post(request):
 
 
 @login_required(redirect_field_name=None)
-def liked(request, post_id):
+def who_liked(request, post_id):
     if request.method == 'GET':
         post = Post.objects.get(id=post_id)
         context = {
             'post': post,
+        }
+        return render(request, 'posts/who_liked.html', context)
+
+
+@login_required(redirect_field_name=None)
+def liked(request):
+    if request.method == 'GET':
+        users_like_objects = Like.objects.get(user=request.user)
+        liked_posts_list = []
+        for like in users_like_objects:
+            liked_posts_list.append(Post.objects.get(user=request.user, post_id=like.post_id))
+        context = {
+            'liked_posts': liked_posts_list
         }
         return render(request, 'posts/liked.html', context)
 

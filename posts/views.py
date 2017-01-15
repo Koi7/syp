@@ -41,7 +41,6 @@ def verify_hash(request):
             user.first_name = request.POST.get('first_name')
             user.last_name = request.POST.get('last_name')
             user.vkuser.photo_rec = request.POST.get('photo_rec')
-            user.vkuser.place = request.POST.get('place')
             user.save()
             json = JsonResponse({
                 'success': 'true',

@@ -145,7 +145,7 @@ def liked(request):
         users_like_objects = Like.objects.filter(user=request.user)
         liked_posts_list = []
         for like in users_like_objects:
-            liked_posts_list.append(Post.objects.get(user=request.user, post_id=like.post_id))
+            liked_posts_list.append(Post.objects.get(user=request.user, post_id=like.post))
         context = {
             'liked_posts': liked_posts_list
         }

@@ -10,7 +10,7 @@
 {% block sidebar %}{% endblock %}
 {% block content %}
     <h1>Укажите место</h1>
-    <form action="" method="POST">
+    <form action="" method="POST">{% csrf_token %}
         <table>
             <tr>
                 <td>Место:</td>
@@ -18,5 +18,4 @@
             </tr>
         </table>
     </form>
-    {% csrf_token %}
 {% endblock %}

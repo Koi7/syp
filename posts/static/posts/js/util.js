@@ -15,5 +15,7 @@ function clear(place) {
             return;
         }
     }
-    if (index != undefined) return place.substring(0, index).concat(place.substring(index + 1));
+    if (index != undefined) place = place.substring(0, index).concat(place.substring(index + 1));
+    //noinspection JSAnnotator
+    return place;
 }

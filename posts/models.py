@@ -41,10 +41,9 @@ class VKUser(models.Model):
                 user.vkuser.photo_rec = user_data['photo_50']
                 user.first_name = user_data['first_name']
                 user.last_name = user_data['last_name']
-                user.vkuser.save()
+            user.vkuser.save()
 
 
-# post model
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     place = models.CharField(max_length=200, default="")
@@ -67,6 +66,15 @@ class Like(models.Model):
     user = models.ForeignKey(User)
     post = models.ForeignKey(Post)
     created = models.DateTimeField(auto_now_add=True)
+
+
+class PostTag(models.Model):
+    post = models.ForeignKey(Post)
+    tag = models.ForeignKey(Tag)
+
+
+class Tag(models.Model):
+    value = models.CharField(max_length=200, default="")
 
 
 # custom authentication backend

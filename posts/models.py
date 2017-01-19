@@ -68,13 +68,13 @@ class Like(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
 
+class Tag(models.Model):
+    value = models.CharField(max_length=200, default="")
+
+
 class PostTag(models.Model):
     post = models.ForeignKey(Post)
     tag = models.ForeignKey(Tag)
-
-
-class Tag(models.Model):
-    value = models.CharField(max_length=200, default="")
 
 
 # custom authentication backend

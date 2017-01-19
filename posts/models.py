@@ -61,6 +61,10 @@ class Post(models.Model):
     def liked(self):
         return self.like_set.all()
 
+    def __str__(self):
+        return '{} {} {} {} {} {}'.format(self.id, self.place, self.text, self.pub_datetime, self.is_actual,
+                                          self.is_anonymous)
+
 
 class Like(models.Model):
     user = models.ForeignKey(User)
@@ -70,6 +74,9 @@ class Like(models.Model):
 
 class Tag(models.Model):
     value = models.CharField(max_length=200, default="")
+
+    def __str__(self):
+        return self.value
 
 
 class PostTag(models.Model):

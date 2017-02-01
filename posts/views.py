@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
-from models import Post, Like, Tag
+from models import Post, Like, Tag, PostTag
 
 
 def anonimous_check(user):
@@ -154,7 +154,13 @@ def add_post(request):
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place
+        tag_list = request.POST.getlist('tags')
         post.save()
+        for tag in tag_list:
+            post_tag = PostTag()
+            post_tag.post = post
+            post_tag.tag = tag
+            post_tag.save()
         request.user.vkuser.has_active_post = True
         request.user.save()
         return redirect('posts')

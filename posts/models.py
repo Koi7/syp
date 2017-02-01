@@ -76,7 +76,7 @@ class Tag(models.Model):
     value = models.CharField(max_length=200, default="")
 
     def __unicode__(self):
-        return u'%{}'.format(self.value)
+        return u'{}'.format(self.value)
 
 
 class PostTag(models.Model):

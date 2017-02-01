@@ -26,7 +26,7 @@
                     <td>
                         <select name="tags[]" multiple>
                             {% for tag in tag_list %}
-                                <option value="{{ tag }}" {% for post_tag in post.tags %} selected{% endfor %}>{{ tag }}</option>
+                                <option value="{{ tag }}" selected>{{ tag }}</option>
                             {% endfor %}
                         </select>
                     </td>

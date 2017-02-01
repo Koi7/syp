@@ -10,22 +10,57 @@ from django.conf import settings
 from django.http import JsonResponse
 from models import Post, Like
 
-# User tests.
+
 def anonimous_check(user):
     return user.is_anonymous()
 
 
-# Create your views here.
 @user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None)
 def index(request):
     """
+        On GET:
+
         View for default page of unlogged user.
+
+        On POST:
+
+        Takes URL from vk.com redirect and tries to login user or create new user.
+        Checks md5 checksum.
+
     """
-    context = {
-        'APP_ID': settings.VK_APP_ID,
-        'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
-    }
-    return render(request, 'posts/auth.html', context)
+
+    if request.method == 'GET':
+        context = {
+            'APP_ID': settings.VK_APP_ID,
+            'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
+        }
+        return render(request, 'posts/auth.html', context)
+
+    if request.method == 'POST':
+
+        user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
+        if user is not None:
+
+            if user.vkuser.place == "":
+                user.first_name = request.POST.get('first_name')
+                user.last_name = request.POST.get('last_name')
+                user.vkuser.photo_rec = request.POST.get('photo_rec')
+                user.save()
+                json = JsonResponse({
+                    'success': 'true',
+                    'redirect': 'specify_place',
+                })
+            else:
+                json = JsonResponse({
+                    'success': 'true',
+                    'redirect': 'posts',
+                })
+            login(request, user)
+            return json
+
+        else:
+
+            return JsonResponse({'fail': 'true'})
 
 
 @user_passes_test(anonimous_check, login_url='/posts')
@@ -58,11 +93,25 @@ def verify_hash(request):
 
 @login_required(redirect_field_name=None)
 def specify_place(request):
+
+    """
+        On GET:
+
+        Returns page with form to specify place.
+
+        On POST:
+
+        User is redirected to this view when he's place field isn't specified.
+        User's place field isn't specified only when he enters site first time.
+
+    """
+
     if request.method == 'GET':
         context = {
             'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
         }
         return render(request, 'posts/specify_place.html', context)
+
     if request.method == 'POST':
         request.user.vkuser.place = request.POST.get('formatted_address')
         request.user.save()
@@ -71,12 +120,26 @@ def specify_place(request):
             'redirect': 'posts',
         })
 
+
 # post CRUD operations
 
 @login_required(redirect_field_name=None)
 def add_post(request):
+
+    """
+        On GET:
+
+        Returns page with form to add post.
+
+        On POST:
+
+        Tries to save new post.
+
+    """
+
     if request.method == 'GET':
         return render(request, 'posts/add_post.html', {'has_active_post': request.user.vkuser.has_active_post})
+
     if request.method == 'POST':
         if request.user.vkuser.has_active_post:
             actual_post = Post.objects.get(user=request.user, is_actual=True)
@@ -95,8 +158,10 @@ def add_post(request):
 
 @login_required(redirect_field_name=None)
 def edit_post(request, post_id):
+
     if request.method == 'GET':
         post_to_edit = Post.objects.get(id=post_id)
+
         if request.user == post_to_edit.user:
             context = {
                 'text': post_to_edit.text,
@@ -108,6 +173,7 @@ def edit_post(request, post_id):
 
 @login_required(redirect_field_name=None)
 def save_editions(request):
+
     if request.method == 'POST':
         post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
         if request.user == post_to_edit.user:
@@ -119,6 +185,7 @@ def save_editions(request):
 
 @login_required(redirect_field_name=None)
 def delete_post(request):
+
     if request.method == 'POST':
         post_to_delete = Post.objects.get(id=get_post_id(request))
         if request.user == post_to_delete.user:
@@ -131,6 +198,7 @@ def delete_post(request):
 
 @login_required(redirect_field_name=None)
 def make_post_not_relevant(request):
+
     if request.method == 'POST':
         post = Post.objects.get(id=get_post_id(request))
         if request.user == post.user:
@@ -143,6 +211,7 @@ def make_post_not_relevant(request):
 
 @login_required(redirect_field_name=None)
 def like_post(request):
+
     if request.method == 'POST':
         like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
         if created:
@@ -154,6 +223,7 @@ def like_post(request):
 
 @login_required(redirect_field_name=None)
 def who_liked(request, post_id):
+
     if request.method == 'GET':
         post = Post.objects.get(id=post_id)
         context = {
@@ -181,9 +251,12 @@ def not_found(request):
 
 @login_required(redirect_field_name=None)
 def posts(request):
+
     """
         View for default page of logged user.
+        Returns relevant posts list.
     """
+
     context = {
         'posts_list': Post.objects.filter(place=request.user.vkuser.place)
     }

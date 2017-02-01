@@ -19,7 +19,7 @@ from posts import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^login', views.verify_hash, name='verify_hash'),
+    url(r'^login', views.verify_hash, name='index'),
     url(r'^specify_place', views.specify_place, name='specify_place'),
     url(r'^admin', admin.site.urls),
     url(r'^posts/', include('posts.urls')),

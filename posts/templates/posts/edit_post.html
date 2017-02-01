@@ -24,7 +24,7 @@
                 <tr>
                     <td>Тэги:</td>
                     <td>
-                        <select name="tags" multiple>
+                        <select name="tags[]" multiple>
                             {% for tag in tag_list %}
                                 <option value="{{ tag }}"
                                         {% for post_tag in post.tags %}

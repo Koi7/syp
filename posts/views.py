@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
-from models import Post, Like
+from models import Post, Like, Tag
 
 
 def anonimous_check(user):
@@ -138,7 +138,11 @@ def add_post(request):
     """
 
     if request.method == 'GET':
-        return render(request, 'posts/add_post.html', {'has_active_post': request.user.vkuser.has_active_post})
+        context = {
+            'has_active_post': request.user.vkuser.has_active_post,
+            'tag_list': Tag.objects.all(),
+        }
+        return render(request, 'posts/add_post.html', context)
 
     if request.method == 'POST':
         if request.user.vkuser.has_active_post:
@@ -167,6 +171,7 @@ def edit_post(request, post_id):
                 'text': post_to_edit.text,
                 'is_anonymous': post_to_edit.is_anonymous,
                 'post_id': post_to_edit.id,
+                'tag_list': Tag.objects.all(),
             }
             return render(request, 'posts/edit_post.html', context)
 

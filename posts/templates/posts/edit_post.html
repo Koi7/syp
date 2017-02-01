@@ -21,6 +21,22 @@
                     <td></td>
                     <td><input type="submit" value="Сохранить"></td>
                 </tr>
+                <tr>
+                    <td>Тэги:</td>
+                    <td>
+                        <select name="tags" multiple>
+                            {% for tag in tag_list %}
+                                <option value="{{ tag }}"
+                                        {% for post_tag in post.tags %}
+                                            {% if post_tag == tag %}
+                                            selected
+                                            {% endif %}
+                                        {% endfor %}
+                                >{{ tag }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
             </table>
         </form>
 {% endblock %}

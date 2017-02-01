@@ -61,6 +61,10 @@ class Post(models.Model):
     def liked(self):
         return self.like_set.all()
 
+    @property
+    def tags(self):
+        return self.posttag_set.all()
+
     def __unicode__(self):
         return u'{} {} {} {} {} {}'.format(self.id, self.place, self.text, self.pub_datetime, self.is_actual,
                                           self.is_anonymous)

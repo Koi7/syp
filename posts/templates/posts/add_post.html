@@ -20,6 +20,16 @@
                     <td></td>
                     <td><input type="submit" value="Отправить"></td>
                 </tr>
+                <tr>
+                    <td>Тэги:</td>
+                    <td>
+                        <select name="tags" multiple>
+                            {% for tag in tag_list %}
+                                <option value="{{ tag }}">{{ tag }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
             </table>
         </form>
 {% endblock %}

@@ -6,7 +6,7 @@
     {% if has_active_post %}
         <h6>У вас уже есть актуальный пост. Если добавитье новый, то предыдущий станет не актуальным навсегда.</h6>
     {% endif %}
-        <form action="" method="POST">{% csrf_token %}
+        <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
             <table>
                 <tr>
                     <td>Текст:</td>
@@ -17,18 +17,22 @@
                     <td><input name="is_anonymous" type="checkbox"></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td><input type="submit" value="Отправить"></td>
-                </tr>
-                <tr>
                     <td>Тэги:</td>
                     <td>
-                        <select name="tags[]" multiple>
+                        <select name="tags" multiple>
                             {% for tag in tag_list %}
-                                <option value="{{ tag }}">{{ tag }}</option>
+                                <option value="{{ tag }}" {% if tag in post.tags %}selected{% endif %}>{{ tag }}</option>
                             {% endfor %}
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td>Ваше фото(только одно)</td>
+                    <td><input type="file" name="photo"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Отправить"></td>
                 </tr>
             </table>
         </form>

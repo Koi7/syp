@@ -1,4 +1,7 @@
 from __future__ import unicode_literals
+
+import os
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -30,18 +33,25 @@ class VKUser(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.vkuser.save()
 
-    @receiver(user_logged_in, sender=User)
-    def update_user_profile(user, **kwargs):
-        if not user.is_superuser:
-            response = requests.get(settings.VK_API_URL, params={'v': '5.60',
-                                                                 'lang': settings.LANGUAGE_CODE[0:2],
-                                                                 'fields': 'photo_50,first_name,last_name',
-                                                                 'user_ids': user.username})
-            for user_data in json.loads(response.text)['response']:
-                user.vkuser.photo_rec = user_data['photo_50']
-                user.first_name = user_data['first_name']
-                user.last_name = user_data['last_name']
-            user.vkuser.save()
+        # @receiver(user_logged_in, sender=User)
+        # def update_user_profile(user, **kwargs):
+        #     if not user.is_superuser:
+        #         response = requests.get(settings.VK_API_URL, params={'v': '5.60',
+        #                                                              'lang': settings.LANGUAGE_CODE[0:2],
+        #                                                              'fields': 'photo_50,first_name,last_name',
+        #                                                              'user_ids': user.username})
+        #         for user_data in json.loads(response.text)['response']:
+        #             user.vkuser.photo_rec = user_data['photo_50']
+        #             user.first_name = user_data['first_name']
+        #             user.last_name = user_data['last_name']
+        #         user.vkuser.save()
+
+
+def get_image_path(instance, filename):
+    extension = filename.split('.')[1]
+    vk_uid = instance.user.username
+    timestamp = str(instance.pub_datetime)
+    return os.path.join('photos', str(instance.user.username), '{}_{}_{}.{}'.format('pic', vk_uid, timestamp, extension))
 
 
 class Post(models.Model):
@@ -52,6 +62,7 @@ class Post(models.Model):
     is_anonymous = models.BooleanField(default=True)
     is_actual = models.BooleanField(default=True)
     users_liked_ids = models.CharField(max_length=50)
+    image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
 
     @property
     def likes(self):
@@ -67,7 +78,7 @@ class Post(models.Model):
 
     def __unicode__(self):
         return u'{} {} {} {} {} {}'.format(self.id, self.place, self.text, self.pub_datetime, self.is_actual,
-                                          self.is_anonymous)
+                                           self.is_anonymous)
 
 
 class Like(models.Model):

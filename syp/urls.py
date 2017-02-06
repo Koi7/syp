@@ -14,16 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.contrib import admin
 from posts import views
+from posts.views import IndexView
+from syp import settings
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^login', views.verify_hash, name='index'),
+    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^login', IndexView.as_view(), name='index'),
     url(r'^specify_place', views.specify_place, name='specify_place'),
     url(r'^admin', admin.site.urls),
     url(r'^posts/', include('posts.urls')),
     url(r'^logout', views.logout_view, name='logout_view'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'posts.views.not_found'

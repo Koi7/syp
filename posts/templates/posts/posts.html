@@ -4,7 +4,7 @@
 {% block title %}Посты{% endblock %}
 
 {% block content %}
-    <img src="{{request.user.vkuser.photo_rec}}">
+    <img src="{{request.user.vkuser.photo_rec}}" alt="Фото пользоваеля">
     <h3>{{request.user.first_name}}, нет постов... пока</h3>
     <h4>{{request.user.vkuser.place}}</h4>
     {% for post in posts_list %}
@@ -15,6 +15,7 @@
             <li>anon: {{ post.is_anonymous }}</li>
             <li>is actual: {{ post.is_actual }}</li>
             <li>pub date time: {{ post.pub_datetime }}</li>
+            <li>tags: {% for post_tag in post.tags %} {{ post_tag.tag.value }} {% endfor %}</li>
             {% if request.user.id == post.user.id %}
                 <li><a href="{% url 'edit_post' post_id=post.id %}">Редактировать</a></li>
                 <form action="{% url 'delete_post' %}" method="POST">
@@ -37,6 +38,7 @@
             </li>
             <li>Лайки: {{ post.likes }}</li>
             <li><a href="{% url 'who_liked' post_id=post.id %}">Кто лайкнул?</a></li>
+            <li>Картинка <img src="{{ post.image.url }}" alt="фото пользователя"></li>
         </ul>
     {% endfor %}
 {% endblock %}

@@ -20,3 +20,18 @@
     </div>
     {% csrf_token %}
 {% endblock %}
+{% block fakeauth %}
+    <h1>Fake Auth</h1>
+    <form action="{% url 'index' %}" method="POST"> {% csrf_token %}
+        <table>
+            <tr>
+                <td>Новый</td>
+                <td><input type="checkbox" name="new" ></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="OK" ></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

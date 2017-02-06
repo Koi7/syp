@@ -34,6 +34,8 @@ AUTHENTICATION_BACKENDS = ['posts.models.HashBackend', 'django.contrib.auth.back
 VK_APP_ID = '5617320'
 VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'
 LOGIN_URL = '/'
+
+LOCAL_DEV = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -82,11 +85,11 @@ WSGI_APPLICATION = 'syp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'koi$syp',
-        'USER': 'koi',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'syp',
+        'USER': 'postgres',
         'PASSWORD': '19941995koikoi',
-        'HOST': 'koi.mysql.pythonanywhere-services.com',
+        'HOST': 'localhost',
     },
 }
 
@@ -123,9 +126,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Media files.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/koi/syp/posts/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'posts/static')

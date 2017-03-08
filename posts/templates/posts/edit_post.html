@@ -3,7 +3,7 @@
 {% block title %}Редактирование{% endblock %}
 
 {% block content %}
-        <form action="{% url 'save_editions' %}" method="POST">{% csrf_token %}
+        <form action="{% url 'save_editions' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
             <table>
                 <tr>
                     <td><input type="hidden" name="post_id" value="{{ post_id }}"></td>
@@ -18,10 +18,6 @@
                     <td><input name="is_anonymous" type="checkbox" {% if is_anonymous %}checked{% endif %}></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td><input type="submit" value="Сохранить"></td>
-                </tr>
-                <tr>
                     <td>Тэги:</td>
                     <td>
                         <select name="tags[]" multiple>
@@ -30,6 +26,14 @@
                             {% endfor %}
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td>Обновить фото</td>
+                    <td><input type="file" name="photo"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Сохранить"></td>
                 </tr>
             </table>
         </form>

@@ -1,26 +1,73 @@
+{% load static from staticfiles %}
 <!DOCTYPE html>
-<html lang="ru">
 <head>
-    <link rel="stylesheet" href="" />
-    <title>{% block title %}{% endblock %}</title>
-    {% block scripts %}{% endblock %}
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/w3c.css' %}">
+    {% endblock %}
+    {% block scripts %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
-    <div id="sidebar">
-        {% block sidebar %}
-        <ul>
-            <li><a href="{% url 'posts'%}">Посты</a>
-            <li><a href="{% url 'liked' %}">Лайкнутые</a>
-            <li><a href="{% url 'add_post' %}">Новый пост</a>
-            <li><a href="{% url 'logout_view' %}">Выход</a>
-        </ul>
-        {% endblock %}
-    </div>
+<body style="background-color: #edeef0;">
+	{% block nav %}
+    <nav class="w3-sidenav w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidenav"><br>
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%;font-size:22px">з а к р ы т ь</a>
+      <div class="w3-container">
+        <h2 class="w3-padding-64"><b>Ищу тебя</b></h2>
+      </div>
+	  <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Профиль</a>
+	  <a href="{% url 'posts'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Посты</a>
+	  <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Лайкнутые</a>
+	  <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Новый пост</a>
+	  <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Выход</a>
+    </nav>
+	{% endblock %}
 
-    <div id="content">
+    <!-- Top menu on small screens -->
+    <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+      <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">&#9776;</a>
+      <span>Ищу тебя</span>
+    </header>
+
+<!-- Overlay effect when opening sidenav on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    <div class=".w3-custom-container" style="margin-top:80px" id="showcase">
         {% block content %}{% endblock %}
         {% block fakeauth %}{% endblock %}
     </div>
+
+<!-- End page content -->
+</div>
+
+<!-- W3.CSS Container -->
+<div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"><p class="w3-right">Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></p></div>
+
+<script>
+// Script to open and close sidenav
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+}
+
+// Modal Image Gallery
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  var captionText = document.getElementById("caption");
+  captionText.innerHTML = element.alt;
+}
+</script>
 </body>
 </html>

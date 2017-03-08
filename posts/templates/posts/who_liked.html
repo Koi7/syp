@@ -11,6 +11,10 @@
                 <td>{{ like.user.first_name }}</td>
                 <td>{{ like.user.last_name }}</td>
             </tr>
+            <tr>
+            	<td>Message:</td>
+            	<td colspan="2">{{ like.message }}</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}

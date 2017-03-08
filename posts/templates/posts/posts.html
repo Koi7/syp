@@ -1,44 +1,105 @@
 
-{% extends "posts/base.html" %}
+		{% extends "posts/base.html" %}
+		{% load static from staticfiles %}
+		{% block title %}Посты{% endblock %}
 
-{% block title %}Посты{% endblock %}
+		{% block content %}
+			<img src="{{request.user.vkuser.photo_rec}}" alt="Фото пользоваеля">
+			<h3>{{request.user.first_name}}, нет постов... пока</h3>
+			<h4>{{request.user.vkuser.place_str}}</h4>
+			{% for post in posts_list %}
+				<div class="w3-vk-card w3-section .w3-custom-round-small" style="background-color: white;">
+					<!-- POST HEADER -->
+					<header class="w3-container w3-padding-large">
+						<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+						<span>{{ post.user.first_name }} {{ post.user.last_name }}</span><br>
+						<span class="w3-text-grey w3-small">{{post.pub_datetime|date:"d M"}} в {{post.pub_datetime|time:"H:i"}}</span><br>
+						<span class="w3-text-grey w3-small">тэги:</span> {% for post_tag in post.tags %} <span class="w3-red w3-padding-tiny w3-round w3-small">{{ post_tag.tag.value }}</span> {% endfor %}
+					</header>
+					<!-- POST TAG LIST -->
+<!-- 					<div class="w3-container w3-padding-large">
+					  <p class="w3-medium"><span class="w3-text-grey w3-small">тэги:</span> {% for post_tag in post.tags %} <span class="w3-red w3-padding-tiny w3-round w3-small">{{ post_tag.tag.value }}</span> {% endfor %}</p>
+					</div> -->
+					<!-- POST TEXT -->
+					<div class="w3-container w3-padding-large">
+					  <p class="w3-medium" style="font-weight: normal;">{{ post.text }}</p>
+					</div>
+					<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
+					<footer class="w3-container w3-border-top w3-padding-small">
+						<table>
+							<tr>
+								<td>
+									<form action="{% url 'like_post' %}" method="POST">
+										{% csrf_token %}
+										<input type="hidden" name="post_id" value="{{ post.id }}">
+										<input type="submit" value="Лайк">
+									</form>			
+								</td>
+								<td>
+									<span class="w3-badge w3-red">{{ post.likes }}</span>
+								</td>
+							</tr>
+						</table>
+					</footer>
 
-{% block content %}
-    <img src="{{request.user.vkuser.photo_rec}}" alt="Фото пользоваеля">
-    <h3>{{request.user.first_name}}, нет постов... пока</h3>
-    <h4>{{request.user.vkuser.place}}</h4>
-    {% for post in posts_list %}
-        <ul>
-            <li>author: {{ post.user.id }}</li>
-            <li>text: {{ post.text }}</li>
-            <li>place: {{ post.place }}</li>
-            <li>anon: {{ post.is_anonymous }}</li>
-            <li>is actual: {{ post.is_actual }}</li>
-            <li>pub date time: {{ post.pub_datetime }}</li>
-            <li>tags: {% for post_tag in post.tags %} {{ post_tag.tag.value }} {% endfor %}</li>
-            {% if request.user.id == post.user.id %}
-                <li><a href="{% url 'edit_post' post_id=post.id %}">Редактировать</a></li>
-                <form action="{% url 'delete_post' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="post_id" value="{{ post.id }}">
-                    <input type="submit" value="Удалить">
-                </form>
-                <form action="{% url 'make_post_not_relevant' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="post_id" value="{{ post.id }}">
-                    <input type="submit" value="Сделать неактуальным">
-                </form>
-            {% endif %}
-            <li>
-                <form action="{% url 'like_post' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="post_id" value="{{ post.id }}">
-                    <input type="submit" value="Лайк">
-                </form>
-            </li>
-            <li>Лайки: {{ post.likes }}</li>
-            <li><a href="{% url 'who_liked' post_id=post.id %}">Кто лайкнул?</a></li>
-            <li>Картинка <img src="{{ post.image.url }}" alt="фото пользователя"></li>
-        </ul>
-    {% endfor %}
-{% endblock %}
+				</div>
+			{% endfor %}
+		{% endblock %}
+
+		<!-- 
+				<ul>
+					<li>author: {{ post.user.id }} 😀</li>
+					<li>text: {{ post.text }}</li>
+					<li>place: {{ post.user.vkuser.place_str }}</li>
+					<li>anon: {{ post.is_anonymous }}</li>
+					<li>is actual: {{ post.is_actual }}</li>
+					<li>pub date time: {{ post.pub_datetime }}</li>
+					<li>tags: {% for post_tag in post.tags %} {{ post_tag.tag.value }} {% endfor %}</li>
+					{% if request.user.id == post.user.id %}
+						<li><a href="{% url 'edit_post' post_id=post.id %}">Редактировать</a></li>
+						<form action="{% url 'delete_post' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<input type="submit" value="Удалить">
+						</form>
+						<form action="{% url 'make_post_not_relevant' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<input type="submit" value="Сделать неактуальным">
+						</form>
+					{% endif %}
+					<li>
+						<form action="{% url 'like_post' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<input type="submit" value="Лайк">
+						</form>
+					</li>
+					<li>
+						<form action="{% url 'leave_message' %}" method="POST">{% csrf_token %}
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<table>
+								<tr>
+									<td>
+										Послание:
+									</td>
+									<td>
+										<textarea name="message">
+											
+										</textarea>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><input type="submit" name="" value="Отправить"></td>
+								</tr>
+							</table>
+						</form>
+					</li>
+					<li>Лайки: {{ post.likes }}</li>
+					<li><a href="{% url 'who_liked' post_id=post.id %}">Кто лайкнул?</a></li>
+				{% if post.image %}
+					<li>Картинка <img width="100" height="100" src="{{ post.image.url }}" alt="фото пользователя"></li>
+				{% endif %}
+				</ul>
+		-->

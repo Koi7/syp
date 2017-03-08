@@ -1,4 +1,7 @@
 # coding=utf-8
+import os
+
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -8,22 +11,35 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
+from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from models import Post, Like, Tag, PostTag
 from faker import Factory
 import hashlib
+import re
+
+# UTILS
+
+def delete_image(path):
+    if os.path.isfile(path):
+        os.remove(path)
+
+def not_found(request):
+    return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
+
 
 
 def anonimous_check(user):
     return user.is_anonymous()
 
+# CLASS-BASED VIEWS
 
 class IndexView(View):
     template_name = 'posts/auth.html'
 
-    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
+    # @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def get(self, request):
         if settings.LOCAL_DEV:
             context = {
@@ -31,13 +47,15 @@ class IndexView(View):
             }
             return render(request, self.template_name, context)
         else:
+            from django.contrib.auth.models import User
             context = {
                 'APP_ID': settings.VK_APP_ID,
                 'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
+                'users': User.objects.all(),
             }
             return render(request, self.template_name, context)
 
-    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
+    # @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def post(self, request):
         if settings.LOCAL_DEV:
             need_new_user = True if request.POST.get('new') == 'on' else False
@@ -45,7 +63,6 @@ class IndexView(View):
                 fake = Factory.create('ru_RU')
                 full_name = fake.name()
                 uid = str(fake.random_number(9))
-                place = fake.city()
                 md5 = hashlib.md5()
                 md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
                 hash = md5.hexdigest()
@@ -53,13 +70,20 @@ class IndexView(View):
                 if user is not None:
                     user.first_name = full_name.split()[1]
                     user.last_name = full_name.split()[0]
-                    user.vkuser.place = place.split()[1]
+                    user.vkuser.place = int(request.POST.get('place'))
                     user.vkuser.photo_rec = ''
                     user.save()
                     login(request, user)
                     return redirect('posts')
                 else:
                     return redirect('not_found')
+            else:
+                md5 = hashlib.md5()
+                md5.update(settings.VK_APP_ID + request.POST.get('uid') + settings.VK_API_SECRET)
+                hash = md5.hexdigest()
+                user = authenticate(uid=request.POST.get('uid'), hash=hash)
+                login(request, user)
+                return redirect('posts')
         else:
             user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
             if user is not None:
@@ -83,221 +107,69 @@ class IndexView(View):
                 return JsonResponse({'fail': 'true'})
 
 
-class SpecifyPlaceView(View):
-    template_name =  'posts/specify_place.html'
+class AddPostView(View):
+    template_name = 'posts/add_post.html'
     redirect_to = 'posts'
-
+    words_to_filter = [u"хуй", u"пизда", u"ебать", u"блядь",
+                       "http", "https", ".com", ".ru", u".рф",
+                       u"ахуеть", ".biz", u"най сайт", u"на нашем сайте",
+                       u"пидор", u"пидарас"]
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        context = {
-            'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
-        }
-        return render(request, self.template_name, context)
-
-    @method_decorator(login_required(redirect_field_name=None))
-    def post(self, request):
-        request.user.vkuser.place = request.POST.get('formatted_address')
-        request.user.save()
-        return JsonResponse({
-            'success': True,
-            'redirect': self.redirect_to,
-        })
-
-class AddPostView(View):
-        template_name = 'posts/add_post.html'
-        redirect_to = 'posts'
-
-        @method_decorator(login_required(redirect_field_name=None))
-        def get(self, request):
-            context = {
-                'has_active_post': request.user.vkuser.has_active_post,
-                'tag_list': Tag.objects.all(),
-            }
-            return render(request, 'posts/add_post.html', context)
-
-        @method_decorator(login_required(redirect_field_name=None))
-        def post(self, request):
-            post = Post()
-            post.user = request.user
-            post.text = request.POST.get('text')
-            post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
-            post.place = request.user.vkuser.place
-            post.image = request.FILES['photo']
-            post.save()
-            for tag_value in request.POST.getlist('tags'):
-                post_tag = PostTag()
-                post_tag.post = post
-                post_tag.tag = Tag.objects.get(value=tag_value)
-                post_tag.save()
-            request.user.vkuser.has_active_post = True
-            request.user.save()
-            if request.user.vkuser.has_active_post:
-                actual_post = Post.objects.get(user=request.user, is_actual=True)
-                actual_post.is_actual = False
-                actual_post.save()
-            return redirect(self.redirect_to)
-# @user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None)
-# def index(request):
-#     if settings.LOCAL_DEV:
-#
-#         if request.method == 'GET':
-#             context = {
-#
-#             }
-#             return render(request, 'posts/auth.html', context)
-#
-#         if request.method == 'POST':
-#
-#             if True if request.POST.get('new') == 'on' else False:
-#                 fake = Factory.create('ru_RU')
-#                 full_name = fake.name()
-#                 uid = str(fake.random_number(9))
-#                 place = fake.city()
-#                 md5 = hashlib.md5()
-#                 md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
-#                 hash = md5.hexdigest()
-#                 user = authenticate(uid=uid, hash=hash)
-#
-#                 if user is not None:
-#                     user.first_name = full_name.split()[1]
-#                     user.last_name = full_name.split()[0]
-#                     user.vkuser.place = place.split()[1]
-#                     user.vkuser.photo_rec = ''
-#                     user.save()
-#                     login(request, user)
-#                     return redirect('posts')
-#
-#                 else:
-#
-#                     return redirect('not_found')
-#     else:
-#         """
-#             On GET:
-#
-#             View for default page of unlogged user.
-#
-#             On POST:
-#
-#             Takes URL from vk.com redirect and tries to login user or create new user.
-#             Checks md5 checksum.
-#
-#         """
-#         if request.method == 'GET':
-#             context = {
-#                 'APP_ID': settings.VK_APP_ID,
-#                 'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
-#             }
-#             return render(request, 'posts/auth.html', context)
-#
-#         if request.method == 'POST':
-#             user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
-#             if user is not None:
-#
-#                 if user.vkuser.place == "":
-#                     user.first_name = request.POST.get('first_name')
-#                     user.last_name = request.POST.get('last_name')
-#                     user.vkuser.photo_rec = request.POST.get('photo_rec')
-#                     user.save()
-#                     json = JsonResponse({
-#                         'success': 'true',
-#                         'redirect': 'specify_place',
-#                     })
-#                 else:
-#                     json = JsonResponse({
-#                         'success': 'true',
-#                         'redirect': 'posts',
-#                     })
-#                 login(request, user)
-#                 return json
-#
-#             else:
-#
-#                 return JsonResponse({'fail': 'true'})
-#
-
-@login_required(redirect_field_name=None)
-def specify_place(request):
-    """
-        On GET:
-
-        Returns page with form to specify place.
-
-        On POST:
-
-        User is redirected to this view when he's place field isn't specified.
-        User's place field isn't specified only when he enters site first time.
-
-    """
-
-    if request.method == 'GET':
-        context = {
-            'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
-        }
-        return render(request, 'posts/specify_place.html', context)
-
-    if request.method == 'POST':
-        request.user.vkuser.place = request.POST.get('formatted_address')
-        request.user.save()
-        return JsonResponse({
-            'success': request.POST.get('formatted_address'),
-            'redirect': 'posts',
-        })
-
-
-# post CRUD operations
-
-
-@login_required(redirect_field_name=None)
-def add_post(request):
-    """
-        On GET:
-
-        Returns page with form to add post.
-
-        On POST:
-
-        Tries to save new post.
-
-    """
-
-    if request.method == 'GET':
         context = {
             'has_active_post': request.user.vkuser.has_active_post,
             'tag_list': Tag.objects.all(),
         }
         return render(request, 'posts/add_post.html', context)
 
-    if request.method == 'POST':
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        # CHECK IF POST TEXT IS CLEAR
+        if not self.is_clear(request.POST.get('text')):
+            return JsonResponse({
+                'success': 1,
+                'error_message': 'Текс содержит недопустимые слова. Прочитайте правила сайта.'
+                })
+        # MAKE OTHER POST NOT ACTUAL
         if request.user.vkuser.has_active_post:
             actual_post = Post.objects.get(user=request.user, is_actual=True)
             actual_post.is_actual = False
             actual_post.save()
+        # BUILD NEW POST INSTANCE
         post = Post()
         post.user = request.user
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place
-        tag_list = request.POST.getlist('tags')
-        post.image = request.FILES['photo']
-        for tag_value in tag_list:
+        # IMAGE HANDLING
+        try:
+            post.image = request.FILES['photo']
+        except MultiValueDictKeyError:
+            post.image = None
+        post.save()
+        # ADD TAGS
+        for tag_value in request.POST.getlist('tags'):
             post_tag = PostTag()
-            tag = Tag()
-            tag.value = tag_value
-            tag.save()
             post_tag.post = post
-            post_tag.tag = tag
+            post_tag.tag = Tag.objects.get(value=tag_value)
             post_tag.save()
         request.user.vkuser.has_active_post = True
         request.user.save()
-        post.save()
-        return redirect('posts')
+        return redirect(self.redirect_to)
+
+    def is_clear(self, text):
+        for word in self.words_to_filter:
+            if bool(re.search(word, text)):
+                return False
+        return True
 
 
-@login_required(redirect_field_name=None)
-def edit_post(request, post_id):
-    if request.method == 'GET':
+class EditPost(View):
+    template_name = 'posts/edit_post.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request, post_id):
         post_to_edit = Post.objects.get(id=post_id)
-
         if request.user == post_to_edit.user:
             context = {
                 'text': post_to_edit.text,
@@ -307,66 +179,92 @@ def edit_post(request, post_id):
             }
             return render(request, 'posts/edit_post.html', context)
 
-
-@login_required(redirect_field_name=None)
-def save_editions(request):
-    if request.method == 'POST':
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
         post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
         if request.user == post_to_edit.user:
             post_to_edit.text = request.POST.get('text')
             post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
+            for tag_value in request.POST.getlist('tags'):
+                post_tag = PostTag()
+                post_tag.post = post_to_edit
+                post_tag.tag = Tag.objects.get(value=tag_value)
+                post_tag.save()
+            if request.FILES['photo']:
+                delete_image(post_to_edit.image.path)
+                post_to_edit.image = request.FILES['photo']
             post_to_edit.save()
             return redirect('posts')
 
 
-@login_required(redirect_field_name=None)
-def delete_post(request):
-    if request.method == 'POST':
-        post_to_delete = Post.objects.get(id=get_post_id(request))
+class DeletePost(View):
+    redirect_to = 'posts'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        post_to_delete = Post.objects.get(id=int(request.POST.get('post_id')))
+        # first try to delete image
+        delete_image(post_to_delete.image.path)
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False
                 request.user.save()
             post_to_delete.delete()
-    return redirect('posts')
+        return redirect(self.redirect_to)
 
 
-@login_required(redirect_field_name=None)
-def make_post_not_relevant(request):
-    if request.method == 'POST':
-        post = Post.objects.get(id=get_post_id(request))
+class MakePostNotRelevant(View):
+    redirect_to = 'posts'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        post = Post.objects.get(id=int(request.POST.get('post_id')))
         if request.user == post.user:
             post.is_actual = False
             request.user.vkuser.has_active_post = False
             post.save()
             request.user.save()
-    return redirect('posts')
+        return redirect(self.redirect_to)
 
 
-@login_required(redirect_field_name=None)
-def like_post(request):
-    if request.method == 'POST':
-        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=get_post_id(request))
+class LikePost(View):
+    redirect_to = 'posts'
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=int(request.POST.get('post_id')))
         if created:
             like_obj.save()
         else:
             like_obj.delete()
-    return redirect('posts')
+        return redirect(self.redirect_to)
 
+class LeaveMessage(View):
+    redirect_to = 'posts'
 
-@login_required(redirect_field_name=None)
-def who_liked(request, post_id):
-    if request.method == 'GET':
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=request.POST.get('post_id'))
+        like_obj.message = request.POST.get('message')
+        like_obj.save()
+        return redirect(self.redirect_to)
+
+class WhoLiked(View):
+    template_name = 'posts/who_liked.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request, post_id):
         post = Post.objects.get(id=post_id)
         context = {
             'post': post,
         }
-        return render(request, 'posts/who_liked.html', context)
+        return render(request, self.template_name, context)
 
 
-@login_required(redirect_field_name=None)
-def liked(request):
-    if request.method == 'GET':
+class LikedPosts(View):
+    template_name = 'posts/liked.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
         users_like_objects = Like.objects.filter(user=request.user)
         liked_posts_list = []
         for like in users_like_objects:
@@ -374,24 +272,42 @@ def liked(request):
         context = {
             'liked_posts': liked_posts_list
         }
-        return render(request, 'posts/liked.html', context)
+        return render(request, self.template_name, context)
 
 
-def not_found(request):
-    return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
+class Posts(View):
+    template_name = 'posts/posts.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        """
+            View for default page of logged user.
+            Returns relevant posts list.
+        """
+        context = {
+            'posts_list': Post.objects.filter(user__vkuser__place=request.user.vkuser.place)
+        }
+        return render(request, 'posts/posts.html', context)
 
 
-@login_required(redirect_field_name=None)
-def posts(request):
-    """
-        View for default page of logged user.
-        Returns relevant posts list.
-    """
+class Profile(View):
+    template_name = 'posts/profile.html'
 
-    context = {
-        'posts_list': Post.objects.filter(place=request.user.vkuser.place)
-    }
-    return render(request, 'posts/posts.html', context)
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        if request.POST.get('place_change') == "":
+            # save changes
+            user_to_edit = User.objects.get(id=request.POST.get('uid'))
+            user_to_edit.vkuser.place = request.POST.get('place')
+            user_to_edit.save()
+            return redirect('posts')
+        if request.POST.get('profile_delete') == "":
+            # delete profile
+            user_to_delete = User.objects.get(id=request.POST.get('uid'))
+            user_to_delete.delete()
+            return redirect('/')
 
 
 @login_required(redirect_field_name=None)
@@ -400,6 +316,3 @@ def logout_view(request):
     return redirect('../')
 
 
-# utils
-def get_post_id(request):
-    return int(request.POST.get('post_id'))

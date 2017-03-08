@@ -23,7 +23,6 @@ from syp import settings
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^login', IndexView.as_view(), name='index'),
-    url(r'^specify_place', views.specify_place, name='specify_place'),
     url(r'^admin', admin.site.urls),
     url(r'^posts/', include('posts.urls')),
     url(r'^logout', views.logout_view, name='logout_view'),

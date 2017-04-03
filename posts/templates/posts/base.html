@@ -6,29 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block links %}
     <link rel="stylesheet" type="text/css" href="{% static 'posts/w3c.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/no_framework.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% endblock %}
+    {% block extra_links %}
     {% endblock %}
     {% block scripts %}
+    <script type="text/javascript" src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
+    {% endblock %}
+    {% block extra_scripts_head %}
     {% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body style="background-color: #edeef0;">
+    <!-- NAV -->
 	{% block nav %}
     <nav class="w3-sidenav w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidenav"><br>
-      <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%;font-size:22px">з а к р ы т ь</a>
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%;font-size:22px; font-weight: normal;">з а к р ы т ь</a>
       <div class="w3-container">
-        <h2 class="w3-padding-64"><b>Ищу тебя</b></h2>
+        <h2 class="w3-padding-64"><b><i class="fa fa-search" aria-hidden="true"></i> Ищу тебя</b></h2>
       </div>
-	  <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Профиль</a>
-	  <a href="{% url 'posts'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Посты</a>
-	  <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Лайкнутые</a>
-	  <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Новый пост</a>
-	  <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Выход</a>
+      <!-- ORDERED BY USAGE PROBABILITY -->
+      <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-list-alt" aria-hidden="true"></i> Посты</a>
+      <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-history" aria-hidden="true"></i>  Мои посты</a>
+	  <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-heart-o" aria-hidden="true"></i> Лайкнутые</a>
+	  <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-plus-square-o" aria-hidden="true"></i> Новый пост</a>
+      <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-user-circle-o" aria-hidden="true"></i> Профиль</a>
+	  <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-sign-out" aria-hidden="true"></i> Выход</a>
     </nav>
 	{% endblock %}
 
-    <!-- Top menu on small screens -->
+    <!-- TOP MENU ON SMALL SCREENS -->
     <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
-      <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()">&#9776;</a>
+      <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()"><i class="fa fa-bars" aria-hidden="true"></i></a>
       <span>Ищу тебя</span>
     </header>
 
@@ -43,12 +53,10 @@
         {% block fakeauth %}{% endblock %}
     </div>
 
-<!-- End page content -->
+<!-- END PAGE CONTENT -->
 </div>
 
-<!-- W3.CSS Container -->
-<div class="w3-light-grey w3-container w3-padding-32" style="margin-top:75px;padding-right:58px"><p class="w3-right">Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a></p></div>
-
+<!-- SCRIPTS -->
 <script>
 // Script to open and close sidenav
 function w3_open() {
@@ -60,14 +68,9 @@ function w3_close() {
     document.getElementById("mySidenav").style.display = "none";
     document.getElementById("myOverlay").style.display = "none";
 }
-
-// Modal Image Gallery
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
-}
 </script>
+
+<!-- EXTRA SCRIPTS -->
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>

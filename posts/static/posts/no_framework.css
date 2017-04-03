@@ -1,0 +1,23 @@
+.link-no-style{
+	text-decoration: none !important;
+}
+.cursor-link{
+	cursor: pointer !important;
+}
+
+.pa-r-six{
+	padding-right: 6px !important;
+}
+
+.post-text-normalize{
+	font-weight: normal !important;
+	word-wrap: break-word !important;
+}
+
+.no-border{
+	border: none !important;
+}
+
+.no-display{
+	display: none;
+}

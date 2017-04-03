@@ -15,10 +15,11 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from models import Post, Like, Tag, PostTag
+from models import Post, Like, Tag, PostTag, PostImage
 from faker import Factory
 import hashlib
 import re
+import json
 
 # UTILS
 
@@ -106,6 +107,62 @@ class IndexView(View):
             else:
                 return JsonResponse({'fail': 'true'})
 
+class DeleteUser(View):
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        request.user.delete()
+        logout(request)
+        return JsonResponse({
+            'success': True,
+            })
+
+class SaveProfileEditions(View):
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        try:
+            age = int(request.POST.get('age'))
+            place = int(request.POST.get('place'))
+        except ValueError:
+            age = request.user.vkuser.age
+            place = request.user.vkuser.place
+        about = request.POST.get('about')
+        request.user.vkuser.place = place
+        request.user.vkuser.age = age
+        request.user.vkuser.about = about
+        request.user.save()
+        return JsonResponse({
+            'success': True,
+            'place': request.user.vkuser.place_str,
+            'age': request.user.vkuser.age,
+            'about': request.user.vkuser.about,
+            })
+
+class  PhotoUploader(View):
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        uuid = request.POST.get('qquuid')
+        filename = request.POST.get('qqfilename')
+        photo = PostImage(id=uuid, filename=filename, image=request.FILES['qqfile'], user=request.user)
+        photo.save()
+        return JsonResponse({
+            'success': True
+            })
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def delete(self, request, qquuid):
+        try:
+            post_image_to_delete = PostImage.objects.get(id=qquuid)
+        except Exception:
+            return JsonResponse({
+                'success': True
+                })
+        delete_image(post_image_to_delete.image.path)
+        return JsonResponse({
+            'success': True
+            })
 
 class AddPostView(View):
     template_name = 'posts/add_post.html'
@@ -127,7 +184,7 @@ class AddPostView(View):
         # CHECK IF POST TEXT IS CLEAR
         if not self.is_clear(request.POST.get('text')):
             return JsonResponse({
-                'success': 1,
+                'success': False,
                 'error_message': 'Текс содержит недопустимые слова. Прочитайте правила сайта.'
                 })
         # MAKE OTHER POST NOT ACTUAL
@@ -141,12 +198,17 @@ class AddPostView(View):
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
         post.place = request.user.vkuser.place
-        # IMAGE HANDLING
-        try:
-            post.image = request.FILES['photo']
-        except MultiValueDictKeyError:
-            post.image = None
         post.save()
+        # IMAGE HANDLING
+        if request.POST.get('photos_json_string'):
+            uploaded_photos_info = json.loads(request.POST.get('photos_json_string'))
+            post_photo_list = []
+            for photo_info in uploaded_photos_info:
+                post_photo_list.append(PostImage.objects.get(id=photo_info['uuid']))
+            if post_photo_list:
+                for post_photo in post_photo_list:
+                    post_photo.post = post
+                    post_photo.save()
         # ADD TAGS
         for tag_value in request.POST.getlist('tags'):
             post_tag = PostTag()
@@ -155,7 +217,9 @@ class AddPostView(View):
             post_tag.save()
         request.user.vkuser.has_active_post = True
         request.user.save()
-        return redirect(self.redirect_to)
+        return JsonResponse({
+            'success': True
+            })
 
     def is_clear(self, text):
         for word in self.words_to_filter:
@@ -202,15 +266,20 @@ class DeletePost(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        post_to_delete = Post.objects.get(id=int(request.POST.get('post_id')))
-        # first try to delete image
-        delete_image(post_to_delete.image.path)
+        post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
+        success = False
+        # first try to  image
+        if post_to_delete.image:
+            delete_image(post_to_delete.image.path)
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False
                 request.user.save()
             post_to_delete.delete()
-        return redirect(self.redirect_to)
+            success = True
+        return JsonResponse({
+            'success': success
+            })
 
 
 class MakePostNotRelevant(View):
@@ -218,35 +287,54 @@ class MakePostNotRelevant(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        post = Post.objects.get(id=int(request.POST.get('post_id')))
+        post = Post.objects.get(id=request.POST.get('post_id'))
+        success = False
         if request.user == post.user:
             post.is_actual = False
             request.user.vkuser.has_active_post = False
             post.save()
             request.user.save()
-        return redirect(self.redirect_to)
+            success = True
+        return JsonResponse({
+            'success': success
+        })
 
 
 class LikePost(View):
     redirect_to = 'posts'
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=int(request.POST.get('post_id')))
+        post = Post.objects.get(id=request.POST.get('post_id'))
+        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
+        is_created = 0 # new like added
         if created:
             like_obj.save()
         else:
             like_obj.delete()
-        return redirect(self.redirect_to)
+            is_created = 1 # disliked
+        return JsonResponse({
+            'is_created': is_created,
+            'likes_amount': post.likes
+            })
 
 class LeaveMessage(View):
     redirect_to = 'posts'
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=request.POST.get('post_id'))
-        like_obj.message = request.POST.get('message')
+        post = Post.objects.get(id=request.POST.get('post_id'))
+        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
+        success = False
+        if len(like_obj.message) == 0:
+            like_obj.message = request.POST.get('message')
+            success = True
         like_obj.save()
-        return redirect(self.redirect_to)
+        # build json obj
+
+        return JsonResponse({
+            'success': success,
+            'amount': post.likes
+            })
 
 class WhoLiked(View):
     template_name = 'posts/who_liked.html'
@@ -259,6 +347,17 @@ class WhoLiked(View):
         }
         return render(request, self.template_name, context)
 
+
+class MyPosts(View):
+    template_name = 'posts/my_posts.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        user_posts = Post.objects.filter(user=request.user)
+        context = {
+            'user_posts_list': user_posts,
+        }
+        return render(request, self.template_name, context)
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'
@@ -293,21 +392,9 @@ class Posts(View):
 class Profile(View):
     template_name = 'posts/profile.html'
 
+    @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, self.template_name)
-
-    def post(self, request):
-        if request.POST.get('place_change') == "":
-            # save changes
-            user_to_edit = User.objects.get(id=request.POST.get('uid'))
-            user_to_edit.vkuser.place = request.POST.get('place')
-            user_to_edit.save()
-            return redirect('posts')
-        if request.POST.get('profile_delete') == "":
-            # delete profile
-            user_to_delete = User.objects.get(id=request.POST.get('uid'))
-            user_to_delete.delete()
-            return redirect('/')
 
 
 @login_required(redirect_field_name=None)

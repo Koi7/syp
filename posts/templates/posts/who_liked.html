@@ -1,10 +1,24 @@
 
 {% extends "posts/base.html" %}
-
+{% load static from staticfiles %}
 {% block title %}Лайкнувшие{% endblock %}
 
 {% block content %}
-    <table>
+<!-- HEADER -->
+<h1 class="w3-padding-tiny w3-text-awesome"> <i class="fa fa-heart w3-text-red"></i>  Понравилось:</h1>
+<!-- LIST -->
+<ul class="w3-ul w3-vk-card" style="background-color: white;">
+  {% for like in post.liked %}
+  <li class="w3-padding-16">
+    <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+    <span class="w3-large">{{ like.user.first_name }} {{ like.user.last_name }}</span><br>
+    <span class="w3-text-gray">{{ like.user.vkuser.place_str }}</span>
+    <p><span>Послание:</span>{{ like.message }}</p>
+  </li>
+  {% endfor %}
+</ul>
+<!-- LEGACY -->
+<!--     <table>
         {% for like in post.liked %}
             <tr>
                 <td><img src="{{ like.user.vkuser.photo_rec }}" alt=""></td>
@@ -16,5 +30,5 @@
             	<td colspan="2">{{ like.message }}</td>
             </tr>
         {% endfor %}
-    </table>
+    </table> -->
 {% endblock %}

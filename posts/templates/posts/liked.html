@@ -1,10 +1,80 @@
-
 {% extends "posts/base.html" %}
+
+{% load static from staticfiles %}
 
 {% block title %}Мне понравились{% endblock %}
 
 {% block content %}
+    <!-- PAGE HEADER -->
+    <h1 class="w3-padding-tiny w3-text-awesome w3-center">Лайкнутые</h1>
+    {% if liked_posts %}
     {% for post in liked_posts %}
+    <!-- POST CARD -->
+    <div data-post-id="{{ post.hash_id }}" class="w3-vk-card w3-section .w3-custom-round-small w3-white">
+        <!-- POST HEADER -->
+        <header data-post-id="{{ post.hash_id }}" class="w3-container w3-padding-large">
+            <!-- USER PHOTO -->
+            <img data-post-id="{{ post.hash_id }}" src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+            <div data-post-id="{{ post.hash_id }}" class="w3-container w3-right">
+                <!-- LIKE INDICATOR -->
+                <a data-post-id="{{ post.hash_id }}" href="{% url 'who_liked' post_id=post.id %}" class="link-no-style">
+                    <span data-post-id="{{ post.hash_id }}" class="likes-amount w3-text-gray w3-padding-small">{{ post.likes }}</span>
+                </a>
+                <!-- PIPE -->
+                <span data-post-id="{{ post.hash_id }}" class="w3-text-gray w3-border-left pa-r-six"></span>
+                <!-- LIKE BUTTON -->
+                <i data-post-id="{{ post.hash_id }}" class="fa fa-heart cursor-link w3-padding-small {% if post.id in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-gray {% endif %}" id="{{ post.id }}"></i>                        
+            </div>
+            <!-- DISPLAY NAME OR ANONYMOUS -->
+            <span data-post-id="{{ post.hash_id }}" class="user-name">
+                {% if not post.is_anonymous %}
+
+                    {{ post.user.first_name }} {{ post.user.last_name }}
+
+                {% else %}
+
+                    Аноним
+
+                {% endif %}
+            </span>
+            <br>
+            <!-- TIME PUBLISHED -->
+            <span data-post-id="{{ post.hash_id }}" class="w3-text-grey w3-small">{{post.pub_datetime|date:"d M"}} в {{post.pub_datetime|time:"H:i"}}</span>
+            <br>
+            <!-- POST TAGS -->
+            <span data-post-id="{{ post.hash_id }}" class="w3-text-grey w3-small">тэги:</span>
+            {% for post_tag in post.tags %}
+            <span class="w3-red w3-padding-tiny w3-round w3-small">{{ post_tag.tag.value }}</span>
+            {% endfor %}
+        </header>
+        <!-- POST TEXT -->
+        <div data-post-id="{{ post.hash_id }}" class="w3-container w3-padding-large">
+          <p data-post-id="{{ post.hash_id }}" class="w3-medium post-text-normalize">{{ post.text }}</p>
+        </div>
+        <!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
+        <footer data-post-id="{{ post.hash_id }}" class="w3-container w3-border-top w3-padding-small">
+            <div data-post-id="{{ post.hash_id }}" class="w3-row-padding">
+                <!-- SEND MESSAHE INPUT -->
+                <div data-post-id="{{ post.hash_id }}" class="w3-col m8 l10 w3-padding-4">
+                    <input data-post-id="{{ post.hash_id }}" class="w3-input w3-cell no-border" type="text" placeholder="Оставить послание">
+                </div>
+                <div data-post-id="{{ post.hash_id }}" class="w3-col m4 l2 w3-padding-4">
+                    <button data-post-id="{{ post.hash_id }}" class="w3-btn w3-white w3-text-gray w3-center">
+                        Отправить <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
+        <h3>Вам ничего не понравилось.</h3>
+        <span class="w3-jumbo">:(</span>
+    </div>
+    {% endif %}
+<!--     {% for post in liked_posts %}
         <ul>
             <li>author: {{ post.user.id }}</li>
             <li>text: {{ post.text }}</li>
@@ -35,5 +105,5 @@
             <li>Лайки: {{ post.likes }}</li>
             <li><a href="{% url 'who_liked' post_id=post.id %}">Кто лайкнул?</a></li>
         </ul>
-    {% endfor %}
+    {% endfor %} -->
 {% endblock %}

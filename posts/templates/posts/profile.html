@@ -1,7 +1,66 @@
 {% extends "posts/base.html" %}
+
+{% load static from staticfiles %}
+
 {% block title %}Профиль{% endblock %}
+
 {% block content %}
-    <h3>{{ request.user.first_name }}  {{ request.user.last_name}}</h3>
+
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-center w3-text-awesome">Профиль</h1>
+<!-- CONFIRM PROFILE DELETION -->
+<div id="delete_confirmation" class="w3-panel w3-pale-red w3-leftbar w3-border-red" style="display: none">
+    <p>Уверены что хотите удалить профиль ? <button id="delete_confirmation_yes" class="w3-btn w3-pale-red w3-text-red">Да</button>  <button id="delete_confirmation_no" class="w3-btn w3-pale-red w3-text-blue">Нет</button></p>
+</div>
+<!-- PROFILE CARD -->
+<div class="w3-vk-card w3-section .w3-custom-round-small" style="background-color: white;">
+    <!-- DELETE PROFILE BUTTON -->
+    <button  id="delete_btn" class="w3-btn w3-white w3-text-gray  w3-padding-large">Удалить профиль <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    <!-- PROFILE HEADER -->
+    <header class="w3-container w3-padding-large w3-center">
+        <!-- USER PHOTO -->
+        <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle w3-margin-right" style="width:100px">
+        <br>
+        <!-- USERNAME -->
+        <span class="w3-large">{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>
+        <!-- PLACE & AGE -->
+        <span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>
+        <span id="age" class="w3-text-gray">{% if request.user.vkuser.age > 0 %}{{request.user.vkuser.age}} лет{% endif %}</span>
+        <!-- ABOUT -->
+        <p><span class="w3-text-gray">О себе:</span><span id="about">{{ request.user.vkuser.about }}</span></p>
+    </header>
+    <button  id="change" class="w3-btn w3-white w3-text-blue  w3-padding-large">Изменить данные <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    <!-- CONTROLS -->
+    <div id="profile_editor" style="display: none;">
+        <!-- CHANGE PLACE -->
+        <div class="w3-container w3-padding-large">
+            <span class="w3-text-gray">Город</span>
+            <select id="place_input" class="w3-select" name="option">
+                <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %}>Севастополь</option>
+                <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %}>Симферополь</option>
+                <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %}>Ялта</option>
+            </select>
+        </div>
+        <!-- CHANGE AGE -->
+        <div class="w3-container w3-padding-large">
+            <span class="w3-text-gray">Возраст</span>
+            <input id="age_input" class="w3-input" type="text" value="{% if request.user.vkuser.age > 0 %}{{request.user.vkuser.age}}{% endif %}"><br>
+        </div>
+        <!-- CHANGE ABOUT INFO -->
+        <div class="w3-container w3-padding-large">
+            <span class="w3-text-gray">О себе:</span><br>
+            <textarea id="about_input" style="max-width: 100%; width: 100%; min-height: 100px;">
+                {{ request.user.vkuser.about }}
+            </textarea>
+        </div>
+        <!-- SAVE -->
+        <div class="w3-container w3-padding-large w3-center">
+            <button id="save_btn" class="w3-btn w3-white w3-text-blue">Сохранить</button>
+        </div>
+    </div>
+</div>
+<!-- LEGACY -->
+<!--     <h3>{{ request.user.first_name }}  {{ request.user.last_name}}</h3>
     <form action="{% url 'profile' %}" method="POST">{% csrf_token %}
         <input type="hidden" value="{{ request.user.id }}" name="uid">
         <input type="hidden" value="" name="place_change">
@@ -26,5 +85,79 @@
         <input type="hidden" value="{{ request.user.id }}" name="uid">
         <input type="hidden" value="" name="profile_delete">
         <input type="submit" value="Удалить профиль">
-    </form>
+    </form> -->
 {% endblock content %}
+{% block extra_scripts %}
+<script type="text/javascript">
+
+    function getCookie(name) {
+      var value = "; " + document.cookie;
+      var parts = value.split("; " + name + "=");
+      if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    $(document).ready(function () {
+
+        // toggle inputa visibility
+        $('#change').click(function(){
+            $('#profile_editor').toggle(300);
+        });
+
+        //add event handler to save button
+        $('#save_btn').click(function (){
+            $(this).html("Отправляется...");
+            $(this).attr('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: "{% url 'save_profile_editions' %}",
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken'),
+                    place: $.trim($('#place_input').val()),
+                    age: $.trim($('#age_input').val()),
+                    about: $.trim($('#about_input').val())
+                },
+                context: this,
+                dataType: "json",
+                success: function(data){
+                    if (data.success){
+                        $(this).html("Отправлено");
+                        // update user profile
+                        $('#place').text(data.place);
+                        $('#age').text(data.age + " лет");
+                        $('#about').text(data.about);
+                        // hide inputs
+                        $('#profile_editor').delay(1000).toggle(300);
+                        $(this).html("Сохранить");
+                        $(this).attr('disabled', false);
+                    }
+                }
+            });
+        });
+
+        //add handler to delete button
+        $('#delete_btn').click(function () {
+            $('#delete_confirmation').toggle(100);
+        });
+
+        $('#delete_confirmation_no').click(function(){
+            $('#delete_confirmation').toggle(100);
+        });
+
+        $('#delete_confirmation_yes').click(function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'delete_user' %}",
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                dataType: "json",
+                success: function(data){
+                    if(data.success){
+                        location.reload();
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

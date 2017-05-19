@@ -2,6 +2,14 @@
 
 {% load static from staticfiles %}
 
+{% block extra_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/forms.css' %}">
+{% endblock %}
+
+{% block extra_scripts_head %}
+    <script src="{% static 'posts/js/util.js' %}"></script>
+{% endblock %}
+
 {% block title %}Профиль{% endblock %}
 
 {% block content %}
@@ -9,49 +17,36 @@
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Профиль</h1>
 <!-- CONFIRM PROFILE DELETION -->
-<div id="delete_confirmation" class="w3-panel w3-pale-red w3-leftbar w3-border-red" style="display: none">
-    <p>Уверены что хотите удалить профиль ? <button id="delete_confirmation_yes" class="w3-btn w3-pale-red w3-text-red">Да</button>  <button id="delete_confirmation_no" class="w3-btn w3-pale-red w3-text-blue">Нет</button></p>
+<div id="delete_confirmation" class="w3-panel w3-pale-red w3-leftbar w3-border-red no-display">
+    <p>Уверены что хотите удалить профиль ?<button id="delete_confirmation_yes" class="w3-btn w3-pale-red w3-text-red">Да</button> <button id="delete_confirmation_no" class="w3-btn w3-pale-red w3-text-blue">Нет</button></p>
 </div>
 <!-- PROFILE CARD -->
-<div class="w3-vk-card w3-section .w3-custom-round-small" style="background-color: white;">
+<div class="w3-vk-card w3-section .w3-custom-round-small w3-white">
     <!-- DELETE PROFILE BUTTON -->
-    <button  id="delete_btn" class="w3-btn w3-white w3-text-gray  w3-padding-large">Удалить профиль <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    <button  id="delete_btn" class="w3-btn w3-white w3-text-blue  w3-padding-large">Удалить профиль <i class="fa fa-trash-o" aria-hidden="true"></i></button>
     <!-- PROFILE HEADER -->
     <header class="w3-container w3-padding-large w3-center">
         <!-- USER PHOTO -->
         <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle w3-margin-right" style="width:100px">
         <br>
         <!-- USERNAME -->
-        <span class="w3-large">{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>
+        <span>{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>
         <!-- PLACE & AGE -->
-        <span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>
+        {% if request.user.vkuser.place %}<span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>{% endif %}
         <span id="age" class="w3-text-gray">{% if request.user.vkuser.age > 0 %}{{request.user.vkuser.age}} лет{% endif %}</span>
         <!-- ABOUT -->
-        <p><span class="w3-text-gray">О себе:</span><span id="about">{{ request.user.vkuser.about }}</span></p>
+        {% if request.user.vkuser.about %}<p><span class="w3-text-gray">О себе:</span><span id="about">{{ request.user.vkuser.about }}</span></p>{% endif %}
     </header>
-    <button  id="change" class="w3-btn w3-white w3-text-blue  w3-padding-large">Изменить данные <i class="fa fa-trash-o" aria-hidden="true"></i></button>
     <!-- CONTROLS -->
-    <div id="profile_editor" style="display: none;">
+    <div id="profile_editor">
         <!-- CHANGE PLACE -->
-        <div class="w3-container w3-padding-large">
-            <span class="w3-text-gray">Город</span>
+        <div class="w3-container w3-padding-large pure-form">
+            <p class="w3-text-gray">Город</p>
             <select id="place_input" class="w3-select" name="option">
                 <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %}>Севастополь</option>
                 <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %}>Симферополь</option>
                 <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %}>Ялта</option>
             </select>
-        </div>
-        <!-- CHANGE AGE -->
-        <div class="w3-container w3-padding-large">
-            <span class="w3-text-gray">Возраст</span>
-            <input id="age_input" class="w3-input" type="text" value="{% if request.user.vkuser.age > 0 %}{{request.user.vkuser.age}}{% endif %}"><br>
-        </div>
-        <!-- CHANGE ABOUT INFO -->
-        <div class="w3-container w3-padding-large">
-            <span class="w3-text-gray">О себе:</span><br>
-            <textarea id="about_input" style="max-width: 100%; width: 100%; min-height: 100px;">
-                {{ request.user.vkuser.about }}
-            </textarea>
         </div>
         <!-- SAVE -->
         <div class="w3-container w3-padding-large w3-center">
@@ -59,42 +54,9 @@
         </div>
     </div>
 </div>
-<!-- LEGACY -->
-<!--     <h3>{{ request.user.first_name }}  {{ request.user.last_name}}</h3>
-    <form action="{% url 'profile' %}" method="POST">{% csrf_token %}
-        <input type="hidden" value="{{ request.user.id }}" name="uid">
-        <input type="hidden" value="" name="place_change">
-        <table>
-            <tr>
-                <td>Изменить город:</td>
-                <td>
-                    <select name="place" >
-                        <option value="0">Севастополь</option>
-                        <option value="1">Симферополь</option>
-                        <option value="2">Ялта</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Сохранить"></td>
-            </tr>
-        </table>
-    </form>
-    <form action="{% url 'profile' %}" method="POST">{% csrf_token %}
-        <input type="hidden" value="{{ request.user.id }}" name="uid">
-        <input type="hidden" value="" name="profile_delete">
-        <input type="submit" value="Удалить профиль">
-    </form> -->
 {% endblock content %}
 {% block extra_scripts %}
 <script type="text/javascript">
-
-    function getCookie(name) {
-      var value = "; " + document.cookie;
-      var parts = value.split("; " + name + "=");
-      if (parts.length == 2) return parts.pop().split(";").shift();
-    }
 
     $(document).ready(function () {
 

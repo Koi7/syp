@@ -1,0 +1,45 @@
+<div class="w3-container">
+	<span id="filter_panel_toggler" class="w3-padding-tiny w3-text-awesome pointer"><i class="fa fa-filter" aria-hidden="true"></i> фильтры</span>
+	<div id="filters" class="pure-form w3-row-padding margin-bottom-large margin-bottom-large no-display">
+		<!-- CITY FILTER -->
+		<div class="w3-col  l3">
+			<label for="filter_place" class="w3-padding-tiny w3-text-awesome d-block">город</label>
+		    <select id="filter_place">
+		    	<option value="-1">любой</option>
+		        <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %} >Севастополь</option>
+		        <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %} >Симферополь</option>
+		        <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %} >Ялта</option>
+		    </select>
+	    </div>			
+	    <!-- TAGS FILTER -->
+	    <div class="w3-col l3">
+		    <label for="filter_tags" class="w3-padding-tiny w3-text-awesome d-block">тэг</label>
+	        <select id="filter_tags">
+	        	<option value="any" selected>любой</option>
+	            <option value="0">ищу парня</option>
+	            <option value="1">ищу девушку</option>
+	            <option value="2">ищу друга</option>
+	            <option value="3">ищу подругу</option>
+	            <option value="4">ищу компанию</option>
+	            <option value="5">ищу с/о</option>
+	        </select>
+	    </div>		    
+	    <!-- ORDER FILTER -->
+	    <div class="w3-col l3">
+		    <label for="filter_order" class="w3-padding-tiny w3-text-awesome d-block">сортировка</label>
+		    <select id="filter_order">
+		        <option value="acs" selected>сначала новые</option>
+		        <option value="decs">сначала старые</option>
+		    </select>
+	    </div>		    
+	    <!-- ANONYMOUS FILTER -->
+	    <div class="w3-col l3">
+		    <label for="filter_" class="w3-padding-tiny w3-text-awesome d-block">анонимность</label>
+		    <select id="filter_anonymous">
+		        <option value="-1" selected>любые</option>
+		        <option value="0">анонимные</option>
+		        <option value="1">не анонимные</option>
+		    </select>
+	    </div>		   	
+	</div>
+</div>

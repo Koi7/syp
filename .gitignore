@@ -1,0 +1,6 @@
+# dir
+node_modules/
+bower_components/
+
+# file
+*.sqlite3

@@ -5,30 +5,25 @@
 
 {% block content %}
 <!-- HEADER -->
-<h1 class="w3-padding-tiny w3-text-awesome"> <i class="fa fa-heart w3-text-red"></i>  Понравилось:</h1>
+<h1 class="w3-padding-tiny w3-text-awesome w3-center"> <i class="fa fa-heart w3-text-red"></i>  Понравилось:</h1>
 <!-- LIST -->
-<ul class="w3-ul w3-vk-card" style="background-color: white;">
-  {% for like in post.liked %}
-  <li class="w3-padding-16">
-    <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
-    <span class="w3-large">{{ like.user.first_name }} {{ like.user.last_name }}</span><br>
-    <span class="w3-text-gray">{{ like.user.vkuser.place_str }}</span>
-    <p><span>Послание:</span>{{ like.message }}</p>
-  </li>
-  {% endfor %}
-</ul>
-<!-- LEGACY -->
-<!--     <table>
-        {% for like in post.liked %}
-            <tr>
-                <td><img src="{{ like.user.vkuser.photo_rec }}" alt=""></td>
-                <td>{{ like.user.first_name }}</td>
-                <td>{{ like.user.last_name }}</td>
-            </tr>
-            <tr>
-            	<td>Message:</td>
-            	<td colspan="2">{{ like.message }}</td>
-            </tr>
-        {% endfor %}
-    </table> -->
+<div class="w3-row">
+    <div class="w3-col m2 l3">
+        &nbsp;
+    </div>
+    <ul class="w3-col m8 l6 w3-ul w3-vk-card" style="background-color: white;">
+      {% for like in post.liked %}
+      <li class="w3-padding-16">
+        <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+        <span class="w3-large">{{ like.user.first_name }} {{ like.user.last_name }}</span><br>
+        <span class="w3-text-gray">{{ like.user.vkuser.place_str }}</span>
+        <p><span>Послание:</span>{{ like.message }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="w3-col m2 l3">
+        &nbsp;
+    </div>
+</div>
+
 {% endblock %}

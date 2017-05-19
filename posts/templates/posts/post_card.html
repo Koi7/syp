@@ -1,0 +1,83 @@
+{% load static from staticfiles %}
+<!-- POST CARD -->
+<div data-post-id="{{ post.id }}" class="w3-vk-card w3-section .w3-custom-round-small w3-white">
+	<!-- POST HEADER -->
+	<header data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
+		<!-- USER PHOTO -->
+		<div class="w3-cell w3-cell-middle">
+			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+		</div>
+		<div class=" w3-cell w3-cell-middle w3-small">
+			<!-- DISPLAY NAME OR ANONYMOUS -->
+			<span data-post-id="{{ post.id }}" class="user-name">
+				{% if not post.is_anonymous %}
+
+					{{ post.user.first_name }} {{ post.user.last_name }}
+
+				{% else %}
+
+					Аноним
+
+				{% endif %}
+			</span>
+			<br>
+			<!-- TIME PUBLISHED -->
+			<span data-post-id="{{ post.id }}" class="w3-text-grey w3-small">{{post.pub_datetime|date:"d M"}} в {{post.pub_datetime|time:"H:i"}}</span>
+			<br>
+			<!-- POST TAGS -->
+			<span data-post-id="{{ post.id }}" class="w3-text-grey w3-small">тэг: <span class="w3-text-blue">{{ post.tag_str }}</span></span>
+		</div>
+	</header>
+	<!-- POST TEXT AND IMAGES-->
+	<div data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
+	    <p data-post-id="{{ post.id }}" class="w3-medium post-text-normalize">{{ post.text }}</p>
+	    {% if post.photos %}
+	    {% for photo in post.photos %}
+	    <img width="100" height="100" src="{{ photo.image.url }}" alt="фото пользователя">
+	    {% endfor %}
+	    {% endif %}
+	</div>
+	<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
+	<footer data-post-id="{{ post.id }}" class="w3-container w3-border-top w3-padding-small">
+	{% if not editable %}
+		<!-- BOTTOM CONTROLS -->
+		<div data-post-id="{{ post.id }}" class="w3-padding-small w3-right-align">
+			<!-- SHOW SEND MESSAGE CONTROLS BUTTON-->
+			<i data-post-id="{{ post.id }}" class="fa fa-envelope-o pointer w3-padding-small w3-text-blue show-send-message-controls" aria-hidden="true" title="Оставить послание"></i>
+			<!-- PIPE -->
+			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span>
+			<!-- LIKE INDICATOR -->
+			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' post_id=post.id %}" class="link-no-style">
+				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>
+			</a>
+			<!-- LIKE BUTTON -->
+			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post.id in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}" id="{{ post.id }}"></i>
+		</div>
+		<!-- INPUT AND BUTTON -->
+		<div data-post-id="{{ post.id }}" class="w3-row-padding no-display send-message-controls pure-form">
+			<div data-post-id="{{ post.id }}" class="w3-col m9 l9 w3-padding-4">
+				<input data-post-id="{{ post.id }}" class="w3-input w3-cell no-outline" type="text" placeholder="Оставить послание">
+			</div>
+			<div data-post-id="{{ post.id }}" class="w3-col m3 l3 w3-padding-4 w3-right-align">
+				<span data-post-id="{{ post.id }}"  class="w3-btn w3-white w3-text-blue pointer message-sender">Отправить</span>
+			</div>
+		</div>
+	{% else %}
+		<div class="w3-row-padding">
+			<div class="w3-container w3-padding-4 w3-right">
+				<!-- MAKE NOT ACTUAL AND DELETE BUTTONS -->
+				{% if post.is_actual %}
+				<button data-post-id="{{ post.id }}" class="make-not-actual w3-btn w3-white w3-text-blue w3-center">
+					Сделать не ауктальным <i class="fa fa-heartban" aria-hidden="true"></i>
+				</button>
+				{% endif %}
+				<!-- DELETE BUTTON -->
+				<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center">
+					Удалить <i class="fa fa-trash-o" aria-hidden="true"></i>
+				</button>
+			</div>
+		</div>
+	{% endif %}
+	</footer>
+</div>
+<!-- END POST CARD -->

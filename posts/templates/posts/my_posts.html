@@ -2,6 +2,10 @@
 
 {% load static from staticfiles %}
 
+{% block extra_scripts_head %}
+	<script src="{% static 'posts/js/util.js' %}"></script>
+{% endblock %}
+
 {% block title %}Посты{% endblock %}
 
 {% block content %}
@@ -9,79 +13,7 @@
 	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мои посты</h1>
 	{% if user_posts_list %}
 		{% for post in user_posts_list %}
-			<!-- POST CARD -->
-			<div data-post-id="{{ post.id }}" class="w3-vk-card w3-section .w3-custom-round-small w3-white">
-				<!-- POST HEADER -->
-				<header class="w3-container w3-padding-large">
-					<!-- USER PHOTO -->
-					<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
-					<div class="w3-container w3-right">
-						<!-- LIKE INDICATOR -->
-						<a href="{% url 'who_liked' post_id=post.id %}" class="link-no-style">
-							<span class="likes-amount w3-text-gray w3-padding-small">{{ post.likes }}</span>
-						</a>
-						<!-- PIPE -->
-						<span class="w3-text-gray w3-border-left" style="padding-right: 6px;"></span>
-						<!-- LIKE BUTTON -->
-						<i class="fa fa-heart cursor-link w3-padding-small {% if post.id in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-gray {% endif %}" id="{{ post.id }}"></i>						
-					</div>
-					<!-- DISPLAY NAME OR ANONYMOUS -->
-					<span class="user-name">
-						{% if not post.is_anonymous %}
-
-							{{ post.user.first_name }} {{ post.user.last_name }}
-
-						{% else %}
-
-							Аноним
-
-						{% endif %}
-					</span>
-					<br>
-					<!-- TIME PUBLISHED -->
-					<span class="w3-text-grey w3-small">
-						{{post.pub_datetime|date:"d M"}} в {{post.pub_datetime|time:"H:i"}}
-						{% if post.is_actual %} 
-							<!-- ACTUALITY INDICATOR -->
-							<span data-post-id="{{ post.id }}" class="actuality-indicator">
-								<span class="w3-text-green">
-								<!-- PIPE -->
-								<span class="w3-text-gray w3-border-left" style="padding-right: 6px;"></span>
-									актуальный
-								</span>
-							</span>
-						{% endif %}
-					</span>
-					<br>
-					<!-- POST TAGS -->
-					<span class="w3-text-grey w3-small">тэги:</span>
-					{% for post_tag in post.tags %}
-						<span class="w3-padding-tiny w3-small w3-text-blue">{{ post_tag.tag.value }}</span> 
-					{% endfor %}
-				</header>
-				<!-- POST TEXT -->
-				<div class="w3-container w3-padding-large">
-				  <p class="w3-medium" style="font-weight: normal; word-wrap: break-word;">{{ post.text }}</p>
-				</div>
-				<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
-				<footer class="w3-container w3-border-top w3-padding-small">					
-					<div class="w3-row-padding">
-						<div class="w3-container w3-padding-4 w3-right">
-							<!-- MAKE NOT ACTUAL AND DELETE BUTTONS -->
-							{% if post.is_actual %}
-							<button data-post-id="{{ post.id }}" class="make-not-actual w3-btn w3-white w3-text-blue w3-center">
-								Сделать не ауктальным <i class="fa fa-heartban" aria-hidden="true"></i>
-							</button>
-							{% endif %}
-							<!-- DELETE BUTTON -->
-							<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center">
-								Удалить <i class="fa fa-trash-o" aria-hidden="true"></i>
-							</button>
-						</div>
-					</div>
-				</footer>
-
-			</div>
+			{% include 'posts/post_card.html' with editable=True %}
 		{% endfor %}
 	{% else %}
         <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
@@ -93,14 +25,6 @@
 
 {% block extra_scripts %}
 	<script type="text/javascript">
-
-	function getCookie(name) {
-	  var value = "; " + document.cookie;
-	  var parts = value.split("; " + name + "=");
-	  if (parts.length == 2) return parts.pop().split(";").shift();
-	}
-
-
 	 $(document).ready(function () {
 
 		// make post not relevant event handler
@@ -144,66 +68,5 @@
 	 		});
 		});
 	 });
-
-
-
 	</script>
-{% endblock %}
-	<!-- LEGACY -->
-			<!-- 
-					<ul>
-						<li>author: {{ post.user.id }} 😀</li>
-						<li>text: {{ post.text }}</li>
-						<li>place: {{ post.user.vkuser.place_str }}</li>
-						<li>anon: {{ post.is_anonymous }}</li>
-						<li>is actual: {{ post.is_actual }}</li>
-						<li>pub date time: {{ post.pub_datetime }}</li>
-						<li>tags: {% for post_tag in post.tags %} {{ post_tag.tag.value }} {% endfor %}</li>
-						{% if request.user.id == post.user.id %}
-							<li><a href="{% url 'edit_post' post_id=post.id %}">Редактировать</a></li>
-							<form action="{% url 'delete_post' %}" method="POST">
-								{% csrf_token %}
-								<input type="hidden" name="post_id" value="{{ post.id }}">
-								<input type="submit" value="Удалить">
-							</form>
-							<form action="{% url 'make_post_not_relevant' %}" method="POST">
-								{% csrf_token %}
-								<input type="hidden" name="post_id" value="{{ post.id }}">
-								<input type="submit" value="Сделать неактуальным">
-							</form>
-						{% endif %}
-						<li>
-							<form action="{% url 'like_post' %}" method="POST">
-								{% csrf_token %}
-								<input type="hidden" name="post_id" value="{{ post.id }}">
-								<input type="submit" value="Лайк">
-							</form>
-						</li>
-						<li>
-							<form action="{% url 'leave_message' %}" method="POST">{% csrf_token %}
-								<input type="hidden" name="post_id" value="{{ post.id }}">
-								<table>
-									<tr>
-										<td>
-											Послание:
-										</td>
-										<td>
-											<textarea name="message">
-												
-											</textarea>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td><input type="submit" name="" value="Отправить"></td>
-									</tr>
-								</table>
-							</form>
-						</li>
-						<li>Лайки: {{ post.likes }}</li>
-						<li><a href="{% url 'who_liked' post_id=post.id %}">Кто лайкнул?</a></li>
-					{% if post.image %}
-						<li>Картинка <img width="100" height="100" src="{{ post.image.url }}" alt="фото пользователя"></li>
-					{% endif %}
-					</ul>
-			-->
+{% endblock %}jj

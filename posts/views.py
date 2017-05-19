@@ -1,4 +1,5 @@
 # coding=utf-8
+# -*- coding: utf-8 -*-
 import os
 
 from django.contrib.auth.models import User
@@ -11,12 +12,15 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
+from django.template.response import TemplateResponse
+from django.template.loader import render_to_string
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import View
-
-from models import Post, Like, Tag, PostTag, PostImage
+from operator import attrgetter
+from models import Post, Like, PostImage
 from faker import Factory
+from django.utils import timezone
 import hashlib
 import re
 import json
@@ -62,17 +66,23 @@ class IndexView(View):
             need_new_user = True if request.POST.get('new') == 'on' else False
             if need_new_user:
                 fake = Factory.create('ru_RU')
-                full_name = fake.name()
                 uid = str(fake.random_number(9))
                 md5 = hashlib.md5()
                 md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
                 hash = md5.hexdigest()
                 user = authenticate(uid=uid, hash=hash)
                 if user is not None:
-                    user.first_name = full_name.split()[1]
-                    user.last_name = full_name.split()[0]
                     user.vkuser.place = int(request.POST.get('place'))
                     user.vkuser.photo_rec = ''
+                    import random
+                    user.vkuser.sex = random.randint(0, 1)
+                    # Generate name according to given sex.
+                    if user.vkuser.sex == 0:
+                        user.first_name = fake.first_name_male()
+                        user.last_name = fake.last_name_male()
+                    else:
+                        user.first_name = fake.first_name_female()
+                        user.last_name = fake.last_name_female()
                     user.save()
                     login(request, user)
                     return redirect('posts')
@@ -121,16 +131,15 @@ class SaveProfileEditions(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        try:
-            age = int(request.POST.get('age'))
-            place = int(request.POST.get('place'))
-        except ValueError:
-            age = request.user.vkuser.age
-            place = request.user.vkuser.place
+        place = request.POST.get('place')
+        age = request.POST.get('age')
         about = request.POST.get('about')
-        request.user.vkuser.place = place
-        request.user.vkuser.age = age
-        request.user.vkuser.about = about
+        if place:
+            request.user.vkuser.place = int(place)
+        if age:
+            request.user.vkuser.age = age
+        if about:
+            request.user,vkuser.about = about
         request.user.save()
         return JsonResponse({
             'success': True,
@@ -175,7 +184,6 @@ class AddPostView(View):
     def get(self, request):
         context = {
             'has_active_post': request.user.vkuser.has_active_post,
-            'tag_list': Tag.objects.all(),
         }
         return render(request, 'posts/add_post.html', context)
 
@@ -197,8 +205,10 @@ class AddPostView(View):
         post.user = request.user
         post.text = request.POST.get('text')
         post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
-        post.place = request.user.vkuser.place
+        post.place = request.POST.get('place')
+        post.tag = request.POST.get('tag')
         post.save()
+        # add tag
         # IMAGE HANDLING
         if request.POST.get('photos_json_string'):
             uploaded_photos_info = json.loads(request.POST.get('photos_json_string'))
@@ -208,13 +218,7 @@ class AddPostView(View):
             if post_photo_list:
                 for post_photo in post_photo_list:
                     post_photo.post = post
-                    post_photo.save()
-        # ADD TAGS
-        for tag_value in request.POST.getlist('tags'):
-            post_tag = PostTag()
-            post_tag.post = post
-            post_tag.tag = Tag.objects.get(value=tag_value)
-            post_tag.save()
+                    post_photo.save()       
         request.user.vkuser.has_active_post = True
         request.user.save()
         return JsonResponse({
@@ -383,11 +387,78 @@ class Posts(View):
             View for default page of logged user.
             Returns relevant posts list.
         """
+        post_list_by_place = list(Post.objects.filter(is_actual=True, place=request.user.vkuser.place))
+        post_list_by_place.sort(key=attrgetter('pub_datetime'), reverse=True)
         context = {
-            'posts_list': Post.objects.filter(user__vkuser__place=request.user.vkuser.place)
+            'posts_list': post_list_by_place,
         }
-        return render(request, 'posts/posts.html', context)
+        return render(request, self.template_name, context)
 
+class PostsFilter(View):
+    template_name = 'posts/filtered_posts.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        tag = request.POST.get('tag')
+        place = int(request.POST.get('place'))
+        order = request.POST.get('order')
+        anonymous = int(request.POST.get('anonymous'))
+        posts_list = []
+        if tag == "any" and place == -1:
+            posts_list = list(Post.objects.filter(is_actual=True))
+        elif tag == "any" and place != -1:
+            posts_list = list(Post.objects.filter(is_actual=True, place=place))
+        elif tag != "any" and place == -1:
+            posts_list = list(Post.objects.filter(is_actual=True, tag=tag))
+        elif tag != "any" and place != -1:
+            posts_list = list(Post.objects.filter(is_actual=True, place=place, tag=tag))
+        # filter by anonymous
+        if anonymous == 0:
+            posts_list =  [obj for obj in posts_list if obj.is_anonymous == True]
+        elif anonymous == 1:
+            posts_list =  [obj for obj in posts_list if obj.is_anonymous == False]
+        # order by date
+        if order == 'acs':
+            posts_list.sort(key=attrgetter('pub_datetime'), reverse=True)
+        else:
+            posts_list.sort(key=attrgetter('pub_datetime'))
+
+        rendered_template = render_to_string(self.template_name, {'posts_list': posts_list, 'request':request})
+        return JsonResponse({
+            'success': True,
+            'rendered_template': rendered_template
+            })
+
+class Notifications(View):
+    template_name = 'posts/notifications.html'
+    max_read_notifications = 5
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        # update notifications_timestamp
+        request.user.vkuser.notifications_timestamp = timezone.now()
+        request.user.save()
+        context = {            
+            'read_notifications': request.user.vkuser.read_notifications,
+            'unread_notifications': request.user.vkuser.unread_notifications,
+        }
+        # slice only 5 from read notifications
+
+        # mark unread notifications as read
+        for notification in context['unread_notifications']:
+            notification.unread = False
+            notification.save()
+        return render(request, self.template_name, context)
+
+
+class CloseAttention(View):
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def post(self, request):
+        request.user.vkuser.has_closed_attention = True
+        request.user.save()
+        return JsonResponse({
+            'success': True
+            })
 
 class Profile(View):
     template_name = 'posts/profile.html'

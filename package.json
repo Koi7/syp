@@ -1,0 +1,25 @@
+{
+  "name": "syp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koi7/syp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Koi7/syp/issues"
+  },
+  "homepage": "https://github.com/Koi7/syp#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "quick-local-ip": "^1.0.7"
+  }
+}

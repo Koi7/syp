@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from posts.views import AddPostView, Posts, EditPost, DeletePost, MakePostNotRelevant, LikePost, WhoLiked, LikedPosts, \
-    Profile, LeaveMessage, MyPosts, SaveProfileEditions, DeleteUser, PhotoUploader
+    Profile, LeaveMessage, MyPosts, SaveProfileEditions, DeleteUser, PhotoUploader, PostsFilter, Notifications, CloseAttention
 
 urlpatterns = [
                   url(r'^$', Posts.as_view(), name='posts'),
@@ -19,4 +19,7 @@ urlpatterns = [
                   url(r'^delete_user/$', DeleteUser.as_view(), name='delete_user'),
                   url(r'^upload_photo/$', PhotoUploader.as_view(), name='upload_photo'),
                   url(r'^delete_photo(?:/(?P<qquuid>\S+))?', PhotoUploader.as_view(), name='delete_photo'),
+                  url(r'^filter/$', PostsFilter.as_view(), name='posts_filter'),
+                  url(r'^notifications/$', Notifications.as_view(), name='notifications'),
+                  url(r'^close_attention/$', CloseAttention.as_view(), name='close_attention'),
               ]

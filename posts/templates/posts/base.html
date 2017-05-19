@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block links %}
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/w3c.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/no_framework.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/w3c.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/no_framework.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     {% endblock %}
     {% block extra_links %}
@@ -28,18 +28,23 @@
       </div>
       <!-- ORDERED BY USAGE PROBABILITY -->
       <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-list-alt" aria-hidden="true"></i> Посты</a>
+      <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-bell-o" aria-hidden="true"></i>  Уведомления
+      {% if request.user.vkuser.unread_notifications_amount %}
+      <span class="w3-badge">{{  request.user.vkuser.unread_notifications_amount }}</span>
+      {% endif %}
+      </a>
       <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-history" aria-hidden="true"></i>  Мои посты</a>
-	  <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-heart-o" aria-hidden="true"></i> Лайкнутые</a>
-	  <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-plus-square-o" aria-hidden="true"></i> Новый пост</a>
+	    <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-heart-o" aria-hidden="true"></i> Лайкнутые</a>
+	    <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-plus-square-o" aria-hidden="true"></i> Новый пост</a>
       <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-user-circle-o" aria-hidden="true"></i> Профиль</a>
-	  <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-sign-out" aria-hidden="true"></i> Выход</a>
+	    <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-sign-out" aria-hidden="true"></i> Выход</a>
     </nav>
 	{% endblock %}
 
     <!-- TOP MENU ON SMALL SCREENS -->
     <header class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
       <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()"><i class="fa fa-bars" aria-hidden="true"></i></a>
-      <span>Ищу тебя</span>
+      <a href="{% url 'posts' %}" class="link-no-style"><span>Ищу тебя</span></a>
     </header>
 
 <!-- Overlay effect when opening sidenav on small screens -->

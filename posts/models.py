@@ -131,8 +131,8 @@ class Post(models.Model):
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     place = models.IntegerField(choices=PLACE_CHOICES, default=-1)
     tag = models.IntegerField(choices=TAG_CHOICES, default=-1)
-    accepted = model.BooleanField(default=False)
-    rejected = model.BooleanField(default=False)
+    accepted = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
 
     @property
     def place_str(self):
@@ -224,6 +224,8 @@ class Notification(models.Model):
                 notifications_to_delete = Notification.objects.filter(user=instance.user, target=instance, verb=2)
                 for notification in notifications_to_delete:
                     notification.delete()
+            except Notification.DoesNotExist:
+                pass
 
     @receiver(post_save, sender=Post)
     def notify_rejected(instance, created, **kwargs):
@@ -236,10 +238,14 @@ class Notification(models.Model):
                 notifications_to_delete = Notification.objects.filter(user=instance.user, target=instance, verb=3)
                 for notification in notifications_to_delete:
                     notification.delete()
+            except Notification.DoesNotExist:
+                pass
+
 
     @receiver(post_delete, sender=Post)
-    def deleted_all_related_notifications_post(nstance, **kwargs):
+    def deleted_all_related_notifications_post(instance, **kwargs):
         """ Deletes any Notification object connected to Post object being deleted. """
+        pass
 
     @receiver(post_delete, sender=Like)
     def deleted_all_related_notifications_like(instance, **kwargs):

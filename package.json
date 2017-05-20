@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Koi7/syp#readme",
   "devDependencies": {
+    "child_process": "^1.0.2",
     "gulp": "^3.9.1"
   },
   "dependencies": {

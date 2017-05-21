@@ -4,14 +4,14 @@
 
 {% block extra_links %}
     <link rel="stylesheet" href="{% static 'posts/bower_components/switchery/dist/switchery.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'posts/bower_components/fine-uploader/fine-uploader/fine-uploader-gallery.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader-gallery.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
 {% endblock %}
 
 {% block extra_scripts_head %}
     <script src="{% static 'posts/js/util.js' %}"></script>
     <script src="{% static 'posts/bower_components/switchery/dist/switchery.min.js' %}"></script>
-    <script src="{% static 'posts/bower_components/fine-uploader/fine-uploader/fine-uploader.js' %}"></script>
+    <script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
     <!-- FINE UPLOADER TEMPLATE -->
     <script type="text/template" id="qq-template-gallery">
             <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Перетащите файлы сюда">

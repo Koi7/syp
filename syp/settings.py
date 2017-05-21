@@ -132,3 +132,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'posts/static')
+
+CSS_DIR = 'posts/styles/dist/'
+JS_DIR = 'posts/js/'
+IMAGES_DIR = 'posts/images/'
+VENDOR_DIR = 'posts/bower_components'

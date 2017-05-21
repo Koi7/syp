@@ -18,7 +18,11 @@
   "homepage": "https://github.com/Koi7/syp#readme",
   "devDependencies": {
     "child_process": "^1.0.2",
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.3.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-rename": "^1.2.2"
   },
   "dependencies": {
     "quick-local-ip": "^1.0.7"

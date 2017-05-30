@@ -7,111 +7,28 @@
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Уведомления</h1>
 {% if unread_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny  w3-text-awesome">Новые</h3>
-{% for notification in unread_notifications %}
-<div class="w3-vk-card w3-section .w3-custom-round-small w3-padding-large w3-container w3-small" style="background-color: white;">
-	<div class="margin-center">
-		<div class="w3-container w3-cell w3-cell-middle">
-			<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
-		</div>
-		<div class=" w3-cell w3-cell-middle">
-	{% if not notification.actor.is_stuff %}
-	    <span class="w3-text-blue">{{ notification.actor.first_name }} {{ notification.actor.last_name }} </span>
-	    <!-- LIKE VERB -->
-	    {% if notification.verb_str == 'like' %}
-	    	{% if notification.actor.vkuser.sex_str == 'парень' %}
-	    <span class="action">лайкнул ваш актуальный пост.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'девушка' %}
-	    <span class="action">лайкнула ваш актуальный пост.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'не определено' %}
-	    <span class="action">лайкнул(-ла) ваш актуальный пост.</span>
-	    	{% endif %}
-	    {% endif %}
-	    <!-- MESSAGE VERB -->
-	    {% if notification.verb_str == 'message' %}
-	    	{% if notification.actor.vkuser.sex_str == 'парень' %}
-	    <span class="action">оставил послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'девушка' %}
-	    <span class="action">оставила послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'не определено' %}	
-	    <span class="action">оставил(-ла) послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    {% endif %}
-	    <!-- PUBLISHED VERB -->
-	{% else %}
-		{% if notification.verb_str == 'published' %}
-		<span class="action">Ваш пост опубликован. </span>
-		{% endif %}
-		{% if notification.verb_str == 'unpublished' %}
-		<span class="action">Ваш пост не опубликован потому, что {{ notification.message }}.</span>
-		{% endif %}
-	{% endif %}
-		<p class="no-margin w3-text-gray">{{ notification.timestamp }}</p>
-		</div>
-	</div>
-</div>
-{% endfor %}
+{% include 'posts/notifications_list.html' with notifications_list=unread_notifications %}
 {% endif %}
+
+
 {% if read_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny w3-text-awesome">Просмотренные</h3>
-{% for notification in read_notifications %}
-<div class="w3-vk-card w3-section .w3-custom-round-small w3-padding-large w3-container w3-small" style="background-color: white;">
-	<div class="margin-center">
-		<div class="w3-container w3-cell w3-cell-middle">
-			<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
-		</div>
-		<div class=" w3-cell w3-cell-middle">
-	{% if not notification.actor.is_stuff %}
-	    <span class="w3-text-blue">{{ notification.actor.first_name }} {{ notification.actor.last_name }} </span>
-	    <!-- LIKE VERB -->
-	    {% if notification.verb_str == 'like' %}
-	    	{% if notification.actor.vkuser.sex_str == 'парень' %}
-	    <span class="action">лайкнул ваш актуальный пост.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'девушка' %}
-	    <span class="action">лайкнула ваш актуальный пост.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'не определено' %}
-	    <span class="action">лайкнул(-ла) ваш актуальный пост.</span>
-	    	{% endif %}
-	    {% endif %}
-	    <!-- MESSAGE VERB -->
-	    {% if notification.verb_str == 'message' %}
-	    	{% if notification.actor.vkuser.sex_str == 'парень' %}
-	    <span class="action">оставил послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'девушка' %}
-	    <span class="action">оставила послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    	{% if notification.actor.vkuser.sex_str == 'не определено' %}	
-	    <span class="action">оставил(-ла) послание к вашему актуальному посту.</span>
-	    	{% endif %}
-	    {% endif %}
-	    <!-- PUBLISHED VERB -->
-	{% else %}
-		{% if notification.verb_str == 'published' %}
-		<span class="action">Ваш пост опубликован. </span>
-		{% endif %}
-		{% if notification.verb_str == 'unpublished' %}
-		<span class="action">Ваш пост не опубликован потому, что {{ notification.message }}.</span>
-		{% endif %}
-	{% endif %}
-		<p class="no-margin w3-text-gray">{{ notification.timestamp }}</p>
-		</div>
-	</div>
-</div>
-{% endfor %}
+{% include 'posts/notifications_list.html' with notifications_list=read_notifications %}
 {% endif %}
+
+
+
 {% if not unread_notifications and not read_notifications %}
         <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
             <h3>Нет уведомлений пока.</h3>
             <span class="w3-jumbo">:(</span>
         </div>
 {% endif %}
+
+
 {% endblock %}
+
+
 {% block extra_scripts %}
 <script type="text/javascript">
 	

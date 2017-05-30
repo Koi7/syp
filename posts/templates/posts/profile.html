@@ -23,7 +23,7 @@
 <!-- PROFILE CARD -->
 <div class="w3-vk-card w3-section .w3-custom-round-small w3-white">
     <!-- DELETE PROFILE BUTTON -->
-    <button  id="delete_btn" class="w3-btn w3-white w3-text-blue  w3-padding-large">Удалить профиль <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    <button  id="delete_btn" class="w3-btn w3-white w3-text-blue  w3-padding-large"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
     <!-- PROFILE HEADER -->
     <header class="w3-container w3-padding-large w3-center">
         <!-- USER PHOTO -->
@@ -32,13 +32,13 @@
         <!-- USERNAME -->
         <span>{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>
         <!-- PLACE & AGE -->
-        {% if request.user.vkuser.place %}<span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>{% endif %}
-        <span id="age" class="w3-text-gray">{% if request.user.vkuser.age > 0 %}{{request.user.vkuser.age}} лет{% endif %}</span>
-        <!-- ABOUT -->
-        {% if request.user.vkuser.about %}<p><span class="w3-text-gray">О себе:</span><span id="about">{{ request.user.vkuser.about }}</span></p>{% endif %}
+        <span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>
+        {% if request.user.vkuser.age > 0 %}
+        <span id="age">{{request.user.vkuser.age}} лет</span>
+        {% endif %}
     </header>
     <!-- CONTROLS -->
-    <div id="profile_editor">
+    <footer id="profile_editor">
         <!-- CHANGE PLACE -->
         <div class="w3-container w3-padding-large pure-form">
             <p class="w3-text-gray">Город</p>
@@ -52,18 +52,13 @@
         <div class="w3-container w3-padding-large w3-center">
             <button id="save_btn" class="w3-btn w3-white w3-text-blue">Сохранить</button>
         </div>
-    </div>
+    </footer>
 </div>
 {% endblock content %}
 {% block extra_scripts %}
 <script type="text/javascript">
 
     $(document).ready(function () {
-
-        // toggle inputa visibility
-        $('#change').click(function(){
-            $('#profile_editor').toggle(300);
-        });
 
         //add event handler to save button
         $('#save_btn').click(function (){
@@ -75,8 +70,6 @@
                 data: {
                     csrfmiddlewaretoken: getCookie('csrftoken'),
                     place: $.trim($('#place_input').val()),
-                    age: $.trim($('#age_input').val()),
-                    about: $.trim($('#about_input').val())
                 },
                 context: this,
                 dataType: "json",
@@ -85,12 +78,6 @@
                         $(this).html("Отправлено");
                         // update user profile
                         $('#place').text(data.place);
-                        $('#age').text(data.age + " лет");
-                        $('#about').text(data.about);
-                        // hide inputs
-                        $('#profile_editor').delay(1000).toggle(300);
-                        $(this).html("Сохранить");
-                        $(this).attr('disabled', false);
                     }
                 }
             });

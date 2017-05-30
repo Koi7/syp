@@ -21,5 +21,6 @@ urlpatterns = [
                   url(r'^delete_photo(?:/(?P<qquuid>\S+))?', PhotoUploader.as_view(), name='delete_photo'),
                   url(r'^filter/$', PostsFilter.as_view(), name='posts_filter'),
                   url(r'^notifications/$', Notifications.as_view(), name='notifications'),
+                  url(r'^notifications/(?P<offset>[0-9]+)/$', Notifications.as_view(), name='notifications'),
                   url(r'^close_attention/$', CloseAttention.as_view(), name='close_attention'),
               ]

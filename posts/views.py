@@ -21,6 +21,7 @@ from operator import attrgetter
 from models import Post, Like, PostImage
 from faker import Factory
 from django.utils import timezone
+from django.core.paginator import Paginator
 import hashlib
 import re
 import json
@@ -176,10 +177,6 @@ class  PhotoUploader(View):
 class AddPostView(View):
     template_name = 'posts/add_post.html'
     redirect_to = 'posts'
-    words_to_filter = [u"хуй", u"пизда", u"ебать", u"блядь",
-                       "http", "https", ".com", ".ru", u".рф",
-                       u"ахуеть", ".biz", u"най сайт", u"на нашем сайте",
-                       u"пидор", u"пидарас"]
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         context = {
@@ -189,12 +186,6 @@ class AddPostView(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        # CHECK IF POST TEXT IS CLEAR
-        if not self.is_clear(request.POST.get('text')):
-            return JsonResponse({
-                'success': False,
-                'error_message': 'Текс содержит недопустимые слова. Прочитайте правила сайта.'
-                })
         # MAKE OTHER POST NOT ACTUAL
         if request.user.vkuser.has_active_post:
             actual_post = Post.objects.get(user=request.user, is_actual=True)
@@ -272,9 +263,6 @@ class DeletePost(View):
     def post(self, request):
         post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
         success = False
-        # first try to  image
-        if post_to_delete.image:
-            delete_image(post_to_delete.image.path)
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False
@@ -329,15 +317,17 @@ class LeaveMessage(View):
         post = Post.objects.get(id=request.POST.get('post_id'))
         like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
         success = False
-        if len(like_obj.message) == 0:
-            like_obj.message = request.POST.get('message')
+        err_msg = ''
+        if  not like_obj.message:
+            like_obj.message = request.POST.get('message').strip()
+            like_obj.save()
             success = True
-        like_obj.save()
-        # build json obj
-
+        else:
+            err_msg = "Уже отправляли послание к этому посту."
         return JsonResponse({
             'success': success,
-            'amount': post.likes
+            'likes_amount': post.likes,
+            'err_msg': err_msg
             })
 
 class WhoLiked(View):
@@ -357,7 +347,7 @@ class MyPosts(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        user_posts = Post.objects.filter(user=request.user)
+        user_posts = Post.objects.filter(user=request.user, rejected=False)
         context = {
             'user_posts_list': user_posts,
         }
@@ -387,7 +377,7 @@ class Posts(View):
             View for default page of logged user.
             Returns relevant posts list.
         """
-        post_list_by_place = list(Post.objects.filter(is_actual=True, place=request.user.vkuser.place))
+        post_list_by_place = list(Post.objects.filter(is_actual=True, accepted=True, place=request.user.vkuser.place))
         post_list_by_place.sort(key=attrgetter('pub_datetime'), reverse=True)
         context = {
             'posts_list': post_list_by_place,
@@ -405,13 +395,13 @@ class PostsFilter(View):
         anonymous = int(request.POST.get('anonymous'))
         posts_list = []
         if tag == "any" and place == -1:
-            posts_list = list(Post.objects.filter(is_actual=True))
+            posts_list = list(Post.objects.filter(is_actual=True, accepted=True))
         elif tag == "any" and place != -1:
-            posts_list = list(Post.objects.filter(is_actual=True, place=place))
+            posts_list = list(Post.objects.filter(is_actual=True, place=place, accepted=True))
         elif tag != "any" and place == -1:
-            posts_list = list(Post.objects.filter(is_actual=True, tag=tag))
+            posts_list = list(Post.objects.filter(is_actual=True, tag=tag, accepted=True))
         elif tag != "any" and place != -1:
-            posts_list = list(Post.objects.filter(is_actual=True, place=place, tag=tag))
+            posts_list = list(Post.objects.filter(is_actual=True, place=place, tag=tag, accepted=True))
         # filter by anonymous
         if anonymous == 0:
             posts_list =  [obj for obj in posts_list if obj.is_anonymous == True]
@@ -431,23 +421,59 @@ class PostsFilter(View):
 
 class Notifications(View):
     template_name = 'posts/notifications.html'
-    max_read_notifications = 5
+    notifications_per_request = 5
     @method_decorator(login_required(redirect_field_name=None))
-    def get(self, request):
-        # update notifications_timestamp
-        request.user.vkuser.notifications_timestamp = timezone.now()
-        request.user.save()
-        context = {            
-            'read_notifications': request.user.vkuser.read_notifications,
-            'unread_notifications': request.user.vkuser.unread_notifications,
-        }
-        # slice only 5 from read notifications
+    def get(self, request, offset=None):
+        # load data       
 
-        # mark unread notifications as read
-        for notification in context['unread_notifications']:
+        read_notifications = request.user.vkuser.read_notifications
+        unread_notifications = request.user.vkuser.unread_notifications
+        context = {}
+
+        # init paginators
+
+        read_paginator = Paginator(read_notifications, self.notifications_per_request)
+
+        # build context
+
+        # not ajax
+        if not offset:
+            page_read = read_paginator.page(1)
+
+            context = {
+                'read_notifications': page_read,
+                'unread_notifications': unread_notifications,
+                'next_read': page_read.has_next(),
+            }
+
+            self.mark_read(context['unread_notifications'])
+
+            return render(request, self.template_name, context)
+
+        # ajax
+        if offset and offset > 1:
+
+            page_read = unread_paginator.page(offset)
+
+            context = {
+                'read_notifications': unread_paginator.page(offset),
+                'has_next': page_read.has_next()
+            }
+
+            rendered_template = render_to_string(self.template_name, context)
+
+            return JsonResponse({
+                'success': True,
+                'rendered_template': rendered_template
+                })
+
+    
+        
+
+    def mark_read(self, unread_notifications):
+        for notification in unread_notifications:
             notification.unread = False
             notification.save()
-        return render(request, self.template_name, context)
 
 
 class CloseAttention(View):

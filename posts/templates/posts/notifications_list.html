@@ -1,0 +1,36 @@
+{% load static from staticfiles %}
+
+<ul class="w3-ul w3-margin">
+	{% for notification in notifications_list %}
+	<li class="w3-vk-card w3-white">
+		{% if notifications.actor.is_stuff %}
+			<div class="margin-center">
+				<div class="w3-container w3-cell w3-cell-middle">
+					<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				</div>
+				<div class=" w3-cell w3-cell-middle">
+					<p class="no-margin">			
+
+						{{ notification.verb_str }}
+
+					</p>
+				<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>
+				</div>
+			</div>
+		{% else %}
+			<div class="margin-center">
+				<div class="w3-container w3-cell w3-cell-middle">
+					<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				</div>
+				<div class=" w3-cell w3-cell-middle">
+					<p class="no-margin">
+					<span class="w3-text-blue">{{ notification.actor.first_name }} {{ notification.actor.last_name }}</span>
+					{{ notification.verb_str }}
+					</p>
+				<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>
+				</div>
+			</div>
+		{% endif %}
+	</li>
+	{% endfor %}
+</ul>

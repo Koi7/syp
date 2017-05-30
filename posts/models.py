@@ -11,6 +11,8 @@ from django.db.models.signals import post_save, post_delete, pre_save, post_init
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils.html import mark_safe
+from django.core.paginator import Paginator
 import hashlib
 import json
 import requests
@@ -123,16 +125,15 @@ class Post(models.Model):
         (4, "ищу компанию"),
         (5, "ищу с/о")
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    text = models.CharField(max_length=2000)
-    pub_datetime = models.DateTimeField(auto_now_add=True)
-    is_anonymous = models.BooleanField(default=True)
-    is_actual = models.BooleanField(default=True)
-    image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
-    place = models.IntegerField(choices=PLACE_CHOICES, default=-1)
-    tag = models.IntegerField(choices=TAG_CHOICES, default=-1)
-    accepted = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор' )
+    text = models.CharField('Текст', max_length=2000)
+    pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
+    is_anonymous = models.BooleanField('Анонимный?', default=True)
+    is_actual = models.BooleanField('Актуален?', default=True)
+    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
+    tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)
+    accepted = models.BooleanField('Одобрено', default=False)
+    rejected = models.BooleanField('Отвергнуто', default=False)
 
     @property
     def place_str(self):
@@ -153,6 +154,16 @@ class Post(models.Model):
     @property
     def photos(self):
         return self.postimage_set.all()
+
+    @property 
+    def photos_tags(self):
+        photos = self.postimage_set.all()
+        image_tags = []
+        if photos:
+            for photo in photos:
+                image_tags.append('<img src="{}" width="100" heigth="100">'.format(photo.image.url))
+        return mark_safe("".join(image_tags))
+
 
     def __unicode__(self):
         return u'{} {} {} {} {}'.format(self.id, self.text, self.pub_datetime, self.is_actual,
@@ -175,16 +186,16 @@ class Like(models.Model):
 class Notification(models.Model):
     VERB_CHOICES = (
         (-1, 'no'),
-        (0, 'like'),
-        (1, 'message'),
-        (2, 'accepted'),
-        (3, 'rejected')
+        (0, 'лайкну{} ваш акутальный пост.'),
+        (1, 'остави{} послание к вашему актуальному посту.'),
+        (2, 'Ваш пост опубликован.'),
+        (3, 'Ваш пост нарушает правила сайта, поэтому он не будет опубликован.')
     )
     user = models.ForeignKey(User)
     actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor', null=True)
     actor_object_id = models.CharField(max_length=255, default="")
     actor = GenericForeignKey('actor_content_type', 'actor_object_id')    
-    verb = models.CharField(choices=VERB_CHOICES, default=-1, max_length=20)
+    verb = models.IntegerField(choices=VERB_CHOICES, default=-1)
     target = models.ForeignKey(Post)
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
@@ -192,25 +203,33 @@ class Notification(models.Model):
     
     @property
     def verb_str(self):
-        return self.get_verb_display()
+        if self.verb == 0 or self.verb == 1:
+            if self.actor.vkuser.sex == 0:
+                return self.get_verb_display().format('л')
+            if self.actor.vkuser.sex == 1:
+                return self.get_verb_display().format('ла')
+            if self.actor.vkuser.sex == -1:
+                return self.get_verb_display().format('л(-а)')
+        else:
+            return self.get_verb_display()
 
     @receiver(post_save, sender=Like)
-    def notify_like(instance, created, **kwargs):
+    def notify_like_and_message(instance, created, **kwargs):
         """Create new notification if there a new like."""
         # If reciever is called on create method - return.
         # Create notification only if reciever is called on save method!!!
         if created:
             return
-        new_notification = Notification()
-        new_notification.user = instance.post.user
-        new_notification.actor_content_type = ContentType.objects.get_for_model(instance.user)
-        new_notification.actor_object_id = instance.user.id
-        # 0 means LIKE verb
+        new_notification = Notification(
+            user=instance.post.user,
+            actor_content_type=ContentType.objects.get_for_model(instance.user),
+            actor_object_id=instance.user.id,
+            target=instance.post
+        )
         if instance.message:
-            new_notification.verb = 'message'
+            new_notification.verb = 1
         else:
-            new_notification.verb = 'like'
-        new_notification.target = instance.post
+            new_notification.verb = 0
         new_notification.save()
 
     @receiver(post_save, sender=Post)
@@ -230,7 +249,7 @@ class Notification(models.Model):
     @receiver(post_save, sender=Post)
     def notify_rejected(instance, created, **kwargs):
         if instance.rejected:
-            new_notification = Notification(user=instance.user, verb=3, target=instance)
+            new_notification = Notification(user=instance.user, verb=3, target=instance, verb_long=reject_message)
             new_notification.save()
         else:
             try:
@@ -245,13 +264,19 @@ class Notification(models.Model):
     @receiver(post_delete, sender=Post)
     def deleted_all_related_notifications_post(instance, **kwargs):
         """ Deletes any Notification object connected to Post object being deleted. """
-        pass
+        try:
+            # try to delete notification
+            notifications_to_delete = Notification.objects.filter(target=instance)
+            for notification in notifications_to_delete:
+                notification.delete()
+        except Notification.DoesNotExist:
+            pass
 
     @receiver(post_delete, sender=Like)
     def deleted_all_related_notifications_like(instance, **kwargs):
         """ Deletes any Notification object connected to Like object being deleted. """
         try:
-            notifications_to_delete = Notification.objects.filter(user=instance.post.user, target=instance.post)
+            notifications_to_delete = Notification.objects.filter(user=instance.post.user, target=instance.post, verb=0) | Notification.objects.filter(user=instance.post.user, target=instance.post, verb=1)
             for notification in notifications_to_delete:
                 notification.delete()
         except Notification.DoesNotExist:

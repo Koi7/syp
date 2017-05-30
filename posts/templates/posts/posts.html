@@ -39,6 +39,11 @@
 
 var toggleRate = 100;
 
+function ToggleSendMessageControls(){
+	var post_id = $(this).data('post-id');
+	$('div.send-message-controls[data-post-id=' + post_id + ']').toggle(toggleRate);
+}
+
 function filter(place, tag_id, order, anonymous){
 	$('#posts_list').html('Ожидайте...');
 	$.ajax({
@@ -91,9 +96,7 @@ function LikeEvent(){
 function ClickSendButtonEventHandler(){
 	var post_id = $(this).data('post-id');
 	var input_value = $.trim($('input.w3-input[data-post-id=' + post_id + ']').val());
-	if (input_value.length > 0){
-		$(this).html('Отправляеться...');
-		$(this).attr('disabled', true);
+	if (input_value){
 		$.ajax({
 			type: "POST",
 			url: "{% url 'leave_message' %}", 			
@@ -106,7 +109,7 @@ function ClickSendButtonEventHandler(){
 			dataType: "json",
 			success: function (data){
 				if (data.success){
-					$(this).html('Отправлено <i class="fa fa-check" aria-hidden="true"></i>');
+					alert('Ваше послание отправлено.');
 					// update post state on front end
 					// make icon red
 					$('i.fa-heart[data-post-id=' + post_id + ']').removeClass('w3-text-gray');
@@ -114,24 +117,19 @@ function ClickSendButtonEventHandler(){
 					// change amount of likes
 					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.amount);
 				}else{
-					$(this).html('Уже отправляли!');
+					alert(data.err_msg);
 				}
-				//hide inputs
-				$('footer[data-post-id=' + post_id + ']').delay(2500).hide(toggleRate);
 			}
 		});
 
 	}
 }
 
-function ShowSendMessageControls(){
-	var post_id = $(this).data('post-id');
-	$('div.send-message-controls[data-post-id=' + post_id + ']').toggle(toggleRate);
-}
+
 
 $(document).on('click', '.fa-heart', LikeEvent);
 $(document).on('click', 'span.message-sender', ClickSendButtonEventHandler);
-$(document).on('click', 'i.show-send-message-controls', ShowSendMessageControls);
+$(document).on('click', 'i.show-send-message-controls', ToggleSendMessageControls);
 
 $(document).ready(function () {
 

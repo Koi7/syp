@@ -184,7 +184,6 @@
 
             // add event handler to send button
             $('#send').click(function(){
-                alert($("input[type='checkbox']").is(':checked'));
                 $.ajax({
                     type: "POST",
                     url: "{% url 'add_post' %}",          

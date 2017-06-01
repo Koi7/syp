@@ -38,6 +38,10 @@
 	background-color: #fafbfc;
 }
 
+.main-bg-color{
+	background-color: #edeef0;
+}
+
 .add-post-textarea-flat{
 	width:100%;
 	max-width: 100%;
@@ -49,6 +53,10 @@
 
 .d-block{
 	display: block!important;
+}
+
+.d-inline{
+	display: inline;
 }
 
 .no-margin{

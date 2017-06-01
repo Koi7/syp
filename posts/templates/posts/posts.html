@@ -15,6 +15,7 @@
 	{% include "posts/filter_panel.html" %}	
 	<!-- POST LIST -->
 	<div id="posts_list">
+	<p id="filter_loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
 {% if posts_list %}
 
 {% for post in posts_list %}
@@ -44,8 +45,8 @@ function ToggleSendMessageControls(){
 	$('div.send-message-controls[data-post-id=' + post_id + ']').toggle(toggleRate);
 }
 
-function filter(place, tag_id, order, anonymous){
-	$('#posts_list').html('Ожидайте...');
+function filter(place, tag_id, order, is_anonymous){
+	$('div#posts_list').html('<p id="filter_loader" class="w3-center w3-text-awesome">загрузка...</p>');
 	$.ajax({
 		type: "POST",
 		url: "{% url 'posts_filter' %}", 			
@@ -53,7 +54,7 @@ function filter(place, tag_id, order, anonymous){
 			place: place,
 			tag: tag_id,
 			order: order,
-			anonymous: anonymous,
+			is_anonymous: is_anonymous,
 			csrfmiddlewaretoken: getCookie('csrftoken')
 		},
 		context: this,

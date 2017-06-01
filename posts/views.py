@@ -20,7 +20,6 @@ from django.views import View
 from operator import attrgetter
 from models import Post, Like, PostImage
 from faker import Factory
-from django.utils import timezone
 from django.core.paginator import Paginator
 import hashlib
 import re
@@ -378,7 +377,6 @@ class Posts(View):
             Returns relevant posts list.
         """
         post_list_by_place = list(Post.objects.filter(is_actual=True, accepted=True, place=request.user.vkuser.place))
-        post_list_by_place.sort(key=attrgetter('pub_datetime'), reverse=True)
         context = {
             'posts_list': post_list_by_place,
         }
@@ -392,28 +390,22 @@ class PostsFilter(View):
         tag = request.POST.get('tag')
         place = int(request.POST.get('place'))
         order = request.POST.get('order')
-        anonymous = int(request.POST.get('anonymous'))
+        is_anonymous = True if int(request.POST.get('is_anonymous')) == 0 else False
         posts_list = []
+
+        # filtering 
+
         if tag == "any" and place == -1:
-            posts_list = list(Post.objects.filter(is_actual=True, accepted=True))
+            posts_list = Post.objects.filter(is_actual=True, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag == "any" and place != -1:
-            posts_list = list(Post.objects.filter(is_actual=True, place=place, accepted=True))
+            posts_list = Post.objects.filter(is_actual=True, place=place, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag != "any" and place == -1:
-            posts_list = list(Post.objects.filter(is_actual=True, tag=tag, accepted=True))
+            posts_list = Post.objects.filter(is_actual=True, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag != "any" and place != -1:
-            posts_list = list(Post.objects.filter(is_actual=True, place=place, tag=tag, accepted=True))
-        # filter by anonymous
-        if anonymous == 0:
-            posts_list =  [obj for obj in posts_list if obj.is_anonymous == True]
-        elif anonymous == 1:
-            posts_list =  [obj for obj in posts_list if obj.is_anonymous == False]
-        # order by date
-        if order == 'acs':
-            posts_list.sort(key=attrgetter('pub_datetime'), reverse=True)
-        else:
-            posts_list.sort(key=attrgetter('pub_datetime'))
+            posts_list = Post.objects.filter(is_actual=True, place=place, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
 
         rendered_template = render_to_string(self.template_name, {'posts_list': posts_list, 'request':request})
+
         return JsonResponse({
             'success': True,
             'rendered_template': rendered_template
@@ -421,6 +413,7 @@ class PostsFilter(View):
 
 class Notifications(View):
     template_name = 'posts/notifications.html'
+    render_template_name = 'posts/notifications_list.html'
     notifications_per_request = 5
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, offset=None):
@@ -429,7 +422,7 @@ class Notifications(View):
         read_notifications = request.user.vkuser.read_notifications
         unread_notifications = request.user.vkuser.unread_notifications
         context = {}
-
+        print len(read_notifications)
         # init paginators
 
         read_paginator = Paginator(read_notifications, self.notifications_per_request)
@@ -443,7 +436,8 @@ class Notifications(View):
             context = {
                 'read_notifications': page_read,
                 'unread_notifications': unread_notifications,
-                'next_read': page_read.has_next(),
+                'has_next': page_read.has_next(),
+                'next_page': page_read.next_page_number() if page_read.has_next() else 0,
             }
 
             self.mark_read(context['unread_notifications'])
@@ -451,20 +445,20 @@ class Notifications(View):
             return render(request, self.template_name, context)
 
         # ajax
-        if offset and offset > 1:
+        if offset > 1:
 
-            page_read = unread_paginator.page(offset)
+            page_read = read_paginator.page(offset)
 
             context = {
-                'read_notifications': unread_paginator.page(offset),
-                'has_next': page_read.has_next()
+                'notifications_list': read_paginator.page(offset)
             }
 
-            rendered_template = render_to_string(self.template_name, context)
+            rendered_template = render_to_string(self.render_template_name, context)
 
             return JsonResponse({
                 'success': True,
-                'rendered_template': rendered_template
+                'rendered_template': rendered_template,
+                'has_next': page_read.has_next(),
                 })
 
     

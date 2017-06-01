@@ -16,10 +16,6 @@
 
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Профиль</h1>
-<!-- CONFIRM PROFILE DELETION -->
-<div id="delete_confirmation" class="w3-panel w3-pale-red w3-leftbar w3-border-red no-display">
-    <p>Уверены что хотите удалить профиль ?<button id="delete_confirmation_yes" class="w3-btn w3-pale-red w3-text-red">Да</button> <button id="delete_confirmation_no" class="w3-btn w3-pale-red w3-text-blue">Нет</button></p>
-</div>
 <!-- PROFILE CARD -->
 <div class="w3-vk-card w3-section .w3-custom-round-small w3-white">
     <!-- DELETE PROFILE BUTTON -->
@@ -62,8 +58,6 @@
 
         //add event handler to save button
         $('#save_btn').click(function (){
-            $(this).html("Отправляется...");
-            $(this).attr('disabled', true);
             $.ajax({
                 type: "POST",
                 url: "{% url 'save_profile_editions' %}",
@@ -75,37 +69,36 @@
                 dataType: "json",
                 success: function(data){
                     if (data.success){
-                        $(this).html("Отправлено");
                         // update user profile
                         $('#place').text(data.place);
+                        alert("Сохранено");
                     }
                 }
             });
         });
 
         //add handler to delete button
-        $('#delete_btn').click(function () {
-            $('#delete_confirmation').toggle(100);
-        });
 
-        $('#delete_confirmation_no').click(function(){
-            $('#delete_confirmation').toggle(100);
-        });
+        $('#delete_btn').click(function(){
+            var deleteConfirmationResult = confirm("Вы действительно хотите удалить профиль?");
 
-        $('#delete_confirmation_yes').click(function(){
-            $.ajax({
-                type: "POST",
-                url: "{% url 'delete_user' %}",
-                data: {
-                    csrfmiddlewaretoken: getCookie('csrftoken')
-                },
-                dataType: "json",
-                success: function(data){
-                    if(data.success){
-                        location.reload();
+            if (deleteConfirmationResult) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'delete_user' %}",
+                    data: {
+                        csrfmiddlewaretoken: getCookie('csrftoken')
+                    },
+                    dataType: "json",
+                    success: function(data){
+                        if(data.success){
+                            location.reload();
+                        }
                     }
-                }
-            });
+                });
+
+            }
         });
     });
 </script>

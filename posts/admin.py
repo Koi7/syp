@@ -1,11 +1,13 @@
 # coding=utf-8
 from django.contrib import admin
 from models import Post
+from django.utils import timezone
 
 # post actions
 def make_accepted(modeladmin, request, queryset):
 	for post in queryset:
 		post.accepted = True
+		post.accepted_datetime = timezone.now()
 		post.save()
 make_accepted.short_description = 'Одобрить'
 

@@ -128,12 +128,16 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор' )
     text = models.CharField('Текст', max_length=2000)
     pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
+    accepted_datetime = models.DateTimeField('Одобрено', null=True)
     is_anonymous = models.BooleanField('Анонимный?', default=True)
     is_actual = models.BooleanField('Актуален?', default=True)
     place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
     tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)
     accepted = models.BooleanField('Одобрено', default=False)
     rejected = models.BooleanField('Отвергнуто', default=False)
+
+    class Meta:
+        ordering = ['-accepted_datetime']
 
     @property
     def place_str(self):
@@ -200,6 +204,9 @@ class Notification(models.Model):
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     unread = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-timestamp']
     
     @property
     def verb_str(self):

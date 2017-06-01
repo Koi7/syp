@@ -5,19 +5,28 @@
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Уведомления</h1>
+
+<!-- UNREAD NOTIFICATIONS -->
 {% if unread_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny  w3-text-awesome">Новые</h3>
-{% include 'posts/notifications_list.html' with notifications_list=unread_notifications %}
+<ul id="unread_list" class="w3-ul w3-margin">{% include 'posts/notifications_list.html' with notifications_list=unread_notifications %}</ul>
 {% endif %}
 
-
+<!-- READ NOTIFICATIONS -->
 {% if read_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny w3-text-awesome">Просмотренные</h3>
-{% include 'posts/notifications_list.html' with notifications_list=read_notifications %}
+<ul id="read_list" class="w3-ul w3-margin">{% include 'posts/notifications_list.html' with notifications_list=read_notifications %}</ul>
 {% endif %}
 
+<!-- LOAD MORE BUTTON -->
+{% if has_next %}
+<section class="w3-center">
+	<button data-offset="{{ next_page }}" id="load-more-btn" class="w3-btn w3-text-blue d-inline" style="background-color: #edeef0;">показать ещё</button>
+	<span id="loading-indicator" class="no-display w3-text-awesome">загрузка...</span>
+</section>
+{% endif %}
 
-
+<!-- NO NOTIFICATIONS -->
 {% if not unread_notifications and not read_notifications %}
         <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
             <h3>Нет уведомлений пока.</h3>
@@ -31,6 +40,70 @@
 
 {% block extra_scripts %}
 <script type="text/javascript">
-	
+
+	$(document).ready(function () {
+
+		var load_more_btn = $('button#load-more-btn');
+
+		if (load_more_btn) {
+
+			load_more_btn.click(function () {
+
+				$(this).toggle();
+
+				$('span#loading-indicator').toggle();
+
+				var page = parseInt($(this).data('offset'), 10);
+
+				var url = '/posts/notifications/offset/' + page;
+
+		 		$.ajax({
+
+		 			type: "GET",
+
+		 			url: url,
+
+		 			dataType: "json",
+
+		 			context: this,
+
+		 			success: function (data) {
+
+
+		 				$('ul#read_list').append(data.rendered_template);
+
+		 				// increment if has next page
+
+		 				if (data.has_next) {
+
+		 					// hide loader
+		 					$('span#loading-indicator').toggle();
+
+		 					//show button
+		 					$(this).toggle();
+
+		 					// increment 
+		 					$(this).data('offset', ++page);
+
+		 				} else {
+
+		 					// remove loader
+		 					$('span#loading-indicator').remove();
+
+		 					// remove button
+		 					$(this).remove();
+
+		 				}
+
+		 			}
+
+		 		});
+
+			});
+
+		}
+
+	});
+
 </script>
 {% endblock %}

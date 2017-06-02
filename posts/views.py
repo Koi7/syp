@@ -24,12 +24,9 @@ from django.core.paginator import Paginator
 import hashlib
 import re
 import json
+import shutil
 
 # UTILS
-
-def delete_image(path):
-    if os.path.isfile(path):
-        os.remove(path)
 
 def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
@@ -261,7 +258,19 @@ class DeletePost(View):
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
+        uid = post_to_delete.user.username
         success = False
+
+        # delete images instances
+
+        for photo in post_to_delete.photos:
+            photo.delete()
+
+        # delete images dir from HDD
+        if uid:
+            path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
+            shutil.rmtree(path, ignore_errors=True)
+
         if request.user == post_to_delete.user:
             if post_to_delete.is_actual:
                 request.user.vkuser.has_active_post = False

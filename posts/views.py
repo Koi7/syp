@@ -31,7 +31,24 @@ import shutil
 def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
 
+def delete_post_and_related_images(post_instance):
 
+    uid = post_instance.author.username
+
+    # DELETE RELATED POSTIMAGE INSTANCES
+
+    if post_instance.photos:
+        for post_image in post_instance.photos:
+            post_image.delete()
+
+    # ERASE USER IMAGE FOLDER FROM HDD
+    if uid:
+        path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
+        shutil.rmtree(path, ignore_errors=True)
+
+    # DELETE POST INSTANCE
+
+    post_instance.delete()
 
 def anonimous_check(user):
     return user.is_anonymous()
@@ -172,31 +189,35 @@ class  PhotoUploader(View):
 
 class AddPostView(View):
     template_name = 'posts/add_post.html'
-    redirect_to = 'posts'
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        context = {
-            'has_active_post': request.user.vkuser.has_active_post,
-        }
-        return render(request, 'posts/add_post.html', context)
+        return render(request, 'posts/add_post.html')
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        # MAKE OTHER POST NOT ACTUAL
-        if request.user.vkuser.has_active_post:
-            actual_post = Post.objects.get(user=request.user, is_actual=True)
-            actual_post.is_actual = False
-            actual_post.save()
+
+        # MAKE OTHER POST NOT ACTUAL AND DELETE IT
+
+        if request.user.vkuser.post:
+            delete_post_and_related_images(request.user.vkuser.post)
+            request.user.vkuser.post = None
+
         # BUILD NEW POST INSTANCE
-        post = Post()
-        post.user = request.user
-        post.text = request.POST.get('text')
-        post.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
-        post.place = request.POST.get('place')
-        post.tag = request.POST.get('tag')
+
+        post = Post(author=request.user,
+                    text=request.POST.get('text'),
+                    is_anonymous=True if request.POST.get('is_anonymous') == 'on' else False,
+                    place=request.POST.get('place'),
+                    tag=request.POST.get('tag')
+        )
         post.save()
-        # add tag
+
+        # ASSIGN TO USER
+
+        request.user.vkuser.post = post
+
         # IMAGE HANDLING
+
         if request.POST.get('photos_json_string'):
             uploaded_photos_info = json.loads(request.POST.get('photos_json_string'))
             post_photo_list = []
@@ -205,19 +226,15 @@ class AddPostView(View):
             if post_photo_list:
                 for post_photo in post_photo_list:
                     post_photo.post = post
-                    post_photo.save()       
-        request.user.vkuser.has_active_post = True
+                    post_photo.save()
+
+        # SAVE CHANGES 
+
         request.user.save()
+
         return JsonResponse({
             'success': True
             })
-
-    def is_clear(self, text):
-        for word in self.words_to_filter:
-            if bool(re.search(word, text)):
-                return False
-        return True
-
 
 class EditPost(View):
     template_name = 'posts/edit_post.html'
@@ -251,70 +268,37 @@ class EditPost(View):
             post_to_edit.save()
             return redirect('posts')
 
-
 class DeletePost(View):
-    redirect_to = 'posts'
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
-        post_to_delete = Post.objects.get(id=request.POST.get('post_id'))
-        uid = post_to_delete.user.username
-        success = False
+        
+        delete_post_and_related_images(request.user.vkuser.post)
 
-        # delete images instances
-
-        for photo in post_to_delete.photos:
-            photo.delete()
-
-        # delete images dir from HDD
-        if uid:
-            path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
-            shutil.rmtree(path, ignore_errors=True)
-
-        if request.user == post_to_delete.user:
-            if post_to_delete.is_actual:
-                request.user.vkuser.has_active_post = False
-                request.user.save()
-            post_to_delete.delete()
-            success = True
         return JsonResponse({
-            'success': success
+            'success': True
             })
-
-
-class MakePostNotRelevant(View):
-    redirect_to = 'posts'
-
-    @method_decorator(login_required(redirect_field_name=None))
-    def post(self, request):
-        post = Post.objects.get(id=request.POST.get('post_id'))
-        success = False
-        if request.user == post.user:
-            post.is_actual = False
-            request.user.vkuser.has_active_post = False
-            post.save()
-            request.user.save()
-            success = True
-        return JsonResponse({
-            'success': success
-        })
-
 
 class LikePost(View):
     redirect_to = 'posts'
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         post = Post.objects.get(id=request.POST.get('post_id'))
-        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
-        is_created = 0 # new like added
-        if created:
-            like_obj.save()
+        is_created = False
+        self_like = False
+        if not request.user == post.author:
+            like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
+            if created:
+                like_obj.save()
+            else:
+                like_obj.delete()
+                is_created = 1 # disliked
         else:
-            like_obj.delete()
-            is_created = 1 # disliked
+            self_like = True
         return JsonResponse({
             'is_created': is_created,
-            'likes_amount': post.likes
+            'likes_amount': post.likes,
+            'self_like': self_like
             })
 
 class LeaveMessage(View):
@@ -323,19 +307,25 @@ class LeaveMessage(View):
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         post = Post.objects.get(id=request.POST.get('post_id'))
-        like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)
-        success = False
+        self_like = False
         err_msg = ''
-        if  not like_obj.message:
-            like_obj.message = request.POST.get('message').strip()
-            like_obj.save()
-            success = True
+        success = False
+        if not request.user == post.author:
+            like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)            
+            if  not like_obj.message:
+                like_obj.message = request.POST.get('message').strip()
+                like_obj.save()
+                success = True
+            else:
+                err_msg = "Уже отправляли послание к этому посту."
         else:
-            err_msg = "Уже отправляли послание к этому посту."
+            self_like = True
+            success = False
         return JsonResponse({
             'success': success,
             'likes_amount': post.likes,
-            'err_msg': err_msg
+            'err_msg': err_msg,
+            'self_like': self_like 
             })
 
 class WhoLiked(View):
@@ -349,17 +339,12 @@ class WhoLiked(View):
         }
         return render(request, self.template_name, context)
 
-
 class MyPosts(View):
     template_name = 'posts/my_posts.html'
 
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        user_posts = Post.objects.filter(user=request.user, rejected=False)
-        context = {
-            'user_posts_list': user_posts,
-        }
-        return render(request, self.template_name, context)
+        return render(request, self.template_name)
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'
@@ -375,7 +360,6 @@ class LikedPosts(View):
         }
         return render(request, self.template_name, context)
 
-
 class Posts(View):
     template_name = 'posts/posts.html'
 
@@ -385,7 +369,7 @@ class Posts(View):
             View for default page of logged user.
             Returns relevant posts list.
         """
-        post_list_by_place = list(Post.objects.filter(is_actual=True, accepted=True, place=request.user.vkuser.place))
+        post_list_by_place = list(Post.objects.filter(accepted=True, place=request.user.vkuser.place))
         context = {
             'posts_list': post_list_by_place,
         }
@@ -395,23 +379,23 @@ class PostsFilter(View):
     template_name = 'posts/filtered_posts.html'
 
     @method_decorator(login_required(redirect_field_name=None))
-    def post(self, request):
-        tag = request.POST.get('tag')
-        place = int(request.POST.get('place'))
-        order = request.POST.get('order')
-        is_anonymous = True if int(request.POST.get('is_anonymous')) == 0 else False
+    def get(self, request, *args, **kwargs):
+        tag = request.GET.get('tag')
+        place = int(request.GET.get('place'))
+        order = request.GET.get('order')
+        is_anonymous = True if int(request.GET.get('is_anonymous')) == 0 else False
         posts_list = []
 
         # filtering 
 
         if tag == "any" and place == -1:
-            posts_list = Post.objects.filter(is_actual=True, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+            posts_list = Post.objects.filter(accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag == "any" and place != -1:
-            posts_list = Post.objects.filter(is_actual=True, place=place, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+            posts_list = Post.objects.filter(place=place, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag != "any" and place == -1:
-            posts_list = Post.objects.filter(is_actual=True, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+            posts_list = Post.objects.filter(tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
         elif tag != "any" and place != -1:
-            posts_list = Post.objects.filter(is_actual=True, place=place, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+            posts_list = Post.objects.filter(place=place, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
 
         rendered_template = render_to_string(self.template_name, {'posts_list': posts_list, 'request':request})
 
@@ -478,7 +462,6 @@ class Notifications(View):
             notification.unread = False
             notification.save()
 
-
 class CloseAttention(View):
 
     @method_decorator(login_required(redirect_field_name=None))
@@ -495,7 +478,6 @@ class Profile(View):
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, self.template_name)
-
 
 @login_required(redirect_field_name=None)
 def logout_view(request):

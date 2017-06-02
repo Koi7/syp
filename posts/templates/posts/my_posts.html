@@ -11,10 +11,10 @@
 {% block content %}
 	<!-- PAGE HEADER -->
 	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мои посты</h1>
-	{% if user_posts_list %}
-		{% for post in user_posts_list %}
-			{% include 'posts/post_card.html' with editable=True %}
-		{% endfor %}
+	{% if request.user.vkuser.post %}
+
+	{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
+
 	{% else %}
         <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
             <h3>Вы еще ничего не писали.</h3>
@@ -27,27 +27,6 @@
 	<script type="text/javascript">
 	 $(document).ready(function () {
 
-		// make post not relevant event handler
-		$('button.make-not-actual').click(function (){
-			var post_id = $(this).data('post-id');
-	 		$.ajax({
-	 			type: "POST",
-	 			url: "{% url 'make_post_not_relevant' %}", 			
-	 			data: {
-	 				post_id: post_id,
-	 				csrfmiddlewaretoken: getCookie('csrftoken')
-	 			},
-	 			context: this,
-	 			dataType: "json",
-	 			success: function (data){
-	 				if (data.success){
-	 					$(this).html('Готово');
-	 					$(this).delay(30000).remove();
-	 					$('span.actuality-indicator[data-post-id=' + post_id + ']').remove();
-	 				}
-	 			}
-	 		});
-		});
 		//delete button event handler
 		$('button.delete').click(function(){
 			var post_id = $(this).data('post-id');

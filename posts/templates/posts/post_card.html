@@ -12,7 +12,7 @@
 			<span data-post-id="{{ post.id }}" class="user-name">
 				{% if not post.is_anonymous %}
 
-					{{ post.user.first_name }} {{ post.user.last_name }}
+					{{ post.author.first_name }} {{ post.author.last_name }}
 
 				{% else %}
 
@@ -65,12 +65,6 @@
 	{% else %}
 		<div class="w3-row-padding">
 			<div class="w3-container w3-padding-4 w3-right">
-				<!-- MAKE NOT ACTUAL AND DELETE BUTTONS -->
-				{% if post.is_actual %}
-				<button data-post-id="{{ post.id }}" class="make-not-actual w3-btn w3-white w3-text-blue w3-center">
-					Сделать не ауктальным <i class="fa fa-heartban" aria-hidden="true"></i>
-				</button>
-				{% endif %}
 				<!-- DELETE BUTTON -->
 				<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center">
 					Удалить <i class="fa fa-trash-o" aria-hidden="true"></i>

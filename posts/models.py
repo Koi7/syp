@@ -17,7 +17,84 @@ import hashlib
 import json
 import requests
 import datetime
+
+# utils 
+
+def get_image_path(instance, filename):
+    extension = instance.filename.split('.')[1]
+    vk_uid = instance.user.username
+    return os.path.join('photos', str(instance.user.username),
+                        '{}.{}'.format(instance.id, extension))
+
 # Create your models here.
+
+class Post(models.Model):
+    # 0  is Sevast
+    # 1  is Simf
+    # 2  is Yalta
+    PLACE_CHOICES = (
+        (-1, ""),
+        (0, "Севастополь"),
+        (1, "Симферополь"),
+        (2, "Ялта"),
+    )
+    # 0  is Sevast
+    # 1  is Simf
+    # 2  is Yalta
+    TAG_CHOICES = (
+        (-1, ""),
+        (0, "ищу парня"),
+        (1, "ищу девушку"),
+        (2, "ищу друга"),
+        (3, "ищу подругу"),
+        (4, "ищу компанию"),
+        (5, "ищу с/о")
+    )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор')
+    text = models.CharField('Текст', max_length=2000)
+    pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
+    accepted_datetime = models.DateTimeField('Одобрено', null=True)
+    is_anonymous = models.BooleanField('Анонимный?', default=True)
+    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
+    tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)
+    accepted = models.BooleanField('Одобрено', default=False)
+    rejected = models.BooleanField('Отвергнуто', default=False)
+
+    class Meta:
+        ordering = ['-accepted_datetime']
+
+    @property
+    def place_str(self):
+        return self.get_place_display()
+        
+    @property
+    def tag_str(self):
+        return self.get_tag_display()
+
+    @property
+    def likes(self):
+        return self.like_set.all().count()
+
+    @property
+    def liked(self):
+        return self.like_set.all()
+
+    @property
+    def photos(self):
+        return self.postimage_set.all()
+
+    @property 
+    def photos_tags(self):
+        photos = self.postimage_set.all()
+        image_tags = []
+        if photos:
+            for photo in photos:
+                image_tags.append('<img src="{}" width="100" heigth="100">'.format(photo.image.url))
+        return mark_safe("".join(image_tags))
+
+
+    def __unicode__(self):
+        return u'{} {} {} {}'.format(self.id, self.text, self.pub_datetime, self.is_anonymous)
 
 # custom user one-to-one model
 class VKUser(models.Model):
@@ -36,12 +113,10 @@ class VKUser(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
-    has_active_post = models.BooleanField(default=False)
     place = models.IntegerField(choices=PLACE_CHOICES, default=1)
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
     age = models.IntegerField(default=0)
     sex = models.IntegerField(choices=SEX_CHOICES, default=-1)
-    about = models.CharField(max_length=4000, default="")
-    notifications_timestamp = models.DateTimeField(null=True)
     has_closed_attention = models.BooleanField(default=False)
 
     @property
@@ -96,83 +171,6 @@ class VKUser(models.Model):
         #             user.last_name = user_data['last_name']
         #         user.vkuser.save()
 
-
-def get_image_path(instance, filename):
-    extension = instance.filename.split('.')[1]
-    vk_uid = instance.user.username
-    return os.path.join('photos', str(instance.user.username),
-                        '{}.{}'.format(instance.id, extension))
-
-class Post(models.Model):
-    # 0  is Sevast
-    # 1  is Simf
-    # 2  is Yalta
-    PLACE_CHOICES = (
-        (-1, ""),
-        (0, "Севастополь"),
-        (1, "Симферополь"),
-        (2, "Ялта"),
-    )
-    # 0  is Sevast
-    # 1  is Simf
-    # 2  is Yalta
-    TAG_CHOICES = (
-        (-1, ""),
-        (0, "ищу парня"),
-        (1, "ищу девушку"),
-        (2, "ищу друга"),
-        (3, "ищу подругу"),
-        (4, "ищу компанию"),
-        (5, "ищу с/о")
-    )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор' )
-    text = models.CharField('Текст', max_length=2000)
-    pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
-    accepted_datetime = models.DateTimeField('Одобрено', null=True)
-    is_anonymous = models.BooleanField('Анонимный?', default=True)
-    is_actual = models.BooleanField('Актуален?', default=True)
-    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
-    tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)
-    accepted = models.BooleanField('Одобрено', default=False)
-    rejected = models.BooleanField('Отвергнуто', default=False)
-
-    class Meta:
-        ordering = ['-accepted_datetime']
-
-    @property
-    def place_str(self):
-        return self.get_place_display()
-        
-    @property
-    def tag_str(self):
-        return self.get_tag_display()
-
-    @property
-    def likes(self):
-        return self.like_set.all().count()
-
-    @property
-    def liked(self):
-        return self.like_set.all()
-
-    @property
-    def photos(self):
-        return self.postimage_set.all()
-
-    @property 
-    def photos_tags(self):
-        photos = self.postimage_set.all()
-        image_tags = []
-        if photos:
-            for photo in photos:
-                image_tags.append('<img src="{}" width="100" heigth="100">'.format(photo.image.url))
-        return mark_safe("".join(image_tags))
-
-
-    def __unicode__(self):
-        return u'{} {} {} {} {}'.format(self.id, self.text, self.pub_datetime, self.is_actual,
-                                           self.is_anonymous)
-
 class PostImage(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     user = models.ForeignKey(User, null=True)
@@ -185,7 +183,6 @@ class Like(models.Model):
     post = models.ForeignKey(Post)
     message = models.CharField(max_length=500, default="")
     created = models.DateTimeField(auto_now_add=True)
-
 
 class Notification(models.Model):
     VERB_CHOICES = (
@@ -228,9 +225,9 @@ class Notification(models.Model):
         if created:
             return
         new_notification = Notification(
-            user=instance.post.user,
+            user=instance.post.author,
             actor_content_type=ContentType.objects.get_for_model(instance.user),
-            actor_object_id=instance.user.id,
+            actor_object_id=instance.author.id,
             target=instance.post
         )
         if instance.message:
@@ -242,12 +239,12 @@ class Notification(models.Model):
     @receiver(post_save, sender=Post)
     def notify_accepted(instance, created, **kwargs):
         if instance.accepted:
-            new_notification = Notification(user=instance.user, verb=2, target=instance)
+            new_notification = Notification(user=instance.author, verb=2, target=instance)
             new_notification.save()
         else:
             try:
                 # try to delete notification
-                notifications_to_delete = Notification.objects.filter(user=instance.user, target=instance, verb=2)
+                notifications_to_delete = Notification.objects.filter(user=instance.author, target=instance, verb=2)
                 for notification in notifications_to_delete:
                     notification.delete()
             except Notification.DoesNotExist:
@@ -256,12 +253,12 @@ class Notification(models.Model):
     @receiver(post_save, sender=Post)
     def notify_rejected(instance, created, **kwargs):
         if instance.rejected:
-            new_notification = Notification(user=instance.user, verb=3, target=instance, verb_long=reject_message)
+            new_notification = Notification(user=instance.author, verb=3, target=instance, verb_long=reject_message)
             new_notification.save()
         else:
             try:
                 # try to delete notification
-                notifications_to_delete = Notification.objects.filter(user=instance.user, target=instance, verb=3)
+                notifications_to_delete = Notification.objects.filter(user=instance.author, target=instance, verb=3)
                 for notification in notifications_to_delete:
                     notification.delete()
             except Notification.DoesNotExist:
@@ -283,13 +280,11 @@ class Notification(models.Model):
     def deleted_all_related_notifications_like(instance, **kwargs):
         """ Deletes any Notification object connected to Like object being deleted. """
         try:
-            notifications_to_delete = Notification.objects.filter(user=instance.post.user, target=instance.post, verb=0) | Notification.objects.filter(user=instance.post.user, target=instance.post, verb=1)
+            notifications_to_delete = Notification.objects.filter(user=instance.post.author, target=instance.post, verb=0) | Notification.objects.filter(user=instance.post.author, target=instance.post, verb=1)
             for notification in notifications_to_delete:
                 notification.delete()
         except Notification.DoesNotExist:
             pass
-
-
 
 # custom authentication backend
 class HashBackend(object):

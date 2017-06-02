@@ -97,10 +97,10 @@
     <!-- PAGE HEADER -->
     <h1 class="w3-padding-tiny w3-center w3-text-awesome">Новый пост</h1>
     <!-- USER ALREADY HAS ACTUAL POST ALERT -->
-    {% if has_active_post and not request.user.vkuser.has_closed_attention %}
+    {% if request.user.vkuser.post and not request.user.vkuser.has_closed_attention %}
     <div id="attention" class="w3-vk-card-noshadow w3-text-awesome">
         <p class="no-margin w3-right-align"><i id="close-attention" class="fa fa-times pointer" aria-hidden="true"></i></p>
-        <p class="w3-padding-tiny">ВНИМАНИЕ! У Вас уже есть актуальный пост. Если вы напишите новый - предыдущий станет не актуальным и его никто больше не увидит.</p>
+        <p class="w3-padding-tiny">ВНИМАНИЕ! У Вас уже есть актуальный пост. Если вы напишите новый - предыдущий будет удален.</p>
     </div>
     {% endif %}
     <!-- ADD POST INPUTS -->

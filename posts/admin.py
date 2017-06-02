@@ -20,21 +20,19 @@ make_rejected.short_description = 'Отвергнуть'
 class PostAdmin(admin.ModelAdmin):
 
 	list_display = (
-			'user',
 			'text',
 			'photo_tag_verbose',
 			'pub_datetime',
 			'place',
 			'tag',
 			'is_anonymous',
-			'is_actual',
 			'accepted',
 			'rejected'
 	)
 
 	list_select_related = True
 
-	list_filter = ['is_actual', 'accepted', 'rejected', 'place']
+	list_filter = ['accepted', 'rejected', 'place']
 
 	actions = [make_accepted, make_rejected]
 

@@ -33,7 +33,7 @@
       <span class="w3-badge">{{  request.user.vkuser.unread_notifications_amount }}</span>
       {% endif %}
       </a>
-      <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-history" aria-hidden="true"></i>  Мои посты</a>
+      <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-history" aria-hidden="true"></i>  Мой пост</a>
 	    <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-heart-o" aria-hidden="true"></i> Лайкнутые</a>
 	    <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-plus-square-o" aria-hidden="true"></i> Новый пост</a>
       <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-user-circle-o" aria-hidden="true"></i> Профиль</a>

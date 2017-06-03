@@ -25,10 +25,7 @@
 {% endfor %}
 
 {% else %}
-        <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
-            <h3>Нет постов пока.</h3>
-            <span class="w3-jumbo">:(</span>
-        </div>
+{% include 'posts/no_results.html' with message="Нет постов пока." %}
 {% endif %}
 	</div>
 	<!-- END POST LIST -->

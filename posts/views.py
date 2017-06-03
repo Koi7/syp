@@ -324,8 +324,8 @@ class WhoLiked(View):
     template_name = 'posts/who_liked.html'
 
     @method_decorator(login_required(redirect_field_name=None))
-    def get(self, request, post_id):
-        post = Post.objects.get(id=post_id)
+    def get(self, request):
+        post = Post.objects.get(id=request.GET.get('post_id'))
         context = {
             'post': post,
         }

@@ -14,9 +14,6 @@
     {% endfor %}
 
     {% else %}
-    <div class="w3-container w3-padding-jumbo w3-center w3-text-gray">
-        <h3>Вам ничего не понравилось.</h3>
-        <span class="w3-jumbo">:(</span>
-    </div>
+    {% include 'posts/no_results.html' with message="Вы еще не лайкнули ни одного поста." %}
     {% endif %}
 {% endblock %}

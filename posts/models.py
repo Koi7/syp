@@ -227,7 +227,7 @@ class Notification(models.Model):
         new_notification = Notification(
             user=instance.post.author,
             actor_content_type=ContentType.objects.get_for_model(instance.user),
-            actor_object_id=instance.author.id,
+            actor_object_id=instance.user.id,
             target=instance.post
         )
         if instance.message:

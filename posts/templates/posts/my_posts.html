@@ -29,22 +29,25 @@
 
 		//delete button event handler
 		$('button.delete').click(function(){
-			var post_id = $(this).data('post-id');
-	 		$.ajax({
-	 			type: "POST",
-	 			url: "{% url 'delete_post' %}", 			
-	 			data: {
-	 				post_id: post_id,
-	 				csrfmiddlewaretoken: getCookie('csrftoken')
-	 			},
-	 			context: this,
-	 			dataType: "json",
-	 			success: function (data){
-	 				if (data.success){
-	 					$('div.w3-vk-card[data-post-id=' + post_id + ']').remove();
-	 				}
-	 			}
-	 		});
+			delete_confirmation = confirm('Вы действительно хотите удалить ваш пост?');
+			if (delete_confirmation) {
+				var post_id = $(this).data('post-id');
+		 		$.ajax({
+		 			type: "POST",
+		 			url: "{% url 'delete_post' %}", 			
+		 			data: {
+		 				post_id: post_id,
+		 				csrfmiddlewaretoken: getCookie('csrftoken')
+		 			},
+		 			context: this,
+		 			dataType: "json",
+		 			success: function (data){
+		 				if (data.success){
+		 					$('div.w3-vk-card[data-post-id=' + post_id + ']').remove();
+		 				}
+		 			}
+		 		});
+			}
 		});
 	 });
 	</script>

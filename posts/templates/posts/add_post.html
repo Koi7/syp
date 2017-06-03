@@ -184,12 +184,24 @@
 
             // add event handler to send button
             $('#send').click(function(){
+
+                // prevent sending if there is no text
+
+                text =  $('textarea#post_text').val();
+
+                if (!text){
+                    alert('Нечего отправлять. Заполните форму.');
+                    return;
+                }
+
+                text = $('textarea#post_text').val();
+
                 $.ajax({
                     type: "POST",
                     url: "{% url 'add_post' %}",          
                     data: {
                         csrfmiddlewaretoken: getCookie('csrftoken'),
-                        text: $('textarea#post_text').val(),
+                        text: text,
                         is_anonymous: $("input[type='checkbox']").is(':checked'),
                         photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
                         tag: $('#tags').val(),

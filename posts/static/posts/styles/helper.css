@@ -71,6 +71,10 @@
 	margin: 0 auto!important;
 }
 
+.justify-text{
+	text-align: justify;
+}
+
 input:focus{
     outline: none;
 }

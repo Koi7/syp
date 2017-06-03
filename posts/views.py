@@ -146,20 +146,12 @@ class SaveProfileEditions(View):
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         place = request.POST.get('place')
-        age = request.POST.get('age')
-        about = request.POST.get('about')
         if place:
             request.user.vkuser.place = int(place)
-        if age:
-            request.user.vkuser.age = age
-        if about:
-            request.user,vkuser.about = about
         request.user.save()
         return JsonResponse({
             'success': True,
-            'place': request.user.vkuser.place_str,
-            'age': request.user.vkuser.age,
-            'about': request.user.vkuser.about,
+            'place': request.user.vkuser.place_str
             })
 
 class  PhotoUploader(View):

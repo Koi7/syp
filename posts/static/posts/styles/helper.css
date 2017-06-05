@@ -75,8 +75,8 @@
 	text-align: justify;
 }
 
-.filter-item-center{
-	width: 160px;
+.filter-item-center, .filter-select-fixed-width{
+	width: 165px;
 }
 
 input:focus{

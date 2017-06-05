@@ -144,7 +144,7 @@ function ClickSendButtonEventHandler(){
 					$('i.fa-heart[data-post-id=' + post_id + ']').removeClass('w3-text-gray');
 					$('i.fa-heart[data-post-id=' + post_id + ']').addClass('w3-text-red');
 					// change amount of likes
-					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.amount);
+					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 				} else {
 					if (data.self_like) {
 						alert('Безсмысленно отправлять послание самому себе =).');
@@ -196,8 +196,6 @@ function loadMore() {
 
 		});
 }
-
-
 
 $(document).on('click', '.fa-heart', LikeEvent);
 $(document).on('click', 'span.message-sender', ClickSendButtonEventHandler);

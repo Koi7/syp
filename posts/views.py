@@ -320,7 +320,7 @@ class LeaveMessage(View):
     def post(self, request):
         post = Post.objects.get(id=request.POST.get('post_id'))
         self_like = False
-        err_msg = ''
+        err_msg = ''  
         success = False
         if not request.user == post.author:
             like_obj, created = Like.objects.get_or_create(user=request.user, post_id=post.id)            

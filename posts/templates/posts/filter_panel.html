@@ -5,7 +5,7 @@
 		<div class="w3-col  l3">
 			<label for="filter_place" class="w3-padding-tiny w3-text-awesome d-block">город</label>
 		    <select id="filter_place">
-		    	<option value="-1">любой</option>
+		    	<option value="any">любой</option>
 		        <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %} >Севастополь</option>
 		        <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %} >Симферополь</option>
 		        <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %} >Ялта</option>
@@ -36,10 +36,11 @@
 	    <div class="w3-col l3">
 		    <label for="filter_" class="w3-padding-tiny w3-text-awesome d-block">анонимность</label>
 		    <select id="filter_anonymous">
-		        <option value="-1" selected>любые</option>
+		        <option value="any" selected>любые</option>
 		        <option value="0">анонимные</option>
 		        <option value="1">не анонимные</option>
 		    </select>
 	    </div>		   	
 	</div>
 </div>
+<p id="filter_loader" class="w3-center w3-text-awesome no-display">загрузка...</p>

@@ -1,9 +1,0 @@
-{% load static from staticfiles %}
-{% if posts_list %}
-{% for post in posts_list %}
-	{% include "posts/post_card.html" %}
-{% endfor %}
-
-{% else %}
-{% include 'posts/no_results.html' with message="Ничего не нашлось." %}
-{% endif %}

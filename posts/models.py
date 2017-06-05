@@ -38,9 +38,6 @@ class Post(models.Model):
         (1, "Симферополь"),
         (2, "Ялта"),
     )
-    # 0  is Sevast
-    # 1  is Simf
-    # 2  is Yalta
     TAG_CHOICES = (
         (-1, ""),
         (0, "ищу парня"),
@@ -48,7 +45,7 @@ class Post(models.Model):
         (2, "ищу друга"),
         (3, "ищу подругу"),
         (4, "ищу компанию"),
-        (5, "ищу с/о")
+        (5, "ищу с/о"),
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор')
     text = models.CharField('Текст', max_length=2000)

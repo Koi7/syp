@@ -50,6 +50,26 @@ def delete_post_and_related_images(post_instance):
 
     post_instance.delete()
 
+def filter(place='any', tag='any', order='desc', is_anonymous=-1):
+
+    post_list = []
+    filters = {
+        'accepted': True,
+    }
+
+    if not place == 'any':
+        filters['place'] = place
+    if not tag == 'any':
+        filters['tag'] = tag
+    if not is_anonymous == 'any':
+        filters['is_anonymous'] = True if is_anonymous == '0' else False
+
+    print filters
+
+    posts_list = Post.objects.filter(**filters).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+
+    return posts_list
+
 def anonimous_check(user):
     return user.is_anonymous()
 
@@ -154,7 +174,7 @@ class SaveProfileEditions(View):
             'place': request.user.vkuser.place_str
             })
 
-class  PhotoUploader(View):
+class PhotoUploader(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
@@ -354,47 +374,92 @@ class LikedPosts(View):
 
 class Posts(View):
     template_name = 'posts/posts.html'
-
+    ajax_post_list_template = 'posts/post_list.html'
+    no_results_template = 'posts/no_results_html'
+    post_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
+
         """
             View for default page of logged user.
             Returns relevant posts list.
         """
-        post_list_by_place = list(Post.objects.filter(accepted=True, place=request.user.vkuser.place))
+
+        # GET PARAMETERS 
+
+        place = request.user.vkuser.place if not request.GET.get('place') else request.GET.get('place')
+        tag = "any" if not request.GET.get('tag') else request.GET.get('tag')
+        order = "desc" if not request.GET.get('order') else request.GET.get('order')
+        is_anonymous = 'any' if not request.GET.get('is_anonymous') else request.GET.get('is_anonymous')
+
+        # FILTER POSTS
+
+        filtered_posts = filter(place, tag, order, is_anonymous)
+
+        # INIT PAGINATOR
+
+        filtered_posts_paginator = Paginator(filtered_posts, self.post_per_request)
+
+        # BUILD CONTEXT
+
+        context = {}
+
+
+        filtered_posts_page = filtered_posts_paginator.page(1)
+
         context = {
-            'posts_list': post_list_by_place,
+            'posts_list': filtered_posts_page,
+            'has_next': filtered_posts_page.has_next(),
+            'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0
         }
+
         return render(request, self.template_name, context)
 
-class PostsFilter(View):
-    template_name = 'posts/filtered_posts.html'
 
+
+class PostsFilter(View):
+    template_name = 'posts/post_list.html'
+    no_results_template = 'posts/no_results.html'
+    post_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, *args, **kwargs):
-        tag = request.GET.get('tag')
-        place = int(request.GET.get('place'))
-        order = request.GET.get('order')
-        is_anonymous = True if int(request.GET.get('is_anonymous')) == 0 else False
-        posts_list = []
 
-        # filtering 
+        # GET PARAMETERS
 
-        if tag == "any" and place == -1:
-            posts_list = Post.objects.filter(accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
-        elif tag == "any" and place != -1:
-            posts_list = Post.objects.filter(place=place, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
-        elif tag != "any" and place == -1:
-            posts_list = Post.objects.filter(tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
-        elif tag != "any" and place != -1:
-            posts_list = Post.objects.filter(place=place, tag=tag, accepted=True, is_anonymous=is_anonymous).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+        place = request.user.vkuser.place if not request.GET.get('place') else request.GET.get('place')
+        tag = "any" if not request.GET.get('tag') else request.GET.get('tag')
+        order = "desc" if not request.GET.get('order') else request.GET.get('order')
+        is_anonymous = 'any' if not request.GET.get('is_anonymous') else request.GET.get('is_anonymous')
+        offset = 1 if not request.GET.get('offset') else request.GET.get('offset')
 
-        rendered_template = render_to_string(self.template_name, {'posts_list': posts_list, 'request':request})
+        # FILTER POSTS 
+
+        filtered_posts = filter(place, tag, order, is_anonymous)
+
+        # INIT PAGINATOR 
+
+        filtered_posts_paginator = Paginator(filtered_posts, self.post_per_request)
+
+        # GET PAGE
+
+        filtered_posts_page = filtered_posts_paginator.page(offset)
+
+
+        # RENDER
+
+        rendered_template = ''
+
+        if filtered_posts_page:
+            rendered_template = render_to_string(self.template_name, {'posts_list': filtered_posts_page, 'request':request})
+        else:
+            rendered_template = render_to_string(self.no_results_template, {'message': 'Ничего не нашлось.'})
 
         return JsonResponse({
             'success': True,
-            'rendered_template': rendered_template
-            })
+            'rendered_template': rendered_template,
+            'has_next': filtered_posts_page.has_next(),
+            'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0
+        })
 
 class Notifications(View):
     template_name = 'posts/notifications.html'
@@ -402,12 +467,14 @@ class Notifications(View):
     notifications_per_request = 5
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, offset=None):
+
         # load data       
 
         read_notifications = request.user.vkuser.read_notifications
         unread_notifications = request.user.vkuser.unread_notifications
         context = {}
         print len(read_notifications)
+
         # init paginators
 
         read_paginator = Paginator(read_notifications, self.notifications_per_request)

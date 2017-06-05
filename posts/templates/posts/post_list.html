@@ -1,0 +1,5 @@
+{% load static from staticfiles %}
+
+{% for post in posts_list %}
+	{% include "posts/post_card.html" %}
+{% endfor %}

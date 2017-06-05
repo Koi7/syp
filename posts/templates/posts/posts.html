@@ -13,53 +13,81 @@
 	<h1 class="w3-padding-tiny w3-text-awesome w3-center">Посты</h1>
 	<!-- FILTERS -->
 	{% include "posts/filter_panel.html" %}	
-	<!-- POST LIST -->
-	<div id="posts_list">
-	<p id="filter_loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
-{% if posts_list %}
+	<!-- POST LIST CONTAINER -->
+	<div id="post-list-container">
+		<!-- FILTER LOADER -->
+		<p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
+		<!-- POST LIST -->
+		<ul id="post-list" class="w3-ul">
+		{% if posts_list %}
 
-{% for post in posts_list %}
+		{% include 'posts/post_list.html' %}
 
-{% include "posts/post_card.html" %}
+		{% else %}
 
-{% endfor %}
+		{% include 'posts/no_results.html' with message="Нет постов пока." %}
 
-{% else %}
-{% include 'posts/no_results.html' with message="Нет постов пока." %}
-{% endif %}
+		{% endif %}
+		</ul>
+		<!-- END POST LIST -->
+		{% if has_next %}
+
+		{% include 'posts/load_more_button_with_loader.html' %}
+
+		{% endif %}
 	</div>
-	<!-- END POST LIST -->
+
 {% endblock %}
 
 {% block extra_scripts %}
 
 <script type="text/javascript">
 
-var toggleRate = 100;
+var toggleRate = 50;
 
 function ToggleSendMessageControls(){
 	var post_id = $(this).data('post-id');
 	$('div.send-message-controls[data-post-id=' + post_id + ']').toggle(toggleRate);
 }
 
-function filter(place, tag_id, order, is_anonymous){
-	$('div#posts_list').html('<p id="filter_loader" class="w3-center w3-text-awesome">загрузка...</p>');
+/*
+return - Object
+*/
+function getFilterState(){
+	return { 
+			'place': $('select#filter_place').val(),
+	 		'tag': $('select#filter_tags').val(),
+	  		'order': $('select#filter_order').val(),
+	   		'is_anonymous': $('select#filter_anonymous').val()
+	   	   };
+}
+
+function filter(){
+	// delete no-result message
+	$('div#no-result-container').remove();
+	// delete load more section
+	$('section#load-more-section').remove();
+	// clear post list ul
+	$('ul#post-list').html('');
+	// show loading
+	$('p#filter-loader').toggle(toggleRate);
+	// get filter state object
+	filterState = getFilterState();
 	$.ajax({
 		type: "GET",
 		url: "{% url 'posts_filter' %}", 			
 		data: {
-			place: place,
-			tag: tag_id,
-			order: order,
-			is_anonymous: is_anonymous
+			place: filterState.place,
+			tag: filterState.tag,
+			order: filterState.order,
+			is_anonymous: filterState.is_anonymous
 		},
 		context: this,
 		dataType: "json",
 		success: function (data){
 			if (data.success){
-				$('#posts_list').html(data.rendered_template);
-			} else{
-				alert('error');
+				$('p#filter-loader').toggle(toggleRate);
+				$('div#post-list-container ul#post-list').html(data.rendered_template);
 			}
 		}
 	});
@@ -130,29 +158,55 @@ function ClickSendButtonEventHandler(){
 	}
 }
 
+function loadMore() {
+	// hide load more button
+	$(this).toggle();
+	// show loading
+	$('span#load-more-loader').toggle();
+	var page = parseInt($(this).data('offset'), 10);
+	filterState = getFilterState();
+		$.ajax({
+			type: "GET",
+			url: "{% url 'posts_filter' %}",
+			data: {
+				place: filterState.place,
+				tag: filterState.tag,
+				order: filterState.order,
+				is_anonymous: filterState.is_anonymous,
+				offset: page
+			},
+			dataType: "json",
+			context: this,
+			success: function (data) {
+				$('ul#post-list').append(data.rendered_template);
+				// increment if has next page
+				if (data.has_next) {
+					// hide loader
+					$('span#load-more-loader').toggle();
+					//show button
+					$(this).toggle();
+					// increment 
+					$(this).data('offset', ++page);
+				} else {
+					// remove load more section
+					$('section#load-more-section').remove();
+				}
+
+			}
+
+		});
+}
+
 
 
 $(document).on('click', '.fa-heart', LikeEvent);
 $(document).on('click', 'span.message-sender', ClickSendButtonEventHandler);
 $(document).on('click', 'i.show-send-message-controls', ToggleSendMessageControls);
+$(document).on('click', 'button#load-more-btn', loadMore);
 
 $(document).ready(function () {
 
-	$('#filter_place').change(function () {
-    	filter($(this).val(), $('#filter_tags').val(), $('#filter_order').val(), $('#filter_anonymous').val());
-	});
-
-	$('#filter_tags').change(function () {
-	    filter($('#filter_place').val(), $(this).val(), $('#filter_order').val(), $('#filter_anonymous').val());
-	});
-
-	$('#filter_order').change(function () {
-	    filter($('#filter_place').val(), $('#filter_tags').val(), $(this).val(), $('#filter_anonymous').val());
-	});
-
-	$('#filter_anonymous').change(function () {
-	    filter($('#filter_place').val(), $('#filter_tags').val(), $('#filter_order').val(), $(this).val());
-	});
+	$('div#filters select').change(filter);
 
 	$('#filter_panel_toggler').click(function (){
 		$('#filters').toggle(toggleRate);

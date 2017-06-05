@@ -12,9 +12,9 @@
 	<!-- PAGE HEADER -->
 	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мои посты</h1>
 	{% if request.user.vkuser.post %}
-
-	{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
-
+	<ul class="w3-ul">
+		{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
+	</ul>
 	{% else %}
 	{% include 'posts/no_results.html' with message="У вас нет поста." %}
 	{% endif %}

@@ -6,3 +6,4 @@ media/
 # file
 *.sqlite3
 gulpfile.js
+*.todo

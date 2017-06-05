@@ -1,0 +1,27 @@
+{% load static from staticfiles %}
+{% for like in like_list %}
+<li class="w3-vk-card w3-white w3-padding w3-display-container">
+  <div class="w3-cell w3-cell-middle">
+    <img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle w3-margin-right" style="width:50px">
+  </div>
+  <div class="w3-cell w3-cell-middle">
+    <span>
+      {{ like.user.first_name }} {{ like.user.last_name }}
+    </span>
+    <br>
+    <span class="w3-text-gray w3-small">
+      {{ like.user.vkuser.place_str }}
+    </span>
+  </div>
+  {% if like.message %}
+  <button data-like-id="{{ like.id }}" class="show-message-btn w3-display-right w3-btn w3-white w3-text-blue w3-padding-tiny w3-margin-right" title="Показать/скрыть послание">
+    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+  </button>
+  {% endif %}
+</li>
+{% if like.message %}
+<li data-like-id="{{ like.id }}" class="w3-vk-card w3-white message no-display">
+  <p class="w3-border-left w3-border-red w3-padding no-margin">{{ like.message }}</p>
+</li>
+{% endif %}
+{% endfor %}

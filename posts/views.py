@@ -342,14 +342,40 @@ class LeaveMessage(View):
 
 class WhoLiked(View):
     template_name = 'posts/who_liked.html'
-
+    ajax_template_name = 'posts/like_list.html'
+    like_items_per_request = 30
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        post = Post.objects.get(id=request.GET.get('post_id'))
-        context = {
-            'post': post,
-        }
-        return render(request, self.template_name, context)
+        # get post
+        post_id = request.GET.get('post_id')
+        post = Post.objects.get(id=post_id)
+        # get page number
+        offset = 1 if not request.GET.get('offset') else request.GET.get('offset')
+        # init paginator 
+        like_list_paginator = Paginator(post.liked, self.like_items_per_request)
+        # get page
+        like_list_paginator_page = like_list_paginator.page(offset)
+        # serve ajax or default request
+        if offset > 1:
+            # serve ajax            
+            context = {
+                'like_list': like_list_paginator_page,
+            }
+            rendered_template = render_to_string(self.ajax_template_name, context)
+            return JsonResponse({
+                'rendered_template': rendered_template,
+                'has_next':  like_list_paginator_page.has_next(),
+                'next_page': like_list_paginator_page.next_page_number() if like_list_paginator_page.has_next() else 0
+            })
+        else:
+            # serve default request
+            context = {
+                'like_list': like_list_paginator_page,
+                'has_next':  like_list_paginator_page.has_next(),
+                'next_page': like_list_paginator_page.next_page_number() if like_list_paginator_page.has_next() else 0,
+                'post_id': post_id
+            }
+            return render(request, self.template_name, context)
 
 class MyPost(View):
     template_name = 'posts/my_post.html'
@@ -414,8 +440,6 @@ class Posts(View):
         }
 
         return render(request, self.template_name, context)
-
-
 
 class PostsFilter(View):
     template_name = 'posts/post_list.html'

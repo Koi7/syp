@@ -1,4 +1,0 @@
-- fix image erasing doesn't works
-- add links in notificatiobs
-- separate js from html 
-- compress not vendor js

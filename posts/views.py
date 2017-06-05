@@ -352,7 +352,7 @@ class WhoLiked(View):
         return render(request, self.template_name, context)
 
 class MyPosts(View):
-    template_name = 'posts/my_posts.html'
+    template_name = 'posts/my_post.html'
 
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):

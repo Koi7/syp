@@ -67,12 +67,16 @@
 	background-color: #fafbfc;
 }
 
-.mergin-center{
+.mergin-center, .filter-item-center{
 	margin: 0 auto!important;
 }
 
 .justify-text{
 	text-align: justify;
+}
+
+.filter-item-center{
+	width: 160px;
 }
 
 input:focus{

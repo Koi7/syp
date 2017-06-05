@@ -6,11 +6,11 @@
 	<script src="{% static 'posts/js/util.js' %}"></script>
 {% endblock %}
 
-{% block title %}Посты{% endblock %}
+{% block title %} Мой пост {% endblock %}
 
 {% block content %}
 	<!-- PAGE HEADER -->
-	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мои посты</h1>
+	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мой пост</h1>
 	{% if request.user.vkuser.post %}
 	<ul class="w3-ul">
 		{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}

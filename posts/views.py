@@ -52,7 +52,8 @@ def delete_post_and_related_images(post_instance):
 
 def filter(place='any', tag='any', order='desc', is_anonymous=-1):
 
-    post_list = []
+    posts_list = []
+
     filters = {
         'accepted': True,
     }
@@ -63,8 +64,6 @@ def filter(place='any', tag='any', order='desc', is_anonymous=-1):
         filters['tag'] = tag
     if not is_anonymous == 'any':
         filters['is_anonymous'] = True if is_anonymous == '0' else False
-
-    print filters
 
     posts_list = Post.objects.filter(**filters).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
 
@@ -386,17 +385,36 @@ class MyPost(View):
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'
-
+    ajax_template_name = 'posts/post_list.html'
+    posts_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         users_like_objects = Like.objects.filter(user=request.user)
-        liked_posts_list = []
-        for like in users_like_objects:
-            liked_posts_list.append(Post.objects.get(id=like.post_id))
-        context = {
-            'liked_posts': liked_posts_list
-        }
-        return render(request, self.template_name, context)
+        offset = 1 if not request.GET.get('offset') else request.GET.get('offset')
+
+        # init paginator 
+
+        liked_post_list_paginator = Paginator(request.user.vkuser.liked, self.posts_per_request)
+        liked_post_list_paginator_page =  liked_post_list_paginator.page(offset)
+
+        if offset == 1:
+            context = {
+                'posts_list': liked_post_list_paginator_page,
+                'has_next': liked_post_list_paginator_page.has_next(),
+                'next_page': liked_post_list_paginator_page.next_page_number() if liked_post_list_paginator_page.has_next() else 0
+            }
+            return render(request, self.template_name, context)
+        elif offset > 1:
+            context = {
+                'posts_list': liked_post_list_paginator_page
+            }
+            rendered_template = render_to_string(self.ajax_template_name, context)
+            return JsonResponse({
+                'success': True,
+                'rendered_template': rendered_template,
+                'has_next': liked_post_list_paginator_page.has_next(),
+                'next_page': liked_post_list_paginator_page.next_page_number() if liked_post_list_paginator_page.has_next() else 0
+            })
 
 class Posts(View):
     template_name = 'posts/posts.html'
@@ -419,7 +437,6 @@ class Posts(View):
         is_anonymous = 'any' if not request.GET.get('is_anonymous') else request.GET.get('is_anonymous')
 
         # FILTER POSTS
-
         filtered_posts = filter(place, tag, order, is_anonymous)
 
         # INIT PAGINATOR
@@ -436,7 +453,7 @@ class Posts(View):
         context = {
             'posts_list': filtered_posts_page,
             'has_next': filtered_posts_page.has_next(),
-            'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0
+            'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
         }
 
         return render(request, self.template_name, context)
@@ -474,7 +491,7 @@ class PostsFilter(View):
         rendered_template = ''
 
         if filtered_posts_page:
-            rendered_template = render_to_string(self.template_name, {'posts_list': filtered_posts_page, 'request':request})
+            rendered_template = render_to_string(self.template_name, {'posts_list': filtered_posts_page})
         else:
             rendered_template = render_to_string(self.no_results_template, {'message': 'Ничего не нашлось.'})
 

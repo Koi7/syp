@@ -127,10 +127,10 @@ class VKUser(models.Model):
     @property
     def liked(self):
         likes = self.user.like_set.all()
-        liked_posts_ids = []
+        liked_posts = []
         for like in likes:
-            liked_posts_ids.append(like.post.id)
-        return liked_posts_ids
+            liked_posts.append(like.post)
+        return liked_posts
 
     @property
     def unread_notifications_amount(self):

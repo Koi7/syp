@@ -60,7 +60,7 @@
 				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>
 			</a>
 			<!-- LIKE BUTTON -->
-			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post.id in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}" id="{{ post.id }}"></i>
+			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}" id="{{ post.id }}"></i>
 		</div>
 		<!-- INPUT AND BUTTON -->
 		<div data-post-id="{{ post.id }}" class="w3-row-padding no-display send-message-controls pure-form">

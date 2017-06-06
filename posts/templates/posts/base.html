@@ -21,23 +21,23 @@
 <body style="background-color: #edeef0;">
     <!-- NAV -->
 	{% block nav %}
-    <nav class="w3-sidenav w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidenav"><br>
+    <nav class="w3-sidenav w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;" id="mySidenav"><br>
       <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%;font-size:22px; font-weight: normal;">з а к р ы т ь</a>
       <div class="w3-container">
         <h2 class="w3-padding-64">Ищу тебя</h2>
       </div>
       <!-- ORDERED BY USAGE PROBABILITY -->
-      <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-list-alt" aria-hidden="true"></i> Посты</a>
-      <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-bell-o" aria-hidden="true"></i>  Уведомления
+      <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Посты</a>
+      <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Уведомления
       {% if request.user.vkuser.unread_notifications_amount %}
       <span class="w3-badge">{{  request.user.vkuser.unread_notifications_amount }}</span>
       {% endif %}
       </a>
-      <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-history" aria-hidden="true"></i>  Мой пост</a>
-	    <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-heart-o" aria-hidden="true"></i> Лайкнутые</a>
-	    <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-plus-square-o" aria-hidden="true"></i> Новый пост</a>
-      <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-user-circle-o" aria-hidden="true"></i> Профиль</a>
-	    <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" ><i class="fa fa-sign-out" aria-hidden="true"></i> Выход</a>
+      <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Мой пост</a>
+	    <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Лайкнутые</a>
+	    <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Новый пост</a>
+      <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Профиль</a>
+	    <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Выход</a>
     </nav>
 	{% endblock %}
 

@@ -31,11 +31,12 @@
 			load_more_btn.click(function () {
 				$(this).toggle();
 				$('span#loading-indicator').toggle();
-				var page = parseInt($(this).data('offset'), 10);
-				var url = '/posts/notifications/offset/' + page;
 		 		$.ajax({
-		 			type: "GET",
-		 			url: url,
+		 			type: 'GET',
+		 			url: '{% url "notifications" %}',
+		 			data: {
+		 				offset: $(this).data('offset')
+		 			}
 		 			dataType: "json",
 		 			context: this,
 		 			success: function (data) {
@@ -47,7 +48,7 @@
 		 					//show button
 		 					$(this).toggle();
 		 					// increment 
-		 					$(this).data('offset', ++page);
+		 					$(this).data('offset', data.next_page);
 		 				} else {
 		 					// remove loader
 		 					$('span#loading-indicator').remove();

@@ -1,29 +1,23 @@
 {% extends "posts/base.html" %}
-
 {% load static from staticfiles %}
-
 {% block extra_scripts_head %}
-	<script src="{% static 'posts/js/util.js' %}"></script>
+<script src="{% static 'posts/js/util.js' %}"></script>
 {% endblock %}
-
 {% block title %} Мой пост {% endblock %}
-
 {% block content %}
-	<!-- PAGE HEADER -->
-	<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мой пост</h1>
-	{% if request.user.vkuser.post %}
-	<ul class="w3-ul">
-		{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
-	</ul>
-	{% else %}
-	{% include 'posts/no_results.html' with message="У вас нет поста." %}
-	{% endif %}
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мой пост</h1>
+{% if request.user.vkuser.post %}
+<ul class="w3-ul">
+	{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
+</ul>
+{% else %}
+{% include 'posts/no_results.html' with message="У вас нет поста." %}
+{% endif %}
 {% endblock %}
-
 {% block extra_scripts %}
-	<script type="text/javascript">
+<script type="text/javascript">
 	 $(document).ready(function () {
-
 		//delete button event handler
 		$('button.delete').click(function(){
 			delete_confirmation = confirm('Вы действительно хотите удалить ваш пост?');
@@ -47,5 +41,5 @@
 			}
 		});
 	 });
-	</script>
+</script>
 {% endblock %}jj

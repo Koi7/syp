@@ -1,243 +1,238 @@
 {% extends "posts/base.html" %}
-
 {% load static from staticfiles %}
-
 {% block extra_links %}
-    <link rel="stylesheet" href="{% static 'posts/bower_components/switchery/dist/switchery.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader-gallery.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
+<link rel="stylesheet" href="{% static 'posts/bower_components/switchery/dist/switchery.min.css' %}" />
+<link rel="stylesheet" href="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader-gallery.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
 {% endblock %}
-
 {% block extra_scripts_head %}
-    <script src="{% static 'posts/js/util.js' %}"></script>
-    <script src="{% static 'posts/bower_components/switchery/dist/switchery.min.js' %}"></script>
-    <script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
-    <!-- FINE UPLOADER TEMPLATE -->
-    <script type="text/template" id="qq-template-gallery">
-            <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Перетащите файлы сюда">
-                <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
-                    <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
-                </div>
-                <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
-                    <span class="qq-upload-drop-area-text-selector"></span>
-                </div>
-                <div class="qq-upload-button-selector qq-upload-button">
-                    <div>Фото <i class="fa fa-camera-retro" aria-hidden="true"></i></div>
-                </div>
-                <span class="qq-drop-processing-selector qq-drop-processing">
-                    <span>Processing dropped files...</span>
-                    <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-                </span>
-                <ul class="qq-upload-list-selector qq-upload-list" role="region" aria-live="polite" aria-relevant="additions removals">
-                    <li>
-                        <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
-                        <div class="qq-progress-bar-container-selector qq-progress-bar-container">
-                            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+<script src="{% static 'posts/js/util.js' %}"></script>
+<script src="{% static 'posts/bower_components/switchery/dist/switchery.min.js' %}"></script>
+<script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
+<!-- FINE UPLOADER TEMPLATE -->
+<script type="text/template" id="qq-template-gallery">
+        <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Перетащите файлы сюда">
+            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+            </div>
+            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                <span class="qq-upload-drop-area-text-selector"></span>
+            </div>
+            <div class="qq-upload-button-selector qq-upload-button">
+                <div>Фото <i class="fa fa-camera-retro" aria-hidden="true"></i></div>
+            </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+                <span>Processing dropped files...</span>
+                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+            <ul class="qq-upload-list-selector qq-upload-list" role="region" aria-live="polite" aria-relevant="additions removals">
+                <li>
+                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                    <div class="qq-progress-bar-container-selector qq-progress-bar-container">
+                        <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                    </div>
+                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                    <div class="qq-thumbnail-wrapper">
+                        <img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
+                    </div>
+                    <button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>
+                    <button type="button" class="qq-upload-retry-selector qq-upload-retry">
+                        <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
+                        Retry
+                    </button>
+
+                    <div class="qq-file-info">
+                        <div class="qq-file-name">
+                            <span class="qq-upload-file-selector qq-upload-file"></span>
+                            <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
                         </div>
-                        <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
-                        <div class="qq-thumbnail-wrapper">
-                            <img class="qq-thumbnail-selector" qq-max-size="120" qq-server-scale>
-                        </div>
-                        <button type="button" class="qq-upload-cancel-selector qq-upload-cancel">X</button>
-                        <button type="button" class="qq-upload-retry-selector qq-upload-retry">
-                            <span class="qq-btn qq-retry-icon" aria-label="Retry"></span>
-                            Retry
+                        <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                        <span class="qq-upload-size-selector qq-upload-size"></span>
+                        <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">
+                            <span class="qq-btn qq-delete-icon" aria-label="Delete"></span>
                         </button>
-
-                        <div class="qq-file-info">
-                            <div class="qq-file-name">
-                                <span class="qq-upload-file-selector qq-upload-file"></span>
-                                <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
-                            </div>
-                            <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
-                            <span class="qq-upload-size-selector qq-upload-size"></span>
-                            <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">
-                                <span class="qq-btn qq-delete-icon" aria-label="Delete"></span>
-                            </button>
-                            <button type="button" class="qq-btn qq-upload-pause-selector qq-upload-pause">
-                                <span class="qq-btn qq-pause-icon" aria-label="Pause"></span>
-                            </button>
-                            <button type="button" class="qq-btn qq-upload-continue-selector qq-upload-continue">
-                                <span class="qq-btn qq-continue-icon" aria-label="Continue"></span>
-                            </button>
-                        </div>
-                    </li>
-                </ul>
-
-                <dialog class="qq-alert-dialog-selector">
-                    <div class="qq-dialog-message-selector"></div>
-                    <div class="qq-dialog-buttons">
-                        <button type="button" class="qq-cancel-button-selector">Close</button>
+                        <button type="button" class="qq-btn qq-upload-pause-selector qq-upload-pause">
+                            <span class="qq-btn qq-pause-icon" aria-label="Pause"></span>
+                        </button>
+                        <button type="button" class="qq-btn qq-upload-continue-selector qq-upload-continue">
+                            <span class="qq-btn qq-continue-icon" aria-label="Continue"></span>
+                        </button>
                     </div>
-                </dialog>
+                </li>
+            </ul>
 
-                <dialog class="qq-confirm-dialog-selector">
-                    <div class="qq-dialog-message-selector"></div>
-                    <div class="qq-dialog-buttons">
-                        <button type="button" class="qq-cancel-button-selector">No</button>
-                        <button type="button" class="qq-ok-button-selector">Yes</button>
-                    </div>
-                </dialog>
+            <dialog class="qq-alert-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Close</button>
+                </div>
+            </dialog>
 
-                <dialog class="qq-prompt-dialog-selector">
-                    <div class="qq-dialog-message-selector"></div>
-                    <input type="text">
-                    <div class="qq-dialog-buttons">
-                        <button type="button" class="qq-cancel-button-selector">Cancel</button>
-                        <button type="button" class="qq-ok-button-selector">Ok</button>
-                    </div>
-                </dialog>
-            </div>
-    </script>
+            <dialog class="qq-confirm-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">No</button>
+                    <button type="button" class="qq-ok-button-selector">Yes</button>
+                </div>
+            </dialog>
+
+            <dialog class="qq-prompt-dialog-selector">
+                <div class="qq-dialog-message-selector"></div>
+                <input type="text">
+                <div class="qq-dialog-buttons">
+                    <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                    <button type="button" class="qq-ok-button-selector">Ok</button>
+                </div>
+            </dialog>
+        </div>
+</script>
 {% endblock %}
-
 {% block title %}Новый пост{% endblock %}
-
 {% block content %}
-    <!-- PAGE HEADER -->
-    <h1 class="w3-padding-tiny w3-center w3-text-awesome">Новый пост</h1>
-    <!-- USER ALREADY HAS ACTUAL POST ALERT -->
-    {% if request.user.vkuser.post and not request.user.vkuser.has_closed_attention %}
-    <div id="attention" class="w3-vk-card-noshadow w3-text-awesome">
-        <p class="no-margin w3-right-align"><i id="close-attention" class="fa fa-times pointer" aria-hidden="true"></i></p>
-        <p class="w3-padding-tiny">ВНИМАНИЕ! У Вас уже есть актуальный пост. Если вы напишите новый - предыдущий будет удален.</p>
-    </div>
-    {% endif %}
-    <!-- ADD POST INPUTS -->
-    <div class="hide-overflow w3-white w3-vk-card w3-section .w3-custom-round-small ">
-        <!-- POST TEXT INPUT -->
-        <header   class="w3-padding-large">
-            <textarea id="post_text" class="add-post-textarea-flat no-outline" placeholder="Кого ищем?"></textarea>
-        </header>
-        <hr class="no-margin">
-        <!-- POST SETTINGS -->
-        <footer  class="w3-padding-large vk-background" >
-            <!-- ANONIMOUS POST CHECKBOX -->
-            <div class="pure-form pure-form-aligned w3-padding-large">
-                    <div class="w3-padding-tiny pure-control-group">
-                        <label class="w3-text-gray">анонимно</label>
-                        <input type="checkbox" id="js-switch"/>
-                    </div>
-                    <div class="w3-padding-tiny pure-control-group">
-                        <label class="w3-text-gray">тэг</label>
-                        <select id="tags">
-                            <option value="0">ищу парня</option>
-                            <option value="1">ищу девушку</option>
-                            <option value="2">ищу друга</option>
-                            <option value="3">ищу подругу</option>
-                            <option value="4">ищу компанию</option>
-                            <option value="5">ищу с/о</option>
-                        </select>
-                    </div>
-                    <div class="w3-padding-tiny pure-control-group">
-                        <label class="w3-text-gray">город</label>
-                        <select id="place_select"  name="option">
-                            <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %}>Севастополь</option>
-                            <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %}>Симферополь</option>
-                            <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %}>Ялта</option>
-                        </select>
-                    </div>
-                    <div class="w3-padding-tiny pure-control-group">
-                        <label></label> 
-                        <button id="send" class="w3-btn w3-text-blue vk-bg">Отправить</button>
-                    </div>
-            </div>
-            <div id="fine-uploader-gallery"></div>
-        </footer>    
-    </div>
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-center w3-text-awesome">Новый пост</h1>
+<!-- USER ALREADY HAS ACTUAL POST ALERT -->
+{% if request.user.vkuser.post and not request.user.vkuser.has_closed_attention %}
+<div id="attention" class="w3-vk-card-noshadow w3-text-awesome">
+    <p class="no-margin w3-right-align"><i id="close-attention" class="fa fa-times pointer" aria-hidden="true"></i></p>
+    <p class="w3-padding-tiny">ВНИМАНИЕ! У Вас уже есть актуальный пост. Если вы напишите новый - предыдущий будет удален.</p>
+</div>
+{% endif %}
+<!-- ADD POST INPUTS -->
+<div class="hide-overflow w3-white w3-vk-card w3-section .w3-custom-round-small ">
+    <!-- POST TEXT INPUT -->
+    <header   class="w3-padding-large">
+        <textarea id="post_text" class="add-post-textarea-flat no-outline" placeholder="Кого ищем?"></textarea>
+    </header>
+    <hr class="no-margin">
+    <!-- POST SETTINGS -->
+    <footer  class="w3-padding-large vk-background" >
+        <!-- ANONIMOUS POST CHECKBOX -->
+        <div class="pure-form pure-form-aligned w3-padding-large">
+                <div class="w3-padding-tiny pure-control-group">
+                    <label class="w3-text-gray">анонимно</label>
+                    <input type="checkbox" id="js-switch"/>
+                </div>
+                <div class="w3-padding-tiny pure-control-group">
+                    <label class="w3-text-gray">тэг</label>
+                    <select id="tags">
+                        <option value="0">ищу парня</option>
+                        <option value="1">ищу девушку</option>
+                        <option value="2">ищу друга</option>
+                        <option value="3">ищу подругу</option>
+                        <option value="4">ищу компанию</option>
+                        <option value="5">ищу с/о</option>
+                    </select>
+                </div>
+                <div class="w3-padding-tiny pure-control-group">
+                    <label class="w3-text-gray">город</label>
+                    <select id="place_select"  name="option">
+                        <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %}>Севастополь</option>
+                        <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %}>Симферополь</option>
+                        <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %}>Ялта</option>
+                    </select>
+                </div>
+                <div class="w3-padding-tiny pure-control-group">
+                    <label></label> 
+                    <button id="send" class="w3-btn w3-text-blue vk-bg">Отправить</button>
+                </div>
+        </div>
+        <div id="fine-uploader-gallery"></div>
+    </footer>    
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
-    <script>
-        $(document).ready(function (){
-            // init SWITCHERY
-            var element = document.querySelector('#js-switch');;
-            var init = new Switchery(element, {size: "small"});
-            // init FINE UPLOADER
-            var galleryUploader = new qq.FineUploader({
-                element: document.getElementById("fine-uploader-gallery"),
-                template: 'qq-template-gallery',
-                request: {
-                    endpoint: "{% url 'upload_photo' %}",
+<script>
+    $(document).ready(function (){
+        // init SWITCHERY
+        var element = document.querySelector('#js-switch');;
+        var init = new Switchery(element, {size: "small"});
+        // init FINE UPLOADER
+        var galleryUploader = new qq.FineUploader({
+            element: document.getElementById("fine-uploader-gallery"),
+            template: 'qq-template-gallery',
+            request: {
+                endpoint: "{% url 'upload_photo' %}",
+                customHeaders: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            },
+            deleteFile: {
+                    enabled: true, // defaults to false
+                    endpoint: "{% url 'delete_photo' %}",
                     customHeaders: {
                         'X-CSRFToken': getCookie('csrftoken')
                     }
-                },
-                deleteFile: {
-                        enabled: true, // defaults to false
-                        endpoint: "{% url 'delete_photo' %}",
-                        customHeaders: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                },
-                thumbnails: {
-                    placeholders: {
-                        waitingPath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/waiting-generic.png" %}',
-                        notAvailablePath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/not_available-generic.png" %}'
-                    }
-                },
-                validation: {
-                    allowedExtensions: ['jpeg', 'jpg', 'gif', 'png'],
-                    itemLimit: 3
+            },
+            thumbnails: {
+                placeholders: {
+                    waitingPath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/waiting-generic.png" %}',
+                    notAvailablePath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/not_available-generic.png" %}'
                 }
-            });
-
-            // add event handler to send button
-            $('#send').click(function(){
-
-                // prevent sending if there is no text
-
-                text =  $('textarea#post_text').val();
-
-                if (!text){
-                    alert('Нечего отправлять. Заполните форму.');
-                    return;
-                }
-
-                text = $('textarea#post_text').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'add_post' %}",          
-                    data: {
-                        csrfmiddlewaretoken: getCookie('csrftoken'),
-                        text: text,
-                        is_anonymous: $("input[type='checkbox']").is(':checked'),
-                        photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
-                        tag: $('#tags').val(),
-                        place: $('select#place_select').val()
-                    },
-                    context: this,
-                    dataType: "json",
-                    success: function (data){
-                        if (data.success){
-                            alert("Ваш пост отправлен.");
-                            $('textarea#post_text').val("");
-                            galleryUploader.reset();
-                            //location.reload();
-                        } else {
-                            alert(data.error_message);
-                        }
-                    }
-                });
-            });
-            
-            // event handler for close attention icon
-            $('#close-attention').click(function(){
-                var hideTime = 300;
-                $('#attention').hide(hideTime, function() {
-                    $(this).remove();
-                });
-                //$('#attention').remove();
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'close_attention' %}",          
-                    data: {
-                        csrfmiddlewaretoken: getCookie('csrftoken')
-                    },
-                    dataType: "json"
-                });
-            });    
+            },
+            validation: {
+                allowedExtensions: ['jpeg', 'jpg', 'gif', 'png'],
+                itemLimit: 3
+            }
         });
-    </script>
+
+        // add event handler to send button
+        $('#send').click(function(){
+
+            // prevent sending if there is no text
+
+            text =  $('textarea#post_text').val();
+
+            if (!text){
+                alert('Нечего отправлять. Заполните форму.');
+                return;
+            }
+
+            text = $('textarea#post_text').val();
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'add_post' %}",          
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken'),
+                    text: text,
+                    is_anonymous: $("input[type='checkbox']").is(':checked'),
+                    photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
+                    tag: $('#tags').val(),
+                    place: $('select#place_select').val()
+                },
+                context: this,
+                dataType: "json",
+                success: function (data){
+                    if (data.success){
+                        alert("Ваш пост отправлен.");
+                        $('textarea#post_text').val("");
+                        galleryUploader.reset();
+                        //location.reload();
+                    } else {
+                        alert(data.error_message);
+                    }
+                }
+            });
+        });
+        
+        // event handler for close attention icon
+        $('#close-attention').click(function(){
+            var hideTime = 300;
+            $('#attention').hide(hideTime, function() {
+                $(this).remove();
+            });
+            //$('#attention').remove();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'close_attention' %}",          
+                data: {
+                    csrfmiddlewaretoken: getCookie('csrftoken')
+                },
+                dataType: "json"
+            });
+        });    
+    });
+</script>
 {% endblock %}

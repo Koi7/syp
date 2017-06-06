@@ -23,51 +23,46 @@
 {% endblock %}
 {% block extra_scripts %}
 <script type="text/javascript">
-function toggleLikeMessage() {
-    like_id = $(this).data('like-id');
-    $('li.message[data-like-id=' + like_id + ']').toggle();
-}
-$(document).on('click', 'button.show-message-btn', toggleLikeMessage);
-$(document).ready(function () {
-  // send message button
-  // $("button.show-message-btn").click(function () {
-  //   like_id = $(this).data('like-id');
-  //   $('li.message[data-like-id=' + like_id + ']').toggle();
-  // });
-  // load more button
-  var load_more_btn = $('button#load-more-btn');
-  if (load_more_btn) {
-    load_more_btn.click(function () {
-      $(this).toggle();
-      $('span#load-more-loader').toggle();
-      var offset = parseInt($(this).data('offset'), 10);
-      $.ajax({
-        type: 'GET',
-        url: '{% url "who_liked" %}',
-        dataType: "json",
-        data: {
-          offset: offset,
-          post_id: $('ul#like-list').data('post-id')
-        },
-        context: this,
-        success: function (data) {
-          $('ul#like-list').append(data.rendered_template);
-          // increment if has next page
-          if (data.has_next) {
-            // hide loader
-            $('span#load-more-loader').toggle();
-            //show button
-            $(this).toggle();
-            // increment 
-            $(this).data('offset', ++offset);
-          } else {
-            // remove load more section
-            $('section#load-more-section').remove();
-          }
-        }
-      });
-    });
+  function toggleLikeMessage() {
+      like_id = $(this).data('like-id');
+      $('li.message[data-like-id=' + like_id + ']').toggle();
   }
-});
+
+  $(document).on('click', 'button.show-message-btn', toggleLikeMessage);
+  $(document).ready(function () {
+    var load_more_btn = $('button#load-more-btn');
+    if (load_more_btn) {
+      load_more_btn.click(function () {
+        $(this).toggle();
+        $('span#load-more-loader').toggle();
+        var offset = parseInt($(this).data('offset'), 10);
+        $.ajax({
+          type: 'GET',
+          url: '{% url "who_liked" %}',
+          dataType: "json",
+          data: {
+            offset: offset,
+            post_id: $('ul#like-list').data('post-id')
+          },
+          context: this,
+          success: function (data) {
+            $('ul#like-list').append(data.rendered_template);
+            // increment if has next page
+            if (data.has_next) {
+              // hide loader
+              $('span#load-more-loader').toggle();
+              //show button
+              $(this).toggle();
+              // increment 
+              $(this).data('offset', ++offset);
+            } else {
+              // remove load more section
+              $('section#load-more-section').remove();
+            }
+          }
+        });
+      });
+    }
+  });
 </script>
 {% endblock %}

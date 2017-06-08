@@ -3,3 +3,12 @@ function getCookie(name) {
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) return parts.pop().split(";").shift();
 }
+
+function sypConfirm(message) {
+	// confirm dialog
+	alertify.confirm(message, function () {
+	    return true;
+	}, function() {
+	    return false;
+	});
+}

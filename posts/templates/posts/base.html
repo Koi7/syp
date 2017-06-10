@@ -7,12 +7,13 @@
     {% block links %}
     <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/w3c.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/helper.min.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'posts/bower_components/font-awesome/css/font-awesome.min.css' %}">
     {% endblock %}
     {% block extra_links %}
     {% endblock %}
     {% block scripts %}
     <script type="text/javascript" src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
     {% endblock %}
     {% block extra_scripts_head %}
     {% endblock %}
@@ -71,5 +72,9 @@
   </script>
   <!-- EXTRA SCRIPTS -->
   {% block extra_scripts %}{% endblock %}
+  <script src="{% static 'posts/bower_components/alertifyjs/dist/js/alertify.js' %}"></script>
+  <script type="text/javascript">
+    alertify.logPosition("bottom right");
+  </script>
 </body>
 </html>

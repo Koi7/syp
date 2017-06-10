@@ -1,19 +1,13 @@
 {% extends "posts/base.html" %}
-
 {% load static from staticfiles %}
-
 {% block extra_links %}
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
 {% endblock %}
-
 {% block extra_scripts_head %}
-    <script src="{% static 'posts/js/util.js' %}"></script>
+<script src="{% static 'posts/js/util.js' %}"></script>
 {% endblock %}
-
 {% block title %}Профиль{% endblock %}
-
 {% block content %}
-
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Профиль</h1>
 <!-- PROFILE CARD -->
@@ -52,11 +46,8 @@
 </div>
 {% endblock content %}
 {% block extra_scripts %}
-<script type="text/javascript">
-
+<script>
     $(document).ready(function () {
-
-        //add event handler to save button
         $('#save_btn').click(function (){
             $.ajax({
                 type: "POST",
@@ -68,20 +59,14 @@
                 context: this,
                 dataType: "json",
                 success: function(data){
-                    if (data.success){
-                        // update user profile
                         $('#place').text(data.place);
                         alert("Сохранено");
                     }
                 }
             });
         });
-
-        //add handler to delete button
-
         $('#delete_btn').click(function(){
             var deleteConfirmationResult = confirm("Вы действительно хотите удалить профиль?");
-
             if (deleteConfirmationResult) {
 
                 $.ajax({

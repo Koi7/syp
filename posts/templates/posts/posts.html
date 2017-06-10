@@ -30,18 +30,14 @@
 		{% endif %}
 		</ul>
 		<!-- END POST LIST -->
-		{% if has_next %}
-
 		{% include 'posts/load_more_button_with_loader.html' %}
-
-		{% endif %}
 	</div>
 
 {% endblock %}
 
 {% block extra_scripts %}
 
-<script type="text/javascript">
+<script>
 	var toggleRate = 50;
 	function ToggleSendMessageControls(){
 		var post_id = $(this).data('post-id');
@@ -63,7 +59,7 @@
 		// delete no-result message
 		$('div#no-result-container').remove();
 		// delete load more section
-		$('section#load-more-section').remove();
+		$('section#load-more-section').hide();
 		// clear post list ul
 		$('ul#post-list').html('');
 		// show loading
@@ -85,11 +81,14 @@
 				if (data.success){
 					$('p#filter-loader').toggle(toggleRate);
 					$('div#post-list-container ul#post-list').html(data.rendered_template);
+					if (data.has_next) {
+						$('section#load-more-section').show();
+					}
 				}
 			}
 		});
 	}
-	
+
 	function LikeEvent(){
 		var post_id = $(this).data('post-id');
 		$.ajax({
@@ -112,7 +111,7 @@
 					}
 					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 				} else {
-					alert('Вы не можете лайкать свои же посты. В этом нет смысла =).');
+					alertify.error('Вы не можете лайкать свои же посты. В этом нет смысла =).');
 				}
 			}
 		});
@@ -134,7 +133,7 @@
 				dataType: "json",
 				success: function (data){
 					if (data.success){
-						alert('Ваше послание отправлено.');
+						alertify.success('Ваше послание отправлено.');
 						// update post state on front end
 						// make icon red
 						$('i.fa-heart[data-post-id=' + post_id + ']').removeClass('w3-text-gray');
@@ -143,9 +142,9 @@
 						$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 					} else {
 						if (data.self_like) {
-							alert('Безсмысленно отправлять послание самому себе =).');
+							alertify.error('Безсмысленно отправлять послание самому себе =).');
 						} else {
-							alert(data.err_msg);
+							alertify.error(data.err_msg);
 						}
 					}
 				}

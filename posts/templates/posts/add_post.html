@@ -185,7 +185,7 @@
             text =  $('textarea#post_text').val();
 
             if (!text){
-                alert('Нечего отправлять. Заполните форму.');
+                alertify.error('Нечего отправлять. Заполните форму.');
                 return;
             }
 
@@ -206,12 +206,12 @@
                 dataType: "json",
                 success: function (data){
                     if (data.success){
-                        alert("Ваш пост отправлен.");
+                        alertify.success("Ваш пост отправлен.");
                         $('textarea#post_text').val("");
                         galleryUploader.reset();
                         //location.reload();
                     } else {
-                        alert(data.error_message);
+                        alertify.error(data.error_message);
                     }
                 }
             });

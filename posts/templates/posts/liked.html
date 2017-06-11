@@ -1,70 +1,30 @@
 {% extends "posts/base.html" %}
-
 {% load static from staticfiles %}
-
+{% block extra_links %}
+    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
+{% endblock %}
 {% block title %}Лайкнутые{% endblock %}
-
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-text-awesome w3-center">Лайкнутые</h1>
 <!-- POST LIST CONTAINER -->
 <div id="post-list-container">
-    <!-- FILTER LOADER -->
-    <p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
     <!-- POST LIST -->
-    <ul id="post-list" class="w3-ul">
     {% if posts_list %}
-
     {% include 'posts/post_list.html' %}
-
     {% endif %}
-    </ul>
     {% if not posts_list %}
     {% include 'posts/no_results.html' with message="Нет постов пока." %}
     {% endif %}
     <!-- END POST LIST -->
-    {% if has_next %}
-
-    {% include 'posts/load_more_button_with_loader.html' %}
-
-    {% endif %}
 </div>
 {% endblock %}
 {% block extra_scripts %}
-<script type="text/javascript">
-    function loadMore() {
-        // hide load more button
-        $(this).toggle();
-        // show loading
-        $('span#load-more-loader').toggle();
-        var page = parseInt($(this).data('offset'), 10);
-            $.ajax({
-                type: "GET",
-                url: "{% url 'liked' %}",
-                data: {
-                    offset: $(this).data('offset')
-                },
-                dataType: "json",
-                context: this,
-                success: function (data) {
-                    $('ul#post-list').append(data.rendered_template);
-                    // increment if has next page
-                    if (data.has_next) {
-                        // hide loader
-                        $('span#load-more-loader').toggle();
-                        //show button
-                        $(this).toggle();
-                        // increment 
-                        $(this).data('offset', data.next_page);
-                    } else {
-                        // remove load more section
-                        $('section#load-more-section').remove();
-                    }
-
-                }
-
-            });
-    }
-    $(document).on('click', 'button#load-more-btn', loadMore);
+<script>
+    var loadMoreUrl = "{% url 'liked' %}";
+    var likeUrl = "{% url 'like_post' %}";
+    var leaveMessageUrl = "{% url 'leave_message' %}";
+    var filterState = getFilterState();
 </script>
+<script type="text/javascript" src="{% static 'posts/js/post_manipulations.js' %}"></script>
 {% endblock %}

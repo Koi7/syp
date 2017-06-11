@@ -12,3 +12,15 @@ function sypConfirm(message) {
 	    return false;
 	});
 }
+
+/*
+return - Object
+*/
+function getFilterState(){
+	return { 
+			'place': $('select#filter_place').val(),
+	 		'tag': $('select#filter_tags').val(),
+	  		'order': $('select#filter_order').val(),
+	   		'is_anonymous': $('select#filter_anonymous').val()
+	   	   };
+}

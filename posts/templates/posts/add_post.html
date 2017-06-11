@@ -91,15 +91,9 @@
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Новый пост</h1>
-<!-- USER ALREADY HAS ACTUAL POST ALERT -->
-{% if request.user.vkuser.post and not request.user.vkuser.has_closed_attention %}
-<div id="attention" class="w3-vk-card-noshadow w3-text-awesome">
-    <p class="no-margin w3-right-align"><i id="close-attention" class="fa fa-times pointer" aria-hidden="true"></i></p>
-    <p class="w3-padding-tiny">ВНИМАНИЕ! У Вас уже есть актуальный пост. Если вы напишите новый - предыдущий будет удален.</p>
-</div>
-{% endif %}
 <!-- ADD POST INPUTS -->
-<div class="hide-overflow w3-white w3-vk-card w3-section .w3-custom-round-small ">
+<div id="send-controls-container" class="hide-overflow w3-white w3-vk-card w3-section .w3-custom-round-small {% if request.user.vkuser.post and not request.user.vkuser.has_closed_attention %} show-attention
+{% endif %}">
     <!-- POST TEXT INPUT -->
     <header   class="w3-padding-large">
         <textarea id="post_text" class="add-post-textarea-flat no-outline" placeholder="Кого ищем?"></textarea>
@@ -216,14 +210,9 @@
                 }
             });
         });
-        
-        // event handler for close attention icon
-        $('#close-attention').click(function(){
-            var hideTime = 300;
-            $('#attention').hide(hideTime, function() {
-                $(this).remove();
-            });
-            //$('#attention').remove();
+
+        if ($('div#send-controls-container').hasClass('show-attention')) {
+            alertify.alert('У вас уже есть пост. Если вы напишете новый - предыдущий будет удален!');
             $.ajax({
                 type: "POST",
                 url: "{% url 'close_attention' %}",          
@@ -232,7 +221,7 @@
                 },
                 dataType: "json"
             });
-        });    
+        }   
     });
 </script>
 {% endblock %}

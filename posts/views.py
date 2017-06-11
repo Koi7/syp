@@ -385,7 +385,7 @@ class MyPost(View):
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'
-    ajax_template_name = 'posts/post_list.html'
+    ajax_template_name = 'posts/post_card.html'
     posts_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
@@ -406,7 +406,8 @@ class LikedPosts(View):
             return render(request, self.template_name, context)
         elif offset > 1:
             context = {
-                'posts_list': liked_post_list_paginator_page
+                'posts_list': liked_post_list_paginator_page,
+                'request': request,
             }
             rendered_template = render_to_string(self.ajax_template_name, context)
             return JsonResponse({
@@ -497,6 +498,7 @@ class PostsFilter(View):
                     'posts_list': filtered_posts_page,
                     'has_next': filtered_posts_page.has_next(),
                     'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
+                    'request': request
                 }
                 rendered_template = render_to_string(self.template_name, context)
             else:

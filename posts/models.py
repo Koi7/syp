@@ -50,7 +50,6 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор')
     text = models.CharField('Текст', max_length=2000)
     pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
-    accepted_datetime = models.DateTimeField('Одобрено', null=True)
     is_anonymous = models.BooleanField('Анонимный?', default=True)
     place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
     tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)

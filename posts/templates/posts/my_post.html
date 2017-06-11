@@ -8,9 +8,7 @@
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мой пост</h1>
 {% if request.user.vkuser.post %}
-<ul class="w3-ul">
-	{% include 'posts/post_card.html' with editable=True post=request.user.vkuser.post %}
-</ul>
+{% include 'posts/post_list.html' with editable=True post=request.user.vkuser.post %}
 {% else %}
 {% include 'posts/no_results.html' with message="У вас нет поста." %}
 {% endif %}
@@ -20,8 +18,7 @@
 	 $(document).ready(function () {
 		//delete button event handler
 		$('button.delete').click(function(){
-			delete_confirmation = confirm('Вы действительно хотите удалить ваш пост?');
-			if (delete_confirmation) {
+			alertify.confirm('Вы действительно хотите удалить ваш пост?', function(){
 				var post_id = $(this).data('post-id');
 		 		$.ajax({
 		 			type: "POST",
@@ -34,12 +31,31 @@
 		 			dataType: "json",
 		 			success: function (data){
 		 				if (data.success){
-		 					$('div.w3-vk-card[data-post-id=' + post_id + ']').remove();
+		 					$('li.w3-vk-card[data-post-id=' + post_id + ']').remove();
 		 				}
 		 			}
 		 		});
-			}
+			});
+			// delete_confirmation = sypConfirm('Вы действительно хотите удалить ваш пост?');
+			// if (delete_confirmation) {
+			// 	var post_id = $(this).data('post-id');
+		 // 		$.ajax({
+		 // 			type: "POST",
+		 // 			url: "{% url 'delete_post' %}", 			
+		 // 			data: {
+		 // 				post_id: post_id,
+		 // 				csrfmiddlewaretoken: getCookie('csrftoken')
+		 // 			},
+		 // 			context: this,
+		 // 			dataType: "json",
+		 // 			success: function (data){
+		 // 				if (data.success){
+		 // 					$('div.w3-vk-card[data-post-id=' + post_id + ']').remove();
+		 // 				}
+		 // 			}
+		 // 		});
+			// }
 		});
 	 });
 </script>
-{% endblock %}jj
+{% endblock %}

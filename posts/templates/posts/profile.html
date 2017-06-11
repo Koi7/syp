@@ -13,7 +13,7 @@
 <!-- PROFILE CARD -->
 <div class="w3-vk-card w3-section .w3-custom-round-small w3-white">
     <!-- DELETE PROFILE BUTTON -->
-    <button  id="delete_btn" class="w3-btn w3-white w3-text-blue  w3-padding-large"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    <button  id="delete-btn" class="w3-btn w3-white w3-text-blue  w3-padding-large"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
     <!-- PROFILE HEADER -->
     <header class="w3-container w3-padding-large w3-center">
         <!-- USER PHOTO -->
@@ -40,7 +40,7 @@
         </div>
         <!-- SAVE -->
         <div class="w3-container w3-padding-large w3-center">
-            <button id="save_btn" class="w3-btn w3-white w3-text-blue">Сохранить</button>
+            <button id="save-btn" class="w3-btn w3-white w3-text-blue">Сохранить</button>
         </div>
     </footer>
 </div>
@@ -48,7 +48,7 @@
 {% block extra_scripts %}
 <script>
     $(document).ready(function () {
-        $('#save_btn').click(function (){
+        $('#save-btn').click(function (){
             $.ajax({
                 type: "POST",
                 url: "{% url 'save_profile_editions' %}",
@@ -58,17 +58,15 @@
                 },
                 context: this,
                 dataType: "json",
-                success: function(data){
+                success: function(data) {
                         $('#place').text(data.place);
-                        alert("Сохранено");
-                    }
+                        alertify.success("Сохранено");
                 }
             });
         });
-        $('#delete_btn').click(function(){
-            var deleteConfirmationResult = confirm("Вы действительно хотите удалить профиль?");
-            if (deleteConfirmationResult) {
-
+        
+        $('button#delete-btn').click(function(){
+            alertify.confirm('Вы действительно хотите удалить профиль?', function () {
                 $.ajax({
                     type: "POST",
                     url: "{% url 'delete_user' %}",
@@ -82,8 +80,7 @@
                         }
                     }
                 });
-
-            }
+            });
         });
     });
 </script>

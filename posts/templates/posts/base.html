@@ -72,7 +72,9 @@
   {% block extra_scripts %}{% endblock %}
   <script src="{% static 'posts/bower_components/alertifyjs/dist/js/alertify.js' %}"></script>
   <script type="text/javascript">
-    alertify.logPosition("bottom right");
+    alertify.logPosition("top right");
+    alertify.okBtn("Да");
+    alertify.cancelBtn("Нет");
   </script>
 </body>
 </html>

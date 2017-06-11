@@ -65,7 +65,7 @@ def filter(place='any', tag='any', order='desc', is_anonymous=-1):
     if not is_anonymous == 'any':
         filters['is_anonymous'] = True if is_anonymous == '0' else False
 
-    posts_list = Post.objects.filter(**filters).order_by('-accepted_datetime' if order == 'desc' else 'accepted_datetime')
+    posts_list = Post.objects.filter(**filters).order_by('-pub_datetime' if order == 'desc' else 'pub_datetime')
 
     return posts_list
 
@@ -381,7 +381,12 @@ class MyPost(View):
 
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        return render(request, self.template_name)
+        user_post = []
+        user_post.append(request.user.vkuser.post)
+        context = {
+            'posts_list': user_post,
+        }
+        return render(request, self.template_name, context)
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'

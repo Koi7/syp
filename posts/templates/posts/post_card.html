@@ -1,4 +1,5 @@
 {% load static from staticfiles %}
+{% for post in posts_list %}
 <!-- POST CARD -->
 <li data-post-id="{{ post.id }}" class="w3-vk-card w3-section .w3-custom-round-small w3-white w3-display-container no-padding">
 	<!-- POST HEADER -->
@@ -74,3 +75,4 @@
 	</footer>
 </li>
 <!-- END POST CARD -->
+{% endfor %}

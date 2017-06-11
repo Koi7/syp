@@ -460,6 +460,7 @@ class Posts(View):
 
 class PostsFilter(View):
     template_name = 'posts/post_list.html'
+    template_name_li = 'posts/post_card.html'
     no_results_template = 'posts/no_results.html'
     post_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
@@ -487,20 +488,37 @@ class PostsFilter(View):
 
 
         # RENDER
-
         rendered_template = ''
-
-        if filtered_posts_page:
-            rendered_template = render_to_string(self.template_name, {'posts_list': filtered_posts_page})
-        else:
-            rendered_template = render_to_string(self.no_results_template, {'message': 'Ничего не нашлось.'})
-
-        return JsonResponse({
-            'success': True,
-            'rendered_template': rendered_template,
-            'has_next': filtered_posts_page.has_next(),
-            'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0
-        })
+        context = {}
+        if offset == 1:
+            # render ul and li and load more
+            if filtered_posts_page:
+                context = {
+                    'posts_list': filtered_posts_page,
+                    'has_next': filtered_posts_page.has_next(),
+                    'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
+                }
+                rendered_template = render_to_string(self.template_name, context)
+            else:
+                context = {
+                    'message': 'Ничего не нашлось.'
+                }
+                rendered_template = render_to_string(self.no_results_template, context)
+            return JsonResponse({
+                'success': True,
+                'rendered_template': rendered_template,
+            })
+        elif offset > 1:
+            context = {
+                'posts_list': filtered_posts_page,
+            }
+            rendered_template = render_to_string(self.template_name_li, context)
+            return JsonResponse({
+                'success': True,
+                'rendered_template': rendered_template,
+                'has_next': filtered_posts_page.has_next(),
+                'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
+            })
 
 class Notifications(View):
     template_name = 'posts/notifications.html'

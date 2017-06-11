@@ -1,5 +1,7 @@
 {% load static from staticfiles %}
-
-{% for post in posts_list %}
-	{% include "posts/post_card.html" %}
-{% endfor %}
+<ul id="post-list" class="w3-ul">
+{% include "posts/post_card.html" %}
+</ul>
+{% if has_next %}
+{% include 'posts/includes/load_more_button_with_loader.html' %}
+{% endif %}

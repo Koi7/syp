@@ -1,42 +1,26 @@
 {% extends "posts/base.html" %}
 {% load static from staticfiles %}
 {% block extra_links %}
-<link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
-{% endblock %}
-{% block extra_scripts_head %}
-	<script src="{% static 'posts/js/util.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/forms.min.css' %}">
 {% endblock %}
 {% block title %} Посты {% endblock %}
-
 {% block content %}
-	<!-- PAGE HEADER -->
-	<h1 class="w3-padding-tiny w3-text-awesome w3-center">Посты</h1>
-	<!-- FILTERS -->
-	{% include "posts/filter_panel.html" %}	
-	<!-- POST LIST CONTAINER -->
-	<div id="post-list-container">
-		<!-- FILTER LOADER -->
-		<p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
-		<!-- POST LIST -->
-		<ul id="post-list" class="w3-ul">
-		{% if posts_list %}
-
-		{% include 'posts/post_list.html' %}
-
-		{% else %}
-
-		{% include 'posts/no_results.html' with message="Нет постов пока." %}
-
-		{% endif %}
-		</ul>
-		<!-- END POST LIST -->
-		{% include 'posts/load_more_button_with_loader.html' %}
-	</div>
-
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-text-awesome w3-center">Посты</h1>
+<!-- FILTERS -->
+{% include "posts/filter_panel.html" %}	
+<!-- POST LIST CONTAINER -->
+<div id="post-list-container">		
+	<!-- POST LIST -->
+	{% if posts_list %}
+	{% include 'posts/post_list.html' %}
+	{% else %}
+	{% include 'posts/no_results.html' with message="Нет постов пока." %}
+	{% endif %}
+	<!-- END POST LIST -->
+</div>
 {% endblock %}
-
 {% block extra_scripts %}
-
 <script>
 	var toggleRate = 50;
 	function ToggleSendMessageControls(){
@@ -55,14 +39,8 @@
 		   	   };
 	}
 
-	function filter(){
-		// delete no-result message
-		$('div#no-result-container').remove();
-		// delete load more section
-		$('section#load-more-section').hide();
-		// clear post list ul
-		$('ul#post-list').html('');
-		// show loading
+	function filter() {
+		$('div#post-list-container').empty();
 		$('p#filter-loader').toggle(toggleRate);
 		// get filter state object
 		filterState = getFilterState();
@@ -80,10 +58,7 @@
 			success: function (data){
 				if (data.success){
 					$('p#filter-loader').toggle(toggleRate);
-					$('div#post-list-container ul#post-list').html(data.rendered_template);
-					if (data.has_next) {
-						$('section#load-more-section').show();
-					}
+					$('div#post-list-container').html(data.rendered_template);
 				}
 			}
 		});
@@ -207,5 +182,4 @@
 
 	});
 </script>
-
 {% endblock %}

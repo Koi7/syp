@@ -58,7 +58,7 @@ class Post(models.Model):
     rejected = models.BooleanField('Отвергнуто', default=False)
 
     class Meta:
-        ordering = ['-accepted_datetime']
+        ordering = ['-pub_datetime']
 
     @property
     def place_str(self):

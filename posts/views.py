@@ -50,6 +50,7 @@ def delete_post_and_related_images(post_instance):
 
     post_instance.delete()
 
+
 def filter(place='any', tag='any', order='desc', is_anonymous=-1):
 
     posts_list = []
@@ -193,7 +194,10 @@ class PhotoUploader(View):
             return JsonResponse({
                 'success': True
                 })
-        delete_image(post_image_to_delete.image.path)
+        # erase image from HDD
+        path = post_image_to_delete.image.path
+        if os.path.isfile(path):
+            os.remove(path)
         return JsonResponse({
             'success': True
             })

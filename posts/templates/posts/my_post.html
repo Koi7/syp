@@ -15,7 +15,7 @@
 {% endblock %}
 {% block extra_scripts %}
 <script type="text/javascript">
-	 $(document).ready(function () {
+	$(document).ready(function () {
 		//delete button event handler
 		$('button.delete').click(function(){
 			alertify.confirm('Вы действительно хотите удалить ваш пост?', function(){
@@ -36,26 +36,7 @@
 		 			}
 		 		});
 			});
-			// delete_confirmation = sypConfirm('Вы действительно хотите удалить ваш пост?');
-			// if (delete_confirmation) {
-			// 	var post_id = $(this).data('post-id');
-		 // 		$.ajax({
-		 // 			type: "POST",
-		 // 			url: "{% url 'delete_post' %}", 			
-		 // 			data: {
-		 // 				post_id: post_id,
-		 // 				csrfmiddlewaretoken: getCookie('csrftoken')
-		 // 			},
-		 // 			context: this,
-		 // 			dataType: "json",
-		 // 			success: function (data){
-		 // 				if (data.success){
-		 // 					$('div.w3-vk-card[data-post-id=' + post_id + ']').remove();
-		 // 				}
-		 // 			}
-		 // 		});
-			// }
 		});
-	 });
+	});
 </script>
 {% endblock %}

@@ -12,6 +12,10 @@
 {% else %}
 {% include 'posts/no_results.html' with message="У вас нет поста." %}
 {% endif %}
+<div id="no-result-container-ajax" class="w3-container w3-padding-jumbo w3-center w3-text-gray no-display">
+    <h3>У вас больше нет поста.</h3>
+    <span class="w3-jumbo">:(</span>
+</div>
 {% endblock %}
 {% block extra_scripts %}
 <script type="text/javascript">
@@ -19,19 +23,19 @@
 		//delete button event handler
 		$('button.delete').click(function(){
 			alertify.confirm('Вы действительно хотите удалить ваш пост?', function(){
-				var post_id = $(this).data('post-id');
 		 		$.ajax({
 		 			type: "POST",
 		 			url: "{% url 'delete_post' %}", 			
 		 			data: {
-		 				post_id: post_id,
+		 				post_id: $('li.w3-vk-card').data('post-id'),
 		 				csrfmiddlewaretoken: getCookie('csrftoken')
 		 			},
 		 			context: this,
 		 			dataType: "json",
 		 			success: function (data){
-		 				if (data.success){
-		 					$('li.w3-vk-card[data-post-id=' + post_id + ']').remove();
+		 				if (data.success) {
+		 					$('li.w3-vk-card').remove();
+		 					$('div#no-result-container-ajax').toggle();
 		 				}
 		 			}
 		 		});

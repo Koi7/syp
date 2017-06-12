@@ -8,7 +8,6 @@
 {% block extra_scripts_head %}
 <script src="{% static 'posts/js/util.js' %}"></script>
 <script src="{% static 'posts/bower_components/switchery/dist/switchery.min.js' %}"></script>
-<script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
 <!-- FINE UPLOADER TEMPLATE -->
 <script type="text/template" id="qq-template-gallery">
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Перетащите файлы сюда
@@ -138,6 +137,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
 <script>
     $(document).ready(function (){
         // init SWITCHERY
@@ -174,7 +174,6 @@
 
         // add event handler to send button
         $('#send').click(function(){
-
             // prevent sending if there is no text
 
             text =  $('textarea#post-text').val();
@@ -192,7 +191,7 @@
                 data: {
                     csrfmiddlewaretoken: getCookie('csrftoken'),
                     text: text,
-                    is_anonymous: $("input[type='checkbox']").is(':checked'),
+                    is_anonymous: document.querySelector('#js-switch').checked,
                     photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
                     tag: $('#tags').val(),
                     place: $('select#place_select').val()

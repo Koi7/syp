@@ -31,24 +31,27 @@ import shutil
 def not_found(request):
     return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
 
-def delete_post_and_related_images(post_instance):
+# def delete_post_and_related_images(post_instance):
 
-    uid = post_instance.author.username
+#     uid = post_instance.author.username
 
-    # DELETE RELATED POSTIMAGE INSTANCES
+#     # DELETE RELATED POSTIMAGE INSTANCES
 
-    if post_instance.photos:
-        for post_image in post_instance.photos:
-            post_image.delete()
+#     if post_instance.photos:
+#         for post_image in post_instance.photos:
+#             path = post_image.image.path
+#             if os.path.isfile(path):
+#                 os.remove(path)
+#             post_image.delete()
 
-    # ERASE USER IMAGE FOLDER FROM HDD
-    if uid:
-        path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
-        shutil.rmtree(path, ignore_errors=True)
+#     # ERASE USER IMAGE FOLDER FROM HDD
+#     if uid:
+#         path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
+#         shutil.rmtree(path, ignore_errors=True)
 
-    # DELETE POST INSTANCE
+#     # DELETE POST INSTANCE
 
-    post_instance.delete()
+#     post_instance.delete()
 
 
 def filter(place='any', tag='any', order='desc', is_anonymous=-1):
@@ -214,14 +217,14 @@ class AddPostView(View):
         # MAKE OTHER POST NOT ACTUAL AND DELETE IT
 
         if request.user.vkuser.post:
-            delete_post_and_related_images(request.user.vkuser.post)
+            request.user.vkuser.post.delete()
             request.user.vkuser.post = None
 
         # BUILD NEW POST INSTANCE
 
         post = Post(author=request.user,
                     text=request.POST.get('text'),
-                    is_anonymous=True if request.POST.get('is_anonymous') == 'on' else False,
+                    is_anonymous=True if request.POST.get('is_anonymous') == 'true' else False,
                     place=request.POST.get('place'),
                     tag=request.POST.get('tag')
         )
@@ -288,7 +291,7 @@ class DeletePost(View):
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         
-        delete_post_and_related_images(request.user.vkuser.post)
+        request.user.vkuser.post.delete()
 
         return JsonResponse({
             'success': True

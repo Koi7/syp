@@ -91,10 +91,12 @@ class Post(models.Model):
 
 @receiver(post_delete, sender=Post)
 def erase_images(instance, **kwargs):
-    uid = instance.author.username
-    if uid:
-        path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
-        shutil.rmtree(path, ignore_errors=True)
+    if instance.photos:
+        for post_image in instance.photos:
+            path = post_image.image.path
+            if os.path.isfile(path):
+                os.remove(path)
+            post_image.delete()
 
 
     def __unicode__(self):

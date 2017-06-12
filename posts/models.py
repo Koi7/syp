@@ -17,6 +17,7 @@ import hashlib
 import json
 import requests
 import datetime
+import shutil
 
 # utils 
 
@@ -87,6 +88,13 @@ class Post(models.Model):
             for photo in photos:
                 image_tags.append('<img src="{}" width="100" heigth="100">'.format(photo.image.url))
         return mark_safe("".join(image_tags))
+
+@receiver(post_delete, sender=Post)
+def erase_images(instance, **kwargs):
+    uid = instance.author.username
+    if uid:
+        path = os.path.join(settings.MEDIA_ROOT, 'photos/' + uid)
+        shutil.rmtree(path, ignore_errors=True)
 
 
     def __unicode__(self):

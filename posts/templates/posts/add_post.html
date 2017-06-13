@@ -162,18 +162,19 @@
             },
             thumbnails: {
                 placeholders: {
-                    waitingPath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/waiting-generic.png" %}',
-                    notAvailablePath: '{% static "posts/node_modules/fine-uploader/fine-uploader/placeholders/not_available-generic.png" %}'
+                    waitingPath: '{% static "posts/bower_components/fine-uploader/dist/placeholders/waiting-generic.png" %}',
+                    notAvailablePath: '{% static "posts/bower_components//fine-uploader/dist/placeholders/not_available-generic.png" %}'
                 }
             },
             validation: {
                 allowedExtensions: ['jpeg', 'jpg', 'gif', 'png'],
-                itemLimit: 3
+                itemLimit: 3,
+                sizeLimit: 5000000
             }
         });
 
         // add event handler to send button
-        $('#send').click(function(){
+        $('#send').click(function() {
             // prevent sending if there is no text
 
             text =  $('textarea#post-text').val();

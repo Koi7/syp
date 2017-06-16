@@ -374,7 +374,7 @@ class MyPost(View):
 
 class LikedPosts(View):
     template_name = 'posts/liked.html'
-    ajax_template_name = 'posts/post_card.html'
+    ajax_template_name = 'posts/includes/post_card.html'
     posts_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
@@ -450,8 +450,8 @@ class Posts(View):
 
 class PostsFilter(View):
     template_name = 'posts/post_list.html'
-    template_name_li = 'posts/post_card.html'
-    no_results_template = 'posts/no_results.html'
+    template_name_li = 'posts/includes/post_card.html'
+    no_results_template = 'posts/includes/no_results.html'
     post_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, *args, **kwargs):

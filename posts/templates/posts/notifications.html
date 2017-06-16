@@ -12,15 +12,15 @@
 <!-- READ NOTIFICATIONS -->
 {% if read_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny w3-text-awesome">Просмотренные</h3>
-<ul id="read_list" class="w3-ul w3-margin">{% include 'posts/notifications_list.html' with notifications_list=read_notifications %}</ul>
+<ul id="read_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=read_notifications %}</ul>
 {% endif %}
 <!-- LOAD MORE BUTTON -->
 {% if has_next %}
-{% include 'posts/load_more_button_with_loader' %}
+{% include 'posts/includes/load_more_button_with_loader' %}
 {% endif %}
 <!-- NO NOTIFICATIONS -->
 {% if not unread_notifications and not read_notifications %}
-{% include 'posts/no_results.html' with message="Нет увидомлений пока." %}
+{% include 'posts/includes/no_results.html' with message="Нет увидомлений пока." %}
 {% endif %}
 {% endblock %}
 {% block extra_scripts %}
@@ -36,7 +36,7 @@
 		 			url: '{% url "notifications" %}',
 		 			data: {
 		 				offset: $(this).data('offset')
-		 			}
+		 			},
 		 			dataType: "json",
 		 			context: this,
 		 			success: function (data) {

@@ -11,10 +11,10 @@
 <div id="post-list-container">
     <!-- POST LIST -->
     {% if posts_list %}
-    {% include 'posts/post_list.html' %}
+    {% include 'posts/includes/post_list.html' %}
     {% endif %}
     {% if not posts_list %}
-    {% include 'posts/no_results.html' with message="Нет постов пока." %}
+    {% include 'posts/includes/no_results.html' with message="Нет постов пока." %}
     {% endif %}
     <!-- END POST LIST -->
 </div>

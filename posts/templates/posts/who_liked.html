@@ -9,14 +9,14 @@
 <div class="w3-row">
     {% if like_list %}
     <ul data-post-id="{{ post_id }}" id="like-list" class="w3-ul">
-        {% include 'posts/like_list.html' %}
+        {% include 'posts/includes/like_list.html' %}
     </ul>
     {% else %}  
-    {% include 'posts/no_results.html' with message="Никто не лайкнул пока." %}
+    {% include 'posts/includes/no_results.html' with message="Никто не лайкнул пока." %}
     {% endif %}
         <!-- LOAD MORE BUTTON -->
     {% if has_next %}
-      {% include 'posts/load_more_button_with_loader.html' %}
+      {% include 'posts/includes/load_more_button_with_loader.html' %}
     {% endif %}  
 </div>
 

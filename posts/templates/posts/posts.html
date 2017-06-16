@@ -10,7 +10,7 @@
 <!--GRID-->
 <div class="w3-row" style="position: relative;">
 	<!-- FILTERS -->
-	{% include "posts/filter_panel.html" %}	
+	{% include "posts/includes/filter_panel.html" %}	
 	<!-- POST LIST CONTAINER -->
 	<div class="w3-col l8">
 		<div class="w3-hide-large w3-container w3-padding-large w3-vk-card-noshadow">
@@ -62,9 +62,9 @@
 		<div id="post-list-container">		
 			<!-- POST LIST -->
 			{% if posts_list %}
-			{% include 'posts/post_list.html' %}
+			{% include 'posts/includes/post_list.html' %}
 			{% else %}
-			{% include 'posts/no_results.html' with message="Нет постов пока." %}
+			{% include 'posts/includes/no_results.html' with message="Нет постов пока." %}
 			{% endif %}
 			<!-- END POST LIST -->
 		</div>

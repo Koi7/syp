@@ -164,9 +164,18 @@ image view styles
     cursor: pointer;
 }
 
+.modal-image-container {
+    margin-left:340px;
+    margin-right:40px;
+}
+
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
     .modal-content {
         width: 100%;
+    }
+    
+    .modal-image-container{
+        margin: inherit;
     }
 }

@@ -21,6 +21,8 @@
 {% endblock %}
 {% block extra_scripts %}
 <script>
+    $(document).on('click', 'img.post-image', openDialog);
+    
     var loadMoreUrl = "{% url 'liked' %}";
     var likeUrl = "{% url 'like_post' %}";
     var leaveMessageUrl = "{% url 'leave_message' %}";

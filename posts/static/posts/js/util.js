@@ -26,3 +26,14 @@ function getFilterState() {
 	   		'is_anonymous': filterPanel.find('select.f-anonymous').val()
 	   	   };
 }
+
+// image view on click 
+function openDialog() {
+	var postID = $(this).data('post-id');
+	var dialog = $('div.modal[data-post-id=' + postID + ']');
+	dialog.find('span').click(function () {
+		$(this).parent().css('display', 'none');
+	});
+	dialog.find('img').attr('src', $(this).attr('src'));
+	dialog.css('display', 'block');
+}

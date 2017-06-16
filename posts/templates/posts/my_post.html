@@ -18,6 +18,8 @@
 {% endblock %}
 {% block extra_scripts %}
 <script type="text/javascript">
+	$(document).on('click', 'img.post-image', openDialog);
+	
 	$(document).ready(function () {
 		//delete button event handler
 		$('button.delete').click(function(){

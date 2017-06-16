@@ -1,12 +1,12 @@
-{% load static from staticfiles %}
-{% for post in posts_list %}
+{% load static from staticfiles %} {% for post in posts_list %}
 <!-- POST CARD -->
 <li data-post-id="{{ post.id }}" class="w3-vk-card margin-top-tiny .w3-custom-round-small w3-white w3-display-container no-padding">
 	<!-- POST HEADER -->
 	<header data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
 		<!-- USER PHOTO -->
 		<div class="w3-cell w3-cell-middle">
-			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right" style="width:50px">
+			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-left w3-circle w3-margin-right"
+			 style="width:50px">
 		</div>
 		<div class="w3-cell w3-cell-middle w3-small">
 			<!-- DISPLAY NAME OR ANONYMOUS -->
@@ -39,21 +39,21 @@
 	</header>
 	<!-- POST TEXT AND IMAGES-->
 	<div data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
-	    <p data-post-id="{{ post.id }}" class="w3-medium post-text-normalize justify-text">{{ post.text }}</p>
-	    {% if post.photos %}
-	    <div class="modalContainer">
-		    {% for photo in post.photos %}
-		    <img class="post-image" data-post-id="{{ post.id }}" width="{% widthratio photo.image.width 8 1 %}" height="{% widthratio photo.image.height 8 1 %}" src="{{ photo.image.url }}" alt="фото пользователя">
-		    {% endfor %}
-		    <!-- The Modal -->
-		    <div data-post-id="{{ post.id }}" class="modal">
-		    	 <!-- The Close Button -->
-	  			<span class="close">&times;</span>
+		<p data-post-id="{{ post.id }}" class="w3-medium post-text-normalize justify-text">{{ post.text }}</p>
+		{% if post.photos %}
+		<div class="modalContainer">
+			{% for photo in post.photos %}
+			<img class="post-image" data-post-id="{{ post.id }}" width="{% widthratio photo.image.width 8 1 %}" height="{% widthratio photo.image.height 8 1 %}"
+			 src="{{ photo.image.url }}" alt="фото пользователя"> {% endfor %}
+			<!-- The Modal -->
+			<div data-post-id="{{ post.id }}" class="modal">
+				<!-- The Close Button -->
+				<span class="close">&times;</span>
 				<!-- Modal Content (The Image) -->
-				<div class="modal-image-container"><img class="modal-content"></div>				
-		    </div>
-	    </div>
-	    {% endif %}
+				<div class="modal-image-container"><img class="modal-content"></div>
+			</div>
+		</div>
+		{% endif %}
 	</div>
 	<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
 	<footer data-post-id="{{ post.id }}" class="w3-container w3-border-top w3-padding-small">
@@ -61,16 +61,17 @@
 		<div data-post-id="{{ post.id }}" class="w3-padding-small w3-right-align">
 			<!-- SHOW SEND MESSAGE CONTROLS BUTTON-->
 			{% if not editable %}
-			<i data-post-id="{{ post.id }}" class="fa fa-envelope-o pointer w3-padding-small w3-text-blue show-send-message-controls" aria-hidden="true" title="Оставить послание"></i>
+			<i data-post-id="{{ post.id }}" class="fa fa-envelope-o pointer w3-padding-small w3-text-blue show-send-message-controls"
+			 aria-hidden="true" title="Оставить послание"></i>
 			<!-- PIPE -->
-			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span>
-			{% endif %}
+			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span> {% endif %}
 			<!-- LIKE INDICATOR -->
 			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' %}?post_id={{ post.id }}" class="link-no-style">
 				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>
 			</a>
 			<!-- LIKE BUTTON -->
-			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}" id="{{ post.id }}"></i>
+			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}"
+			 id="{{ post.id }}"></i>
 		</div>
 		<!-- INPUT AND BUTTON -->
 		<div data-post-id="{{ post.id }}" class="w3-row-padding no-display send-message-controls pure-form">
@@ -78,7 +79,7 @@
 				<input data-post-id="{{ post.id }}" class="w3-input w3-cell no-outline" type="text" placeholder="Оставить послание">
 			</div>
 			<div data-post-id="{{ post.id }}" class="w3-col m3 l3 w3-padding-4 w3-right-align">
-				<button data-post-id="{{ post.id }}"  class="w3-btn w3-white w3-text-blue message-sender">Отправить</button>
+				<button data-post-id="{{ post.id }}" class="w3-btn w3-white w3-text-blue message-sender">Отправить</button>
 			</div>
 		</div>
 	</footer>

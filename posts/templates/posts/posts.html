@@ -74,24 +74,12 @@
 {% endblock %}
 {% block extra_scripts %}
 <script>
-	function openDialog() {
-		var postID = $(this).data('post-id');
-		var dialog = $('div.modal[data-post-id=' + postID + ']');
-		dialog.find('span').click(function () {
-			$(this).parent().css('display', 'none');
-		});
-		dialog.find('img').attr('src', $(this).attr('src'));
-		dialog.css('display', 'block');
-	}
-
 	$(document).on('click', 'img.post-image', openDialog);
-
+	
 	var loadMoreUrl = "{% url 'posts_filter' %}";
 	var likeUrl = "{% url 'like_post' %}";
 	var leaveMessageUrl = "{% url 'leave_message' %}";
 	var filterState = getFilterState();
-
-
 </script>
 <script type="text/javascript" src="{% static 'posts/js/post_manipulations.js' %}"></script>
 {% endblock %}

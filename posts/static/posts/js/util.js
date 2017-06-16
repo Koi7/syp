@@ -16,11 +16,13 @@ function sypConfirm(message) {
 /*
 return - Object
 */
-function getFilterState(){
+function getFilterState() {
+	var filterPanel = $('div#filters').is(':visible') ? $('div#filters') : $('div#filters-mobile');
+
 	return { 
-			'place': $('select#filter_place').val(),
-	 		'tag': $('select#filter_tags').val(),
-	  		'order': $('select#filter_order').val(),
-	   		'is_anonymous': $('select#filter_anonymous').val()
+			'place': filterPanel.find('select.f-place').val(),
+	 		'tag': filterPanel.find('select.f-tag').val(),
+	  		'order': filterPanel.find('select.f-order').val(),
+	   		'is_anonymous': filterPanel.find('select.f-anonymous').val()
 	   	   };
 }

@@ -155,10 +155,14 @@ $(document).on('click', 'button#load-more-btn', loadMore);
 
 $(document).ready(function () {
 
-	$('div#filters select').change(filter);
+	$('div#filters select, div#filters-mobile select').change(filter);
 
-	$('#filter_panel_toggler').click(function (){
-		$('#filters').toggle(toggleRate);
+	$('button#filter_panel_toggler').click(function (){
+		$('div#filters').toggle(toggleRate);
 	});
+
+	$('button#fp-toggler-mobile').click(function () {
+		$('div#filters-mobile').toggle(toggleRate);
+	})
 
 });

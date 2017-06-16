@@ -1,54 +1,48 @@
-<div class="w3-container w3-vk-card-no-shadow margin-center">
-	<button id="filter_panel_toggler" class="w3-padding-tiny w3-btn w3-text-blue main-bg-color"><i class="fa fa-filter" aria-hidden="true"></i> фильтры</button>
-	<div id="filters" class="pure-form w3-row-padding margin-bottom-large margin-bottom-large w3-vk-card-no-shadow margin-center no-display">
-		<!-- CITY FILTER -->
-		<div class="w3-col  l3">
+<div class="w3-col l2">
+	<div id="fixed-filter-panel" style="position: fixed;" class="w3-hide-small w3-hide-medium">
+		<button id="filter_panel_toggler" class="no-padding w3-btn w3-text-blue w3-white"><i class="fa fa-filter" aria-hidden="true"></i> фильтры</button>
+		<div id="filters" class="pure-form  margin-center">
+			<!-- CITY FILTER -->
 			<div class="filter-item-center">
-				<label for="filter_place" class="w3-padding-tiny w3-text-awesome d-block">город</label>
-			    <select id="filter_place" class="filter-select-fixed-width">
-			    	<option value="any">любой</option>
-			        <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %} >Севастополь</option>
-			        <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %} >Симферополь</option>
-			        <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %} >Ялта</option>
-			    </select>
-			</div>			
-	    </div>			
-	    <!-- TAGS FILTER -->
-	    <div class="w3-col l3">
-	    	<div class="filter-item-center">
-			    <label for="filter_tags" class="w3-padding-tiny w3-text-awesome d-block">тэг</label>
-		        <select id="filter_tags" class="filter-select-fixed-width">
-		        	<option value="any" selected>любой</option>
-		            <option value="0">ищу парня</option>
-		            <option value="1">ищу девушку</option>
-		            <option value="2">ищу друга</option>
-		            <option value="3">ищу подругу</option>
-		            <option value="4">ищу компанию</option>
-		            <option value="5">ищу с/о</option>
-		        </select>	
-	    	</div>
-	    </div>		    
-	    <!-- ORDER FILTER -->
-	    <div class="w3-col l3">
-	    	<div class="filter-item-center">
-			    <label for="filter_order" class="w3-padding-tiny w3-text-awesome d-block">сортировка</label>
-			    <select id="filter_order" class="filter-select-fixed-width">
-			        <option value="desc" selected>сначала новые</option>
-			        <option value="asc">сначала старые</option>
-			    </select>
-	    	</div>
-	    </div>		    
-	    <!-- ANONYMOUS FILTER -->
-	    <div class="w3-col l3">
-	    	<div class="filter-item-center">
-			    <label for="filter_" class="w3-padding-tiny w3-text-awesome d-block">анонимность</label>
-			    <select id="filter_anonymous" class="filter-select-fixed-width">
-			        <option value="any" selected>любые</option>
-			        <option value="0">анонимные</option>
-			        <option value="1">не анонимные</option>
-			    </select>
-	    	</div>
-	    </div>		   	
+				<span class="w3-padding-tiny w3-text-awesome d-block">город</span>
+				<select class="f-place filter-select-fixed-width">
+					<option value="any">любой</option>
+					<option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %} >Севастополь</option>
+					<option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %} >Симферополь</option>
+					<option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %} >Ялта</option>
+				</select>
+			</div>					
+			<!-- TAGS FILTER -->
+			<div class="filter-item-center">
+				<span class="w3-padding-tiny w3-text-awesome d-block">тэг</span>
+				<select class="f-tag filter-select-fixed-width">
+					<option value="any" selected>любой</option>
+					<option value="0">ищу парня</option>
+					<option value="1">ищу девушку</option>
+					<option value="2">ищу друга</option>
+					<option value="3">ищу подругу</option>
+					<option value="4">ищу компанию</option>
+					<option value="5">ищу с/о</option>
+				</select>	
+			</div>	    
+			<!-- ORDER FILTER -->
+			<div class="filter-item-center">
+				<span class="w3-padding-tiny w3-text-awesome d-block">сортировка</span>
+				<select class="f-order filter-select-fixed-width">
+					<option value="desc" selected>сначала новые</option>
+					<option value="asc">сначала старые</option>
+				</select>
+			</div>	    
+			<!-- ANONYMOUS FILTER -->
+			<div class="filter-item-center">
+				<span  class="w3-padding-tiny w3-text-awesome d-block">анонимность</span>
+				<select  class="f-anonymous filter-select-fixed-width">
+					<option value="any" selected>любые</option>
+					<option value="0">анонимные</option>
+					<option value="1">не анонимные</option>
+				</select>
+			</div>		   	
+		</div>
 	</div>
+	&nbsp;
 </div>
-<p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>

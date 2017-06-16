@@ -13,6 +13,10 @@
 	margin-bottom: 45px;
 }
 
+.margin-bottom-tiny{
+    margin-bottom: 10px;
+}
+
 .pa-r-six{
 	padding-right: 6px !important;
 }

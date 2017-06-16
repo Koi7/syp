@@ -7,17 +7,69 @@
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-text-awesome w3-center">Посты</h1>
-<!-- FILTERS -->
-{% include "posts/filter_panel.html" %}	
-<!-- POST LIST CONTAINER -->
-<div id="post-list-container">		
-	<!-- POST LIST -->
-	{% if posts_list %}
-	{% include 'posts/post_list.html' %}
-	{% else %}
-	{% include 'posts/no_results.html' with message="Нет постов пока." %}
-	{% endif %}
-	<!-- END POST LIST -->
+<!--GRID-->
+<div class="w3-row" style="position: relative;">
+	<!-- FILTERS -->
+	{% include "posts/filter_panel.html" %}	
+	<!-- POST LIST CONTAINER -->
+	<div class="w3-col l8">
+		<div class="w3-hide-large w3-container w3-padding-large w3-vk-card-noshadow">
+			<button id="fp-toggler-mobile" class="no-padding w3-btn w3-text-blue w3-white"><i class="fa fa-filter" aria-hidden="true"></i> фильтры</button>
+			<div id="filters-mobile" class="pure-form  margin-center no-display">
+				<!-- CITY FILTER -->
+				<div class="filter-item-center">
+					<span class="w3-padding-tiny w3-text-awesome d-block">город</span>
+					<select  class="f-place filter-select-fixed-width">
+						<option value="any">любой</option>
+						<option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %} >Севастополь</option>
+						<option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %} >Симферополь</option>
+						<option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %} >Ялта</option>
+					</select>
+				</div>					
+				<!-- TAGS FILTER -->
+				<div class="filter-item-center">
+					<span class="w3-padding-tiny w3-text-awesome d-block">тэг</span>
+					<select  class="f-tag filter-select-fixed-width">
+						<option value="any" selected>любой</option>
+						<option value="0">ищу парня</option>
+						<option value="1">ищу девушку</option>
+						<option value="2">ищу друга</option>
+						<option value="3">ищу подругу</option>
+						<option value="4">ищу компанию</option>
+						<option value="5">ищу с/о</option>
+					</select>	
+				</div>	    
+				<!-- ORDER FILTER -->
+				<div class="filter-item-center">
+					<span class="w3-padding-tiny w3-text-awesome d-block">сортировка</span>
+					<select class="f-order filter-select-fixed-width">
+						<option value="desc" selected>сначала новые</option>
+						<option value="asc">сначала старые</option>
+					</select>
+				</div>	    
+				<!-- ANONYMOUS FILTER -->
+				<div class="filter-item-center">
+					<span class="w3-padding-tiny w3-text-awesome d-block">анонимность</span>
+					<select class="f-anonymous filter-select-fixed-width">
+						<option value="any" selected>любые</option>
+						<option value="0">анонимные</option>
+						<option value="1">не анонимные</option>
+					</select>
+				</div>		   	
+			</div>
+		</div>
+		<p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
+		<div id="post-list-container">		
+			<!-- POST LIST -->
+			{% if posts_list %}
+			{% include 'posts/post_list.html' %}
+			{% else %}
+			{% include 'posts/no_results.html' with message="Нет постов пока." %}
+			{% endif %}
+			<!-- END POST LIST -->
+		</div>
+	</div>
+	<div class="w3-col l2">&nbsp;</div>
 </div>
 {% endblock %}
 {% block extra_scripts %}

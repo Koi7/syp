@@ -78,8 +78,8 @@ function ClickSendButtonEventHandler(){
 					alertify.success('Ваше послание отправлено.');
 					// update post state on front end
 					// make icon red
-					$('i.fa-heart[data-post-id=' + post_id + ']').removeClass('w3-text-gray');
-					$('i.fa-heart[data-post-id=' + post_id + ']').addClass('w3-text-red');
+					$('i.icon-heart-empty[data-post-id=' + post_id + ']').removeClass('w3-text-gray');
+					$('i.icon-heart-empty[data-post-id=' + post_id + ']').addClass('w3-text-red');
 					// change amount of likes
 					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 				} else {
@@ -148,7 +148,7 @@ function loadMore() {
 }
 
 
-$(document).on('click', '.fa-heart', LikeEvent);
+$(document).on('click', 'i.icon-heart-empty', LikeEvent);
 $(document).on('click', 'button.message-sender', ClickSendButtonEventHandler);
 $(document).on('click', 'i.show-send-message-controls', ToggleSendMessageControls);
 $(document).on('click', 'button#load-more-btn', loadMore);

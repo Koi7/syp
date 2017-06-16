@@ -61,7 +61,7 @@
 		<div data-post-id="{{ post.id }}" class="w3-padding-small w3-right-align">
 			<!-- SHOW SEND MESSAGE CONTROLS BUTTON-->
 			{% if not editable %}
-			<i data-post-id="{{ post.id }}" class="fa fa-envelope-o pointer w3-padding-small w3-text-blue show-send-message-controls"
+			<i data-post-id="{{ post.id }}" class="icon-paper-plane-empty pointer w3-padding-small w3-text-blue show-send-message-controls"
 			 aria-hidden="true" title="Оставить послание"></i>
 			<!-- PIPE -->
 			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span> {% endif %}
@@ -70,7 +70,7 @@
 				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>
 			</a>
 			<!-- LIKE BUTTON -->
-			<i data-post-id="{{ post.id }}" class="fa fa-heart pointer w3-padding-small {% if post in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}"
+			<i data-post-id="{{ post.id }}" class="icon-heart-empty pointer w3-padding-small {% if post in request.user.vkuser.liked %} w3-text-red {% else %}  w3-text-blue {% endif %}"
 			 id="{{ post.id }}"></i>
 		</div>
 		<!-- INPUT AND BUTTON -->

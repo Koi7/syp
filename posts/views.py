@@ -408,7 +408,7 @@ class LikedPosts(View):
 
 class Posts(View):
     template_name = 'posts/posts.html'
-    ajax_post_list_template = 'posts/post_list.html'
+    ajax_post_list_template = 'posts/includes/post_list.html'
     no_results_template = 'posts/no_results_html'
     post_per_request = 1
     @method_decorator(login_required(redirect_field_name=None))
@@ -449,7 +449,7 @@ class Posts(View):
         return render(request, self.template_name, context)
 
 class PostsFilter(View):
-    template_name = 'posts/post_list.html'
+    template_name = 'posts/includes/post_list.html'
     template_name_li = 'posts/includes/post_card.html'
     no_results_template = 'posts/includes/no_results.html'
     post_per_request = 1

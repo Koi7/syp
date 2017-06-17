@@ -63,12 +63,14 @@
       document.getElementById("mySidenav").style.display = "none";
       document.getElementById("myOverlay").style.display = "none";
   }
-  // alertify settings
-  alertify.logPosition("top right");
-  alertify.okBtn("Да");
-  alertify.cancelBtn("Нет");
   </script>
   <script src="{% static 'posts/bower_components/alertifyjs/dist/js/alertify.js' %}"></script>
+  <script>
+    // alertify settings
+    alertify.logPosition("top right");
+    alertify.okBtn("Да");
+    alertify.cancelBtn("Нет");
+  </script>
   <!-- EXTRA SCRIPTS -->
   {% block extra_scripts %}{% endblock %}
 </body>

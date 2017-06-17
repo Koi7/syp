@@ -121,10 +121,10 @@ class VKUser(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
-    place = models.IntegerField(choices=PLACE_CHOICES, default=1)
+    place = models.IntegerField('Город', choices=PLACE_CHOICES, default=1)
     post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
-    age = models.IntegerField(default=0)
-    sex = models.IntegerField(choices=SEX_CHOICES, default=-1)
+    age = models.IntegerField('Возраст', default=0)
+    sex = models.IntegerField('Пол', choices=SEX_CHOICES, default=-1)
     has_closed_attention = models.BooleanField(default=False)
 
     @property
@@ -155,6 +155,10 @@ class VKUser(models.Model):
     @property
     def read_notifications(self):
         return list(self.user.notification_set.filter(unread=False))
+
+    @property 
+    def photo(self):
+        return mark_safe("".join('<img src="{}" width="100" heigth="100">'.format(self.photo_rec)))
 
 
     @receiver(post_save, sender=User)

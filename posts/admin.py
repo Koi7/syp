@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from models import Post
+from models import Post, VKUser
 from django.utils import timezone
 
 # post actions
@@ -39,5 +39,31 @@ class PostAdmin(admin.ModelAdmin):
 	def photo_tag_verbose(self, obj):
 		return obj.photos_tags
 	photo_tag_verbose.short_description = u'Фото'
+
+class VKUserAdmin(admin.ModelAdmin):
+
+	list_display = (
+			'get_fname',
+			'get_lname',
+			'get_photo',
+			'get_place',
+			'age',
+			'sex',
+	)
+
+	def get_fname(self, obj):
+		return obj.user.first_name
+	get_fname.short_description = 'Имя'
+	def get_lname(self, obj):
+		return obj.user.last_name
+	get_lname.short_description = 'Фамилия'
+	def get_photo(self, obj):
+		return obj.photo
+	get_photo.short_description = 'Фото'
+	def get_place(self, obj):
+		return obj.place_str
+	get_place.short_description = 'Город'
 # Register your models here.
 admin.site.register(Post, PostAdmin)
+admin.site.register(VKUser, VKUserAdmin)
+

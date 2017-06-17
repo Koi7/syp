@@ -27,7 +27,7 @@ GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['koi.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = ['posts.models.HashBackend', 'django.contrib.auth.backends.ModelBackend', ]
 #social auth
 VK_APP_ID = '5617320'
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.gzip.GZipMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

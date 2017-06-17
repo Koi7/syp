@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from models import Post, VKUser
+from models import Post, VKUser, BlackList
 from django.utils import timezone
 
 # post actions
@@ -63,7 +63,20 @@ class VKUserAdmin(admin.ModelAdmin):
 	def get_place(self, obj):
 		return obj.place_str
 	get_place.short_description = 'Город'
+
+class BlackListAdmin(admin.ModelAdmin):
+
+	list_display = (
+			'vk_id',
+			'timestamp',
+			'days',
+			'get_state',
+	)
+
+	def get_state(self, obj):
+		return obj.is_active
+	get_state.short_description = 'Действительно?'
 # Register your models here.
 admin.site.register(Post, PostAdmin)
 admin.site.register(VKUser, VKUserAdmin)
-
+admin.site.register(BlackList, BlackListAdmin)

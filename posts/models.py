@@ -14,11 +14,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import mark_safe
 from PIL import Image as Img
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from datetime import timedelta
+from django.utils import timezone
 import StringIO
 import hashlib
 import json
 import requests
-import datetime
 import shutil
 
 # utils 
@@ -30,6 +31,23 @@ def get_image_path(instance, filename):
                         '{}.{}'.format(instance.id, extension))
 
 # Create your models here.
+
+class BlackList(models.Model):
+    vk_id = models.CharField('VK_ID', max_length=20, default="")
+    reason = models.CharField('Причина', max_length=250, default="")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    days = models.IntegerField('Срок', default=-1)
+
+    @property
+    def is_active(self):
+        delta = self.timestamp + timedelta(days=self.days)
+        today = timezone.now()
+        diff = today - delta
+        if diff.days < 0:
+            return True
+        else:
+            return False
+
 
 class Post(models.Model):
     # 0  is Sevast

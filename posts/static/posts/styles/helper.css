@@ -5,6 +5,15 @@
 	cursor: pointer !important;
 }
 
+.fixed {
+    position: fixed !important;
+}
+
+.respect-side-nav {
+    margin-left:340px;
+    margin-right:40px;
+}
+
 .margin-top-tiny{
 	margin-top: 10px; 
 }

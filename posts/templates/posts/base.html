@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block links %}
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/w3c.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'posts/styles/dist/helper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/styles/dist/w3c.css' %}">
+    <link rel="stylesheet" href="{% static 'posts/styles/dist/helper.min.css' %}">
     <link rel="stylesheet" href="{% static 'posts/styles/dist/fontawesome-webfont.min.css' %}">
     {% endblock %}
     {% block extra_links %}{% endblock %}
     {% block scripts %}
-    <script type="text/javascript" src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
+    <script src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'posts/js/util.js' %}"></script>
     {% endblock %}
     {% block extra_scripts_head %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
@@ -25,7 +25,6 @@
     <div class="w3-container">
       <h2 class="w3-padding-64">Ищу тебя</h2>
     </div>
-    <!-- ORDERED BY USAGE PROBABILITY -->
     <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Посты</a>
     <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Уведомления
     {% if request.user.vkuser.unread_notifications_amount %}
@@ -39,17 +38,14 @@
     <a href="{% url 'logout_view' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Выход</a>
   </nav>
   {% endblock %}
-
   <!-- TOP MENU ON SMALL SCREENS -->
   <header class="w3-container w3-top w3-hide-large w3-red w3-large w3-padding-small">
     <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()"><i class="fa fa-bars" aria-hidden="true"></i></a>
     <a href="{% url 'posts' %}" class="link-no-style"><span>Ищу тебя</span></a>
   </header>
   <!-- Overlay effect when opening sidenav on small screens -->
-  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
-  <!-- !PAGE CONTENT! -->
-  <div class="w3-main" style="margin-left:340px;margin-right:40px">
+  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>  <!-- !PAGE CONTENT! -->
+  <div class="w3-main respect-side-nav">
       <div class=".w3-custom-container" style="margin-top:80px; margin-bottom: 200px;" id="showcase">
           {% block content %}{% endblock %}
           {% block fakeauth %}{% endblock %}
@@ -67,13 +63,12 @@
       document.getElementById("mySidenav").style.display = "none";
       document.getElementById("myOverlay").style.display = "none";
   }
+  // alertify settings
+  alertify.logPosition("top right");
+  alertify.okBtn("Да");
+  alertify.cancelBtn("Нет");
   </script>
   <script src="{% static 'posts/bower_components/alertifyjs/dist/js/alertify.js' %}"></script>
-  <script type="text/javascript">
-    alertify.logPosition("top right");
-    alertify.okBtn("Да");
-    alertify.cancelBtn("Нет");
-  </script>
   <!-- EXTRA SCRIPTS -->
   {% block extra_scripts %}{% endblock %}
 </body>

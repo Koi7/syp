@@ -13,13 +13,13 @@
       {{ like.user.vkuser.place_str }}
     </span>
   </div>
-  {% if like.message %}
+  {% if like.message and like.post == request.user.vkuser.post %}
   <button data-like-id="{{ like.id }}" class="show-message-btn w3-display-right w3-btn w3-white w3-text-blue w3-padding-tiny w3-margin-right" title="Показать/скрыть послание">
     <i class="icon-mail" aria-hidden="true"></i>
   </button>
   {% endif %}
 </li>
-{% if like.message %}
+{% if like.message and like.post == request.user.vkuser.post %}
 <li data-like-id="{{ like.id }}" class="w3-vk-card w3-white message no-display">
   <p class="w3-border-left w3-border-red w3-padding no-margin">{{ like.message }}</p>
 </li>

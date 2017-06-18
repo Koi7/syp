@@ -7,7 +7,7 @@
 <!-- UNREAD NOTIFICATIONS -->
 {% if unread_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny  w3-text-awesome">Новые</h3>
-<ul id="unread_list" class="w3-ul w3-margin">{% include 'posts/notifications_list.html' with notifications_list=unread_notifications %}</ul>
+<ul id="unread_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=unread_notifications %}</ul>
 {% endif %}
 <!-- READ NOTIFICATIONS -->
 {% if read_notifications %}

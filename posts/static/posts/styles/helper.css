@@ -188,3 +188,61 @@ image view styles
         margin: inherit;
     }
 }
+
+/* Image Responsive Grid from CSS-Tricks */
+.photos {
+   /* Prevent vertical gaps */
+   line-height: 0;
+   
+   -webkit-column-count: 1;
+   -webkit-column-gap:   2px;
+   -moz-column-count:    1;
+   -moz-column-gap:      2px;
+   column-count:         1;
+   column-gap:           2px;
+}
+
+.photos img {
+  /* Just in case there are inline attributes */
+  width: 100% !important;
+  height: auto !important;
+  margin-bottom: 1px; 
+}
+
+.photos img:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 1200px) {
+  .photos {
+  -moz-column-count:    1;
+  -webkit-column-count: 1;
+  column-count:         1;
+  }
+}
+@media (max-width: 1000px) {
+  .photos {
+  -moz-column-count:    1;
+  -webkit-column-count: 1;
+  column-count:         1;
+  }
+}
+@media (max-width: 800px) {
+  .photos {
+  -moz-column-count:    1;
+  -webkit-column-count: 1;
+  column-count:         1;
+  }
+}
+@media (max-width: 400px) {
+  .photos {
+  -moz-column-count:    1;
+  -webkit-column-count: 1;
+  column-count:         1;
+  }
+}
+
+/* Image orientation */
+img {
+    image-orientation: from-image;
+}

@@ -41,10 +41,10 @@
 	<div data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
 		<p data-post-id="{{ post.id }}" class="w3-medium post-text-normalize justify-text">{{ post.text }}</p>
 		{% if post.photos %}
-		<div class="modalContainer">
+		<div class="modalContainer photos">
 			{% for photo in post.photos %}
-			<img class="post-image" data-post-id="{{ post.id }}" width="{% widthratio photo.image.width 8 1 %}" height="{% widthratio photo.image.height 8 1 %}"
-			 src="{{ photo.image.url }}" alt="фото пользователя"> {% endfor %}
+			<img class="post-image" data-post-id="{{ post.id }}" src="{{ photo.image.url }}" alt="фото пользователя">
+			 {% endfor %}
 			<!-- The Modal -->
 			<div data-post-id="{{ post.id }}" class="modal">
 				<!-- The Close Button -->

@@ -12,7 +12,7 @@ from django.contrib.auth.signals import user_logged_in
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import mark_safe
-from PIL import Image as Img
+from PIL import Image as Img, ExifTags
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from datetime import timedelta
 from django.utils import timezone
@@ -208,6 +208,9 @@ class PostImage(models.Model):
     filename = models.CharField(max_length=255, null=True)
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     def save(self, *args, **kwargs):
+        super(PostImage, self).save(*args, **kwargs)
+    
+    def process_image(self):
         if self.image:
             img = Img.open(StringIO.StringIO(self.image.read()))
             if img.mode != 'RGB':
@@ -215,9 +218,20 @@ class PostImage(models.Model):
             img.thumbnail((self.image.width/1.5,self.image.height/1.5), Img.ANTIALIAS)
             output = StringIO.StringIO()
             img.save(output, format='JPEG', quality=70)
+            # fix orientation
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation]=='Orientation':
+                    break
+            exif=dict(img._getexif().items())
+            if exif[orientation] == 3:
+                img=img.rotate(180, expand=True)
+            elif exif[orientation] == 6:
+                img=img.rotate(270, expand=True)
+            elif exif[orientation] == 8:
+                img=img.rotate(90, expand=True)
             output.seek(0)
+            img.save(output, format='JPEG', quality=70)
             self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
-        super(PostImage, self).save(*args, **kwargs)
 
 class Like(models.Model):
     user = models.ForeignKey(User)

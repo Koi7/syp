@@ -161,11 +161,11 @@ class PhotoUploader(View):
         uuid = request.POST.get('qquuid')
         filename = request.POST.get('qqfilename')
         photo = PostImage(id=uuid, filename=filename, image=request.FILES['qqfile'], user=request.user)
+        photo.process_image()
         photo.save()
         return JsonResponse({
             'success': True
             })
-
     @method_decorator(login_required(redirect_field_name=None))
     def delete(self, request, qquuid):
         try:
@@ -176,6 +176,7 @@ class PhotoUploader(View):
                 })
         # erase image from HDD
         path = post_image_to_delete.image.path
+        print path
         if os.path.isfile(path):
             os.remove(path)
         return JsonResponse({
@@ -222,7 +223,6 @@ class AddPostView(View):
                 for post_photo in post_photo_list:
                     post_photo.post = post
                     post_photo.save()
-
         # SAVE CHANGES 
 
         request.user.save()

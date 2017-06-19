@@ -180,8 +180,8 @@ image view styles
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 700px){
-    .modal-content {
-        width: 100%;
+    .modal-content, .thumbnail, .thumbnail img {
+        width: 100% !important;
     }
     
     .modal-image-container{
@@ -189,60 +189,24 @@ image view styles
     }
 }
 
-/* Image Responsive Grid from CSS-Tricks */
-.photos {
-   /* Prevent vertical gaps */
-   line-height: 0;
-   
-   -webkit-column-count: 1;
-   -webkit-column-gap:   2px;
-   -moz-column-count:    1;
-   -moz-column-gap:      2px;
-   column-count:         1;
-   column-gap:           2px;
+/* Make thumbnail */
+.thumbnail {
+  position: relative;
+  width: 163px;
+  height: 164px;
+  overflow: hidden;
 }
-
-.photos img {
-  /* Just in case there are inline attributes */
-  width: 100% !important;
-  height: auto !important;
-  margin-bottom: 1px; 
+.thumbnail img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
+          transform: translate(-50%,-50%);
 }
-
-.photos img:last-child {
-    margin-bottom: 0;
-}
-
-@media (max-width: 1200px) {
-  .photos {
-  -moz-column-count:    1;
-  -webkit-column-count: 1;
-  column-count:         1;
-  }
-}
-@media (max-width: 1000px) {
-  .photos {
-  -moz-column-count:    1;
-  -webkit-column-count: 1;
-  column-count:         1;
-  }
-}
-@media (max-width: 800px) {
-  .photos {
-  -moz-column-count:    1;
-  -webkit-column-count: 1;
-  column-count:         1;
-  }
-}
-@media (max-width: 400px) {
-  .photos {
-  -moz-column-count:    1;
-  -webkit-column-count: 1;
-  column-count:         1;
-  }
-}
-
-/* Image orientation */
-img {
-    image-orientation: from-image;
+.thumbnail img.portrait {
+  width: 100%;
+  height: auto;
 }

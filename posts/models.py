@@ -207,6 +207,7 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post, null=True)
     filename = models.CharField(max_length=255, null=True)
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    is_portrait = models.BooleanField(default=False)
     def save(self, *args, **kwargs):
         super(PostImage, self).save(*args, **kwargs)
     
@@ -218,17 +219,20 @@ class PostImage(models.Model):
             img.thumbnail((self.image.width/1.5,self.image.height/1.5), Img.ANTIALIAS)
             output = StringIO.StringIO()
             img.save(output, format='JPEG', quality=70)
-            # fix orientation
             for orientation in ExifTags.TAGS.keys():
                 if ExifTags.TAGS[orientation]=='Orientation':
                     break
             exif=dict(img._getexif().items())
+            # fix orientation
             if exif[orientation] == 3:
                 img=img.rotate(180, expand=True)
             elif exif[orientation] == 6:
                 img=img.rotate(270, expand=True)
             elif exif[orientation] == 8:
                 img=img.rotate(90, expand=True)
+            # determine basic orientation (landscape | portrait)
+            if exif[orientation] <= 4:
+                self.is_portrait = True
             output.seek(0)
             img.save(output, format='JPEG', quality=70)
             self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)

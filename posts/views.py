@@ -161,7 +161,10 @@ class PhotoUploader(View):
         uuid = request.POST.get('qquuid')
         filename = request.POST.get('qqfilename')
         photo = PostImage(id=uuid, filename=filename, image=request.FILES['qqfile'], user=request.user)
-        photo.process_image()
+        try:
+            photo.process_image()
+        except AttributeError:
+            pass
         photo.save()
         return JsonResponse({
             'success': True

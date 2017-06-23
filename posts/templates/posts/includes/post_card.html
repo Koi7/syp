@@ -44,7 +44,7 @@
 		<div class="modalContainer photos">
 			{% for photo in post.photos %}
 			<div class="thumbnail" style="display: inline-block;">
-				<img class="post-image{% if photo.is_portrait %} portrait {% endif %}" data-post-id="{{ post.id }}" src="{{ photo.image.url }}" alt="фото пользователя">
+				<img class="post-image{% if photo.is_portrait %} portrait {% endif %}" data-post-id="{{ post.id }}" src="{{ photo.image.url }}" width="{{ photo.image.width }}" height="{{ photo.image.height }}" alt="фото пользователя">
 			</div>
 			 {% endfor %}
 			<!-- The Modal -->

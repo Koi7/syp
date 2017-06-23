@@ -101,17 +101,8 @@ input:focus{
     outline: none;
 }
 
-/*
-image view styles
-*/
-/* Style the Image Used to Trigger the Modal */
-#myImg {
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+/* IMAGE STYLES
 
-#myImg:hover {opacity: 0.7;}
 
 /* The Modal (background) */
 .modal {
@@ -132,8 +123,7 @@ image view styles
 .modal-content {
     margin: auto;
     display: block;
-    width: 80%;
-    max-width: 700px;
+    max-width: 80%;
 }
 
 
@@ -143,16 +133,6 @@ image view styles
     -webkit-animation-duration: 0.6s;
     animation-name: zoom;
     animation-duration: 0.6s;
-}
-
-@-webkit-keyframes zoom {
-    from {-webkit-transform:scale(0)} 
-    to {-webkit-transform:scale(1)}
-}
-
-@keyframes zoom {
-    from {transform:scale(0)} 
-    to {transform:scale(1)}
 }
 
 /* The Close Button */
@@ -173,33 +153,54 @@ image view styles
     cursor: pointer;
 }
 
-/* Modal content must respect side nav on large screens */
+/* 100% Image Width on smaller Screens */
+@media only screen and (max-width: 700px) {
+    .modal-content {
+        max-width: 100% !important;
+    }
+}
+
+/* Modal content respectS side nav on large screens */
 @media (min-width:993px) {
     .modal-image-container {
-    margin-left:340px;
-    margin-right:40px;
+        margin-left:340px;
+        margin-right:40px;
  }
 }
 
+@-webkit-keyframes zoom {
+    from {-webkit-transform:scale(0)} 
+    to {-webkit-transform:scale(1)}
+}
 
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-    .modal-content, .thumbnail, .thumbnail img {
-        width: 100% !important;
+@keyframes zoom {
+    from {transform:scale(0)} 
+    to {transform:scale(1)}
+}
+
+/* Display image as thumbnail styles */
+
+@media only screen and (max-width: 700px) {
+    .thumbnail {
+        display: block!important;
+        margin: 0 auto;
+        margin-bottom: 5px;
     }
+
     
-    .modal-image-container{
+
+    .modal-image-container {
         margin: inherit;
     }
 }
 
-/* Make thumbnail */
 .thumbnail {
   position: relative;
   width: 163px;
   height: 164px;
   overflow: hidden;
 }
+
 .thumbnail img {
   position: absolute;
   left: 50%;
@@ -210,6 +211,7 @@ image view styles
       -ms-transform: translate(-50%,-50%);
           transform: translate(-50%,-50%);
 }
+
 .thumbnail img.portrait {
   width: 100%;
   height: auto;

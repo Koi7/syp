@@ -216,7 +216,7 @@ class PostImage(models.Model):
             img = Img.open(StringIO.StringIO(self.image.read()))
             if img.mode != 'RGB':
                 img = img.convert('RGB')
-            img.thumbnail((self.image.width/1.5,self.image.height/1.5), Img.ANTIALIAS)
+            img.thumbnail((500, 500), Img.ANTIALIAS)
             output = StringIO.StringIO()
             img.save(output, format='JPEG', quality=70)
             for orientation in ExifTags.TAGS.keys():

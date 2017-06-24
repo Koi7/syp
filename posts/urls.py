@@ -5,8 +5,6 @@ from posts.views import AddPostView, Posts, EditPost, DeletePost, LikePost, WhoL
 urlpatterns = [
                   url(r'^$', Posts.as_view(), name='posts'),
                   url(r'^add$', AddPostView.as_view(), name='add_post'),
-                  url(r'^edit/(?P<post_id>[0-9]+)/$', EditPost.as_view(), name='edit_post'),
-                  url(r'^save$', EditPost.as_view(), name='save_editions'),
                   url(r'^delete$', DeletePost.as_view(), name='delete_post'),
                   url(r'^like$', LikePost.as_view(), name='like_post'),
                   url(r'^leave_message$', LeaveMessage.as_view(), name='leave_message'),

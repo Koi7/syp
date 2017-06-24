@@ -169,6 +169,7 @@ class PhotoUploader(View):
         return JsonResponse({
             'success': True
             })
+
     @method_decorator(login_required(redirect_field_name=None))
     def delete(self, request, qquuid):
         try:
@@ -188,6 +189,7 @@ class PhotoUploader(View):
 
 class AddPostView(View):
     template_name = 'posts/add_post.html'
+
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, 'posts/add_post.html')

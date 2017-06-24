@@ -21,7 +21,7 @@
   <!-- NAV -->
   {% block nav %}
   <nav class="w3-sidenav w3-red w3-collapse w3-top w3-padding" style="z-index:3;width:300px;" id="mySidenav"><br>
-    <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%;font-size:22px; font-weight: normal;">закрыть</a>
+    <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%">закрыть</a>
     <div class="w3-container">
       <h2 class="w3-padding-64">Ищу тебя</h2>
     </div>
@@ -42,13 +42,13 @@
   <header class="w3-container w3-top w3-hide-large w3-red w3-padding-small">
     <div class="w3-row">
       <div class="w3-col s2 w3-left-align">
-        <a href="javascript:void(0)" class="w3-button w3-red w3-margin-right" onclick="w3_open()"><i class="icon-menu" aria-hidden="true"></i></a>
+        <a href="javascript:void(0)" class="w3-btn w3-red w3-margin-right" onclick="w3_open()"><i class="icon-menu" aria-hidden="true"></i></a>
       </div>
       <div class="w3-col s8 w3-center">
-        <a href="{% url 'posts' %}" class="w3-button w3-red"><span>Ищу тебя</span></a>
+        <a href="{% url 'posts' %}" class="w3-btn w3-red"><span>Ищу тебя</span></a>
       </div>
       <div class="w3-col s2 w3-right-align">
-        <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-button w3-red" >
+        <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-btn w3-red" >
               <i class="icon-bell"></i>
               {% if request.user.vkuser.unread_notifications_amount %}
               <span class="w3-text-white">{{  request.user.vkuser.unread_notifications_amount }}</span>

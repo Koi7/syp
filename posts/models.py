@@ -231,7 +231,7 @@ class PostImage(models.Model):
             elif exif[orientation] == 8:
                 img=img.rotate(90, expand=True)
             # determine basic orientation (landscape | portrait)
-            if exif[orientation] <= 4:
+            if exif[orientation] == 6 or exif[orientation] == 8:
                 self.is_portrait = True
             output.seek(0)
             img.save(output, format='JPEG', quality=70)

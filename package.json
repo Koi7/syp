@@ -23,7 +23,9 @@
     "gulp-connect": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-minify": "^1.0.0",
-    "gulp-rename": "^1.2.2"
+    "gulp-rename": "^1.2.2",
+    "gulp-util": "^3.0.8",
+    "vinyl-ftp": "^0.6.0"
   },
   "dependencies": {
     "quick-local-ip": "^1.0.7"

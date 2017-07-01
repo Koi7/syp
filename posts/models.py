@@ -209,16 +209,14 @@ class PostImage(models.Model):
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     is_portrait = models.BooleanField(default=False)
     def save(self, *args, **kwargs):
-        super(PostImage, self).save(*args, **kwargs)
-    
-    def process_image(self):
-        if self.image:
-            img = Img.open(StringIO.StringIO(self.image.read()))
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            img.thumbnail((500, 500), Img.ANTIALIAS)
-            output = StringIO.StringIO()
-            img.save(output, format='JPEG', quality=70)
+     if self.image:
+        img = Img.open(StringIO.StringIO(self.image.read()))
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        img.thumbnail((500, 500), Img.ANTIALIAS)
+        output = StringIO.StringIO()
+        img.save(output, format='JPEG', quality=70)
+        try:
             for orientation in ExifTags.TAGS.keys():
                 if ExifTags.TAGS[orientation]=='Orientation':
                     break
@@ -233,9 +231,38 @@ class PostImage(models.Model):
             # determine basic orientation (landscape | portrait)
             if exif[orientation] == 6 or exif[orientation] == 8:
                 self.is_portrait = True
-            output.seek(0)
-            img.save(output, format='JPEG', quality=70)
-            self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
+        except AttributeError:
+            pass
+        output.seek(0)
+        img.save(output, format='JPEG', quality=70)
+        self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
+        super(PostImage, self).save(*args, **kwargs)
+    
+    # def process_image(self):
+    #     if self.image:
+    #         img = Img.open(StringIO.StringIO(self.image.read()))
+    #         if img.mode != 'RGB':
+    #             img = img.convert('RGB')
+    #         img.thumbnail((500, 500), Img.ANTIALIAS)
+    #         output = StringIO.StringIO()
+    #         img.save(output, format='JPEG', quality=70)
+    #         for orientation in ExifTags.TAGS.keys():
+    #             if ExifTags.TAGS[orientation]=='Orientation':
+    #                 break
+    #         exif=dict(img._getexif().items())
+    #         # fix orientation
+    #         if exif[orientation] == 3:
+    #             img=img.rotate(180, expand=True)
+    #         elif exif[orientation] == 6:
+    #             img=img.rotate(270, expand=True)
+    #         elif exif[orientation] == 8:
+    #             img=img.rotate(90, expand=True)
+    #         # determine basic orientation (landscape | portrait)
+    #         if exif[orientation] == 6 or exif[orientation] == 8:
+    #             self.is_portrait = True
+    #         output.seek(0)
+    #         img.save(output, format='JPEG', quality=70)
+    #         self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
 
 class Like(models.Model):
     user = models.ForeignKey(User)

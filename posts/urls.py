@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from posts.views import AddPostView, Posts, EditPost, DeletePost, LikePost, WhoLiked, LikedPosts, \
+from posts.views import AddPostView, Posts, DeletePost, LikePost, WhoLiked, LikedPosts, \
     Profile, LeaveMessage, MyPost, SaveProfileEditions, DeleteUser, PhotoUploader, PostsFilter, Notifications, CloseAttention
 
 urlpatterns = [

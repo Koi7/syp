@@ -42,7 +42,7 @@
 		<div class="w3-display-topright w3-padding-tiny">
 			<!-- DELETE BUTTON -->
 			<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center">
-				<i data-post-id="{{ post.id }}" class="fa fa-trash-o" aria-hidden="true"></i>
+				<i data-post-id="{{ post.id }}" class="icon-trash-empty" aria-hidden="true"></i>
 			</button>
 		</div>
 		{% endif %}
@@ -76,7 +76,8 @@
 			<i data-post-id="{{ post.id }}" class="icon-paper-plane-empty pointer w3-padding-small w3-text-blue show-send-message-controls"
 			 aria-hidden="true" title="Оставить послание"></i>
 			<!-- PIPE -->
-			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span> {% endif %}
+			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span>
+			{% endif %}
 			<!-- LIKE INDICATOR -->
 			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' %}?post_id={{ post.id }}" class="link-no-style">
 				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>

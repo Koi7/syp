@@ -109,16 +109,6 @@ class Post(models.Model):
                 image_tags.append('<img src="{}" width="100" heigth="100">'.format(photo.image.url))
         return mark_safe("".join(image_tags))
 
-@receiver(post_delete, sender=Post)
-def erase_images(instance, **kwargs):
-    if instance.photos:
-        for post_image in instance.photos:
-            path = post_image.image.path
-            if os.path.isfile(path):
-                os.remove(path)
-            post_image.delete()
-
-
     def __unicode__(self):
         return u'{} {} {} {}'.format(self.id, self.text, self.pub_datetime, self.is_anonymous)
 
@@ -208,62 +198,45 @@ class PostImage(models.Model):
     filename = models.CharField(max_length=255, null=True)
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     is_portrait = models.BooleanField(default=False)
-    def save(self, *args, **kwargs):
-     if self.image:
-        img = Img.open(StringIO.StringIO(self.image.read()))
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-        img.thumbnail((500, 500), Img.ANTIALIAS)
-        output = StringIO.StringIO()
-        img.save(output, format='JPEG', quality=70)
-        try:
-            for orientation in ExifTags.TAGS.keys():
-                if ExifTags.TAGS[orientation]=='Orientation':
-                    break
-            exif=dict(img._getexif().items())
-            # fix orientation
-            if exif[orientation] == 3:
-                img=img.rotate(180, expand=True)
-            elif exif[orientation] == 6:
-                img=img.rotate(270, expand=True)
-            elif exif[orientation] == 8:
-                img=img.rotate(90, expand=True)
-            # determine basic orientation (landscape | portrait)
-            if exif[orientation] == 6 or exif[orientation] == 8:
-                self.is_portrait = True
-        except AttributeError:
-            pass
-        output.seek(0)
-        img.save(output, format='JPEG', quality=70)
-        self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
-        super(PostImage, self).save(*args, **kwargs)
     
-    # def process_image(self):
-    #     if self.image:
-    #         img = Img.open(StringIO.StringIO(self.image.read()))
-    #         if img.mode != 'RGB':
-    #             img = img.convert('RGB')
-    #         img.thumbnail((500, 500), Img.ANTIALIAS)
-    #         output = StringIO.StringIO()
-    #         img.save(output, format='JPEG', quality=70)
-    #         for orientation in ExifTags.TAGS.keys():
-    #             if ExifTags.TAGS[orientation]=='Orientation':
-    #                 break
-    #         exif=dict(img._getexif().items())
-    #         # fix orientation
-    #         if exif[orientation] == 3:
-    #             img=img.rotate(180, expand=True)
-    #         elif exif[orientation] == 6:
-    #             img=img.rotate(270, expand=True)
-    #         elif exif[orientation] == 8:
-    #             img=img.rotate(90, expand=True)
-    #         # determine basic orientation (landscape | portrait)
-    #         if exif[orientation] == 6 or exif[orientation] == 8:
-    #             self.is_portrait = True
-    #         output.seek(0)
-    #         img.save(output, format='JPEG', quality=70)
-    #         self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
+    def zip_and_cut(self, *args, **kwargs):
+        if self.image:
+            img = Img.open(StringIO.StringIO(self.image.read()))
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            img.thumbnail((500, 500), Img.ANTIALIAS)
+            output = StringIO.StringIO()
+            img.save(output, format='JPEG', quality=70)
+            try:
+                for orientation in ExifTags.TAGS.keys():
+                    if ExifTags.TAGS[orientation]=='Orientation':
+                        break
+                exif=dict(img._getexif().items())
+                # fix orientation
+                if exif[orientation] == 3:
+                    img=img.rotate(180, expand=True)
+                elif exif[orientation] == 6:
+                    img=img.rotate(270, expand=True)
+                elif exif[orientation] == 8:
+                    img=img.rotate(90, expand=True)
+                # determine basic orientation (landscape | portrait)
+                if exif[orientation] == 6 or exif[orientation] == 8:
+                    self.is_portrait = True
+            except AttributeError:
+                pass
+            output.seek(0)
+            img.save(output, format='JPEG', quality=70)
+            self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
+        super(PostImage, self).save(*args, **kwargs)
 
+# erase image on instance delete
+@receiver(post_delete, sender=PostImage)
+def erase_images(instance, **kwargs):
+    path = instance.image.path
+    if os.path.isfile(path):
+        os.remove(path)
+
+    
 class Like(models.Model):
     user = models.ForeignKey(User)
     post = models.ForeignKey(Post)

@@ -161,10 +161,10 @@ class PhotoUploader(View):
         uuid = request.POST.get('qquuid')
         filename = request.POST.get('qqfilename')
         photo = PostImage(id=uuid, filename=filename, image=request.FILES['qqfile'], user=request.user)
-        try:
-            photo.process_image()
-        except AttributeError:
-            pass
+        # try:
+        #     photo.process_image()
+        # except AttributeError:
+        #     pass
         photo.save()
         return JsonResponse({
             'success': True
@@ -588,6 +588,19 @@ class CloseAttention(View):
 
 class Profile(View):
     template_name = 'posts/profile.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        return render(request, self.template_name)
+class About(View):
+    template_name = 'posts/about.html'
+
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        return render(request, self.template_name)
+
+class Contacts(View):
+    template_name = 'posts/contacts.html'
 
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):

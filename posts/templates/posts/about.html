@@ -1,0 +1,23 @@
+{% extends "posts/base.html" %}
+{% load static from staticfiles %}
+{% block title %} О проекте {% endblock %}
+{% block content %}
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-text-awesome w3-center">О проекте</h1>
+<!-- POST LIST CONTAINER -->
+<div class="w3-container">
+    <article>
+        
+    </article>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    $(document).on('click', 'img.post-image', openDialog);    
+    var loadMoreUrl = "{% url 'liked' %}";
+    var likeUrl = "{% url 'like_post' %}";
+    var leaveMessageUrl = "{% url 'leave_message' %}";
+    var filterState = getFilterState();
+</script>
+<script type="text/javascript" src="{% static 'posts/js/post_manipulations.js' %}"></script>
+{% endblock %}

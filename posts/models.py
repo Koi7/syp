@@ -198,6 +198,11 @@ class PostImage(models.Model):
     filename = models.CharField(max_length=255, null=True)
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     is_portrait = models.BooleanField(default=False)
+    has_post =  models.BooleanField('Прикреплено', default=False)
+
+    @property 
+    def image_tag(self):
+        return mark_safe("".join('<img src="{}" width="100" heigth="100">'.format(self.image.url)))
     
     def zip_and_cut(self, *args, **kwargs):
         if self.image:
@@ -242,6 +247,8 @@ class Like(models.Model):
     post = models.ForeignKey(Post)
     message = models.CharField(max_length=500, default="")
     created = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-created']
 
 class Notification(models.Model):
     VERB_CHOICES = (

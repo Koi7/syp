@@ -223,6 +223,7 @@ class AddPostView(View):
             if post_photo_list:
                 for post_photo in post_photo_list:
                     post_photo.post = post
+                    post_photo.has_post = True
                     post_photo.save()
         # SAVE CHANGES 
 
@@ -503,6 +504,7 @@ class PostsFilter(View):
         elif offset > 1:
             context = {
                 'posts_list': filtered_posts_page,
+                'request': request,
             }
             rendered_template = render_to_string(self.template_name_li, context)
             return JsonResponse({

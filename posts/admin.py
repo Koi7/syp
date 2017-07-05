@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from models import Post, VKUser, BlackList
+from models import Post, VKUser, BlackList, PostImage
 from django.utils import timezone
 
 # post actions
@@ -76,7 +76,25 @@ class BlackListAdmin(admin.ModelAdmin):
 	def get_state(self, obj):
 		return obj.is_active
 	get_state.short_description = 'Действительно?'
+
+class PostImageAdmin(admin.ModelAdmin):
+
+	list_display = (
+			'user',
+			'post',
+			'image_tag',
+			'has_post'
+	)
+
+	list_select_related = True
+
+	list_filter = ['has_post']
+	def get_image_tag(self, obj):
+			return obj.image_tag
+	get_image_tag.short_description = 'Фото'
+
 # Register your models here.
 admin.site.register(Post, PostAdmin)
 admin.site.register(VKUser, VKUserAdmin)
 admin.site.register(BlackList, BlackListAdmin)
+admin.site.register(PostImage, PostImageAdmin)

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -12,19 +11,12 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.conf import settings
 from django.http import JsonResponse
-from django.template.response import TemplateResponse
 from django.template.loader import render_to_string
-from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import View
-from operator import attrgetter
 from models import Post, Like, PostImage
-from faker import Factory
 from django.core.paginator import Paginator
-import hashlib
-import re
 import json
-import shutil
 
 # UTILS
 

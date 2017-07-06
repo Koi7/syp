@@ -7,8 +7,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete, pre_save, post_init
-from django.contrib.auth.signals import user_logged_in
+from django.db.models.signals import post_delete, post_save
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import mark_safe
@@ -21,12 +20,11 @@ import hashlib
 import json
 import requests
 import shutil
-
 # utils 
 
 def get_image_path(instance, filename):
     extension = instance.filename.split('.')[1]
-    vk_uid = instance.user.username
+    instance.user.username
     return os.path.join('photos', str(instance.user.username),
                         '{}.{}'.format(instance.id, extension))
 
@@ -39,7 +37,7 @@ class BlackList(models.Model):
     days = models.IntegerField('Срок', default=-1)
 
     class Meta:
-        verbose_name = 'Черный список'
+        verbose_name_plural = 'Черный список'
 
     @property
     def is_active(self):
@@ -81,7 +79,7 @@ class Post(models.Model):
     rejected = models.BooleanField('Отвергнуто', default=False)
 
     class Meta:
-        verbose_name = 'Посты'
+        verbose_name_plural = 'Посты'
         ordering = ['-pub_datetime']
 
     @property
@@ -140,7 +138,7 @@ class VKUser(models.Model):
     has_closed_attention = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'Пользователи'
+        verbose_name_plural = 'Пользователи'
 
 
     @property
@@ -209,7 +207,7 @@ class PostImage(models.Model):
     has_post =  models.BooleanField('Прикреплено', default=False)
     
     class Meta:
-        verbose_name = 'Фотографии'
+        verbose_name_plural = 'Фотографии'
 
     @property 
     def image_tag(self):

@@ -38,6 +38,9 @@ class BlackList(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     days = models.IntegerField('Срок', default=-1)
 
+    class Meta:
+        verbose_name = 'Черный список'
+
     @property
     def is_active(self):
         delta = self.timestamp + timedelta(days=self.days)
@@ -78,6 +81,7 @@ class Post(models.Model):
     rejected = models.BooleanField('Отвергнуто', default=False)
 
     class Meta:
+        verbose_name = 'Посты'
         ordering = ['-pub_datetime']
 
     @property
@@ -134,6 +138,10 @@ class VKUser(models.Model):
     age = models.IntegerField('Возраст', default=0)
     sex = models.IntegerField('Пол', choices=SEX_CHOICES, default=-1)
     has_closed_attention = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Пользователи'
+
 
     @property
     def sex_str(self):
@@ -199,6 +207,9 @@ class PostImage(models.Model):
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     is_portrait = models.BooleanField(default=False)
     has_post =  models.BooleanField('Прикреплено', default=False)
+    
+    class Meta:
+        verbose_name = 'Фотографии'
 
     @property 
     def image_tag(self):

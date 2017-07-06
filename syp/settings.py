@@ -25,7 +25,7 @@ GOOGLE_PLACES_API_KEY = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM'
 VK_API_URL = 'https://api.vk.com/method/users.get'
 GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = ['posts.models.HashBackend', 'django.contrib.auth.backends.ModelBackend', ]
@@ -133,8 +133,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'posts/static')
+STATIC_URL = 'http://izmaylyf.beget.tech/static/'
+STATIC_ROOT = '/home/i/izmaylyf/syp/public_html/static'
 
 CSS_DIR = 'posts/styles/dist/'
 JS_DIR = 'posts/js/'

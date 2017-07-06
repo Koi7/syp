@@ -58,78 +58,66 @@ def anonimous_check(user):
 class IndexView(View):
     template_name = 'posts/auth.html'
 
-    # @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
+    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def get(self, request):
-        if settings.LOCAL_DEV:
-            context = {
+        from django.contrib.auth.models import User
+        context = {
+            'APP_ID': settings.VK_APP_ID,
+            'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
+            'users': User.objects.all(),
+        }
+        return render(request, self.template_name, context)
 
-            }
-            return render(request, self.template_name, context)
-        else:
-            from django.contrib.auth.models import User
-            context = {
-                'APP_ID': settings.VK_APP_ID,
-                'GOOGLE_PLACES_API_KEY': settings.GOOGLE_PLACES_API_KEY,
-                'users': User.objects.all(),
-            }
-            return render(request, self.template_name, context)
-
-    # @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
+    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def post(self, request):
-        if settings.LOCAL_DEV:
-            need_new_user = True if request.POST.get('new') == 'on' else False
-            if need_new_user:
-                fake = Factory.create('ru_RU')
-                uid = str(fake.random_number(9))
-                md5 = hashlib.md5()
-                md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
-                hash = md5.hexdigest()
-                user = authenticate(uid=uid, hash=hash)
-                if user is not None:
-                    user.vkuser.place = int(request.POST.get('place'))
-                    user.vkuser.photo_rec = ''
-                    import random
-                    user.vkuser.sex = random.randint(0, 1)
-                    # Generate name according to given sex.
-                    if user.vkuser.sex == 0:
-                        user.first_name = fake.first_name_male()
-                        user.last_name = fake.last_name_male()
-                    else:
-                        user.first_name = fake.first_name_female()
-                        user.last_name = fake.last_name_female()
-                    user.save()
-                    login(request, user)
-                    return redirect('posts')
-                else:
-                    return redirect('not_found')
-            else:
-                md5 = hashlib.md5()
-                md5.update(settings.VK_APP_ID + request.POST.get('uid') + settings.VK_API_SECRET)
-                hash = md5.hexdigest()
-                user = authenticate(uid=request.POST.get('uid'), hash=hash)
-                login(request, user)
-                return redirect('posts')
+        # if settings.LOCAL_DEV:
+        #     need_new_user = True if request.POST.get('new') == 'on' else False
+        #     if need_new_user:
+        #         fake = Factory.create('ru_RU')
+        #         uid = str(fake.random_number(9))
+        #         md5 = hashlib.md5()
+        #         md5.update(settings.VK_APP_ID + uid + settings.VK_API_SECRET)
+        #         hash = md5.hexdigest()
+        #         user = authenticate(uid=uid, hash=hash)
+        #         if user is not None:
+        #             user.vkuser.place = int(request.POST.get('place'))
+        #             user.vkuser.photo_rec = ''
+        #             import random
+        #             user.vkuser.sex = random.randint(0, 1)
+        #             # Generate name according to given sex.
+        #             if user.vkuser.sex == 0:
+        #                 user.first_name = fake.first_name_male()
+        #                 user.last_name = fake.last_name_male()
+        #             else:
+        #                 user.first_name = fake.first_name_female()
+        #                 user.last_name = fake.last_name_female()
+        #             user.save()
+        #             login(request, user)
+        #             return redirect('posts')
+        #         else:
+        #             return redirect('not_found')
+        #     else:
+        #         md5 = hashlib.md5()
+        #         md5.update(settings.VK_APP_ID + request.POST.get('uid') + settings.VK_API_SECRET)
+        #         hash = md5.hexdigest()
+        #         user = authenticate(uid=request.POST.get('uid'), hash=hash)
+        #         login(request, user)
+        #         return redirect('posts')
+        # else:
+        user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
+        if user is not None:
+            user.first_name = request.POST.get('first_name')
+            user.last_name = request.POST.get('last_name')
+            user.vkuser.photo_rec = request.POST.get('photo_rec')
+            user.save()
+            json = JsonResponse({
+                'success': True,
+                'redirect': 'posts',
+            })
+            login(request, user)
+            return json
         else:
-            user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
-            if user is not None:
-                if user.vkuser.place == "":
-                    user.first_name = request.POST.get('first_name')
-                    user.last_name = request.POST.get('last_name')
-                    user.vkuser.photo_rec = request.POST.get('photo_rec')
-                    user.save()
-                    json = JsonResponse({
-                        'success': 'true',
-                        'redirect': 'specify_place',
-                    })
-                else:
-                    json = JsonResponse({
-                        'success': True,
-                        'redirect': 'posts',
-                    })
-                login(request, user)
-                return json
-            else:
-                return JsonResponse({'fail': 'true'})
+            return JsonResponse({'fail': 'true'})
 
 class DeleteUser(View):
 

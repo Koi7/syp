@@ -1,10 +1,10 @@
 {% load static from staticfiles %}
 {% for notification in notifications_list %}
 <li class="w3-vk-card w3-white">
-	{% if notifications.actor.is_stuff %}
+	{% if notification.verb == 2 or notification.verb == 3%}
 		<div class="margin-center">
 			<div class="w3-container w3-cell w3-cell-middle">
-				<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				<img src="{% static 'posts/images/stuff_notification.svg' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
 			</div>
 			<div class=" w3-cell w3-cell-middle">
 				<p class="no-margin">			
@@ -18,7 +18,11 @@
 	{% else %}
 		<div class="margin-center">
 			<div class="w3-container w3-cell w3-cell-middle">
-				<img src="{% static 'posts/images/blank/img_avatar2.png' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				{% if notification.actor.vkuser.photo_rec %}
+				<img src="{{ notification.actor.vkuser.photo_rec }}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				{% else %}
+				<img src="{% static 'posts/images/man.svg' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
+				{% endif %}	
 			</div>
 			<div class=" w3-cell w3-cell-middle">
 				<p class="no-margin">

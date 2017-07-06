@@ -21,7 +21,11 @@
         {% if request.user.vkuser.photo_rec %}
         <img src="{{ request.user.vkuser.photo_rec }}" class="w3-circle" style="width:100px">
         {% else %}
-        <img src="{% static 'posts/images/man.svg' %}" class="w3-circle" style="width:200px" alt="Нет фотографии">
+        {% if request.user.vkuser.sex == 0 %}
+        <img src="{% static 'posts/images/male_placeholder.svg' %}" class="w3-circle" style="width:200px" alt="Нет фотографии">
+        {% else %}
+        <img src="{% static 'posts/images/female_placeholder.svg' %}" class="w3-circle" style="width:200px" alt="Нет фотографии">
+        {% endif %}
         {% endif %}
         <br>
         <!-- USERNAME -->

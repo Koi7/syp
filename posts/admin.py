@@ -2,6 +2,7 @@
 from django.contrib import admin
 from models import Post, VKUser, BlackList, PostImage
 from django.utils import timezone
+from django.contrib.auth.models import Group
 
 # post actions
 def make_accepted(modeladmin, request, queryset):
@@ -98,3 +99,4 @@ admin.site.register(Post, PostAdmin)
 admin.site.register(VKUser, VKUserAdmin)
 admin.site.register(BlackList, BlackListAdmin)
 admin.site.register(PostImage, PostImageAdmin)
+admin.site.unregister(Group)

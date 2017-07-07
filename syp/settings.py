@@ -30,11 +30,11 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = ['posts.models.HashBackend', 'django.contrib.auth.backends.ModelBackend', ]
 #social auth
-VK_APP_ID = '5617320'
-VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'
+VK_APP_ID = '6104299'
+VK_API_SECRET = 'k026By0upRxg92JGw5LP'
 LOGIN_URL = '/'
 
-LOCAL_DEV = True
+DEV = False
 # Application definition
 
 INSTALLED_APPS = [

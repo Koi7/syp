@@ -34,7 +34,7 @@ VK_APP_ID = '5617320'
 VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'
 LOGIN_URL = '/'
 
-LOCAL_DEV = True
+DEV = True
 # Application definition
 
 INSTALLED_APPS = [

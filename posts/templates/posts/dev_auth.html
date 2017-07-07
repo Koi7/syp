@@ -1,0 +1,50 @@
+{% load static from staticfiles %}
+{% block title %} Ищу Тебя | Вход {% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
+{% endblock %}
+{% block fakeauth %}
+    <h1>Fake Auth</h1>
+    <form action="{% url 'index' %}" method="POST"> {% csrf_token %}
+        <table>
+            <tr>
+                <td>UID</td>
+                <td><input type="text" name="uid"></td>
+            </tr>
+            <tr>
+                <td>Новый</td>
+                <td><input type="checkbox" name="new" ></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="OK" ></td>
+            </tr>
+            <tr>
+                <td>Город:</td>
+                <td>
+                    <select name="place" id="">
+                        <option value="0">Севастополь</option>
+                        <option value="1">Симферополь</option>
+                        <option value="2">Ялта</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <table>
+        <tr>
+            <th>UID</th>
+            <th>FIRST Name</th>
+            <th>LAST Name</th>
+            <th>PLACE</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.vkuser.place_str }}</td>
+            </tr>
+        {%  endfor %}
+    </table>
+{% endblock %}

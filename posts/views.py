@@ -23,7 +23,7 @@ import hashlib
 # UTILS
 
 def not_found(request):
-    return HttpResponse('<div style="width: 400px; margin: 0 auto; text-align: center"><h1>НИХУЯ НЕТ</h2></div>')
+    return render(request, 'posts/not_found.html')
 
 def filter(place='any', tag='any', order='desc', is_anonymous=-1):
 

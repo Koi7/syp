@@ -1,3 +1,4 @@
+# coding=utf-8
 """syp URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -16,16 +17,17 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from posts import views
-from posts.views import IndexView
+from posts.views import IndexView, About, Contacts, logout_view
 from syp import settings
 
 urlpatterns = [
-    url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^login', IndexView.as_view(), name='index'),
-    url(r'^admin', admin.site.urls),
-    url(r'^posts/', include('posts.urls')),
-    url(r'^logout', views.logout_view, name='logout_view'),
+    url(ur'^$', IndexView.as_view(), name='index'),
+    url(ur'^вход', IndexView.as_view(), name='index'),
+    url(ur'^па/', admin.site.urls),
+    url(ur'^посты/', include('posts.urls')),
+    url(ur'^выход', logout_view, name='logout_view'),
+    url(ur'^проект$', About.as_view(), name='about'),
+    url(ur'^контакты$', Contacts.as_view(), name='contacts'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'posts.views.not_found'

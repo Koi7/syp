@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Django settings for syp project.
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'imagekit',
     'posts'
 ]
 
@@ -133,7 +135,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = 'http://izmaylyf.beget.tech/static/'
+STATIC_URL = 'http://ищутебякрым.рф/static/'
 STATIC_ROOT = '/home/i/izmaylyf/syp/public_html/static'
 
 CSS_DIR = 'posts/styles/dist/'

@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
-from models import Post, Like, PostImage
+from models import Post, Like, PostImage, Ad
 from django.core.paginator import Paginator
 from faker import Factory
 import json
@@ -155,7 +155,7 @@ class PhotoUploader(View):
         uuid = request.POST.get('qquuid')
         filename = request.POST.get('qqfilename')
         photo = PostImage(id=uuid, filename=filename, image=request.FILES['qqfile'], user=request.user)
-        photo.zip_and_cut()
+        photo.save()
         return JsonResponse({
             'success': True
             })
@@ -425,6 +425,9 @@ class Posts(View):
         # FILTER POSTS
         filtered_posts = filter(place, tag, order, is_anonymous)
 
+        # GET AD
+        cross_place_ad = Ad.objects.get(brand='defwe')
+
         # INIT PAGINATOR
 
         filtered_posts_paginator = Paginator(filtered_posts, self.post_per_request)
@@ -440,6 +443,7 @@ class Posts(View):
             'posts_list': filtered_posts_page,
             'has_next': filtered_posts_page.has_next(),
             'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
+            'cross_place_ad': cross_place_ad
         }
 
         return render(request, self.template_name, context)

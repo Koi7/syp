@@ -30,7 +30,14 @@ function getFilterState() {
 // image view on click 
 function openDialog() {
 	var postID = $(this).data('post-id');
-	var dialog = $('div.modal[data-post-id=' + postID + ']');
+	var dialog;
+	if (!postID) {
+		postID = $(this).data('ad-id');
+		dialog = $('div.modal[data-ad-id=' + postID + ']');
+	}
+	if (!dialog) {
+		dialog = $('div.modal[data-post-id=' + postID + ']');
+	}
 	dialog.find('span').click(function () {
 		$(this).parent().css('display', 'none');
 	});

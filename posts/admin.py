@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib import admin
-from models import Post, VKUser, BlackList, PostImage
+from models import Post, VKUser, BlackList, PostImage, Ad
 from django.utils import timezone
 from django.contrib.auth.models import Group
 
@@ -94,9 +94,28 @@ class PostImageAdmin(admin.ModelAdmin):
 			return obj.image_tag
 	get_image_tag.short_description = 'Фото'
 
+class AdAdmin(admin.ModelAdmin):
+
+	list_display = (
+			'brand',
+			'place',
+			'text',
+			'pub_datetime',
+			'accepted',
+			'get_images_tags'
+	)
+
+	list_select_related = True
+
+	list_filter = ['accepted', 'place']
+	def get_images_tags(self, obj):
+			return obj.images_as_tags
+	get_images_tags.short_description = 'Фото'
+
 # Register your models here.
 admin.site.register(Post, PostAdmin)
 admin.site.register(VKUser, VKUserAdmin)
 admin.site.register(BlackList, BlackListAdmin)
 admin.site.register(PostImage, PostImageAdmin)
+admin.site.register(Ad, AdAdmin)
 admin.site.unregister(Group)

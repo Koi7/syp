@@ -15,20 +15,164 @@ from PIL import Image as Img, ExifTags
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from datetime import timedelta
 from django.utils import timezone
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFit
 import StringIO
 import hashlib
 import json
 import requests
 import shutil
+import uuid
 # utils 
 
 def get_image_path(instance, filename):
     extension = instance.filename.split('.')[1]
-    instance.user.username
     return os.path.join('photos', str(instance.user.username),
                         '{}.{}'.format(instance.id, extension))
 
+def get_ad_image_path(instance, filename):
+    return os.path.join('ad_photos', instance.brand , '{}.{}'.format(uuid.uuid4().hex, 'jpg'))
 # Create your models here.
+
+class Ad(models.Model):
+    PLACE_CHOICES = (
+        (-1, "Все"),
+        (0, "Севастополь"),
+        (1, "Симферополь"),
+        (2, "Ялта"),
+    )
+
+    image_width = 500
+    image_height = 500
+    quality = 70
+
+    brand = models.CharField('Брэнд', max_length=50)
+    brand_icon = models.ImageField(upload_to=get_ad_image_path, blank=True, null=True)
+    text = models.CharField('Текст', max_length=2000)
+    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
+    pub_datetime = models.DateTimeField('Создано', auto_now_add=True)
+    accepted = models.BooleanField('Одобрено', default=False)
+    image1 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    image2 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    image3 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    image4 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    image5 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    image6 = ProcessedImageField(upload_to=get_ad_image_path,
+                                        processors=[ResizeToFit(image_width, image_height)],
+                                        format='JPEG',
+                                        options={'quality': quality},
+                                        blank=True,
+                                        null=True)
+    class Meta:
+        verbose_name = 'Рекламу'
+        verbose_name_plural = 'Реклама'
+    
+    def save(self, *args, **kwargs):
+        for image in self.images_callable():
+            if image:
+                img = Img.open(StringIO.StringIO(image.read()))
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                img.thumbnail((500, 500), Img.ANTIALIAS)
+                output = StringIO.StringIO()
+                img.save(output, format='JPEG', quality=70)
+                try:
+                    for orientation in ExifTags.TAGS.keys():
+                        if ExifTags.TAGS[orientation]=='Orientation':
+                            break
+                    exif=dict(img._getexif().items())
+                    # fix orientation
+                    if exif[orientation] == 3:
+                        img=img.rotate(180, expand=True)
+                    elif exif[orientation] == 6:
+                        img=img.rotate(270, expand=True)
+                    elif exif[orientation] == 8:
+                        img=img.rotate(90, expand=True)
+                    # determine basic orientation (landscape | portrait)
+                    if exif[orientation] == 6 or exif[orientation] == 8:
+                        self.is_portrait = True
+                except AttributeError:
+                    pass
+                output.seek(0)
+                img.save(output, format='JPEG', quality=70)
+                image = InMemoryUploadedFile(output,'ImageField', "%s.jpg" % image.name.split('.')[0], 'image/jpeg', output.len, None)
+        super(Ad, self).save(*args, **kwargs)    
+
+    @property
+    def images(self):
+        images = []
+        if self.image1:
+            images.append(self.image1)
+        if self.image2:
+            images.append(self.image2)
+        if self.image3:
+            images.append(self.image3)
+        if self.image4:
+            images.append(self.image4)
+        if self.image5:
+            images.append(self.image5)
+        if self.image6:
+            images.append(self.image6)
+        
+        return images
+    
+    def images_callable(self):
+        images = []
+        if self.image1:
+            images.append(self.image1)
+        if self.image2:
+            images.append(self.image2)
+        if self.image3:
+            images.append(self.image3)
+        if self.image4:
+            images.append(self.image4)
+        if self.image5:
+            images.append(self.image5)
+        if self.image6:
+            images.append(self.image6)
+        return images
+
+    @property
+    def images_as_tags(self):
+        image_tags = []
+        for image in self.images:
+            if image:
+                image_tags.append('<img src="{}" width="100" heigth="100">'.format(image.url))
+        return mark_safe("".join(image_tags))
+
+
+# erase image on instance delete
+@receiver(post_delete, sender=Ad)
+def erase_ad_images(instance, **kwargs):
+    for image in instance.images:
+        if os.path.isfile(image.path):
+            os.remove(image.path)
+
 
 class BlackList(models.Model):
     vk_id = models.CharField('VK_ID', max_length=20, default="")
@@ -202,7 +346,12 @@ class PostImage(models.Model):
     user = models.ForeignKey(User, null=True)
     post = models.ForeignKey(Post, null=True)
     filename = models.CharField(max_length=255, null=True)
-    image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    image = ProcessedImageField(upload_to=get_image_path,
+                                processors=[ResizeToFit(500, 500)],
+                                format='JPEG',
+                                options={'quality': 70},
+                                blank=True,
+                                null=True)
     is_portrait = models.BooleanField(default=False)
     has_post =  models.BooleanField('Прикреплено', default=False)
     
@@ -213,35 +362,6 @@ class PostImage(models.Model):
     def image_tag(self):
         return mark_safe("".join('<img src="{}" width="100" heigth="100">'.format(self.image.url)))
     
-    def zip_and_cut(self, *args, **kwargs):
-        if self.image:
-            img = Img.open(StringIO.StringIO(self.image.read()))
-            if img.mode != 'RGB':
-                img = img.convert('RGB')
-            img.thumbnail((500, 500), Img.ANTIALIAS)
-            output = StringIO.StringIO()
-            img.save(output, format='JPEG', quality=70)
-            try:
-                for orientation in ExifTags.TAGS.keys():
-                    if ExifTags.TAGS[orientation]=='Orientation':
-                        break
-                exif=dict(img._getexif().items())
-                # fix orientation
-                if exif[orientation] == 3:
-                    img=img.rotate(180, expand=True)
-                elif exif[orientation] == 6:
-                    img=img.rotate(270, expand=True)
-                elif exif[orientation] == 8:
-                    img=img.rotate(90, expand=True)
-                # determine basic orientation (landscape | portrait)
-                if exif[orientation] == 6 or exif[orientation] == 8:
-                    self.is_portrait = True
-            except AttributeError:
-                pass
-            output.seek(0)
-            img.save(output, format='JPEG', quality=70)
-            self.image= InMemoryUploadedFile(output,'ImageField', "%s.jpg" %self.image.name.split('.')[0], 'image/jpeg', output.len, None)
-        super(PostImage, self).save(*args, **kwargs)
 
 # erase image on instance delete
 @receiver(post_delete, sender=PostImage)

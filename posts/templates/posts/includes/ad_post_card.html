@@ -1,0 +1,44 @@
+{% load static from staticfiles %}
+{% load ad_loader %}
+<!-- POST CARD -->
+<div class="w3-vk-card margin-top-tiny .w3-custom-round-small w3-white w3-display-container no-padding">
+	<!-- POST HEADER -->
+	<header class="w3-container w3-padding-large">
+		<!-- USER PHOTO -->
+		<div class="w3-cell w3-cell-middle">
+			<img src="{{ ad.brand_icon.url }}" class="w3-left w3-circle w3-margin-right"
+			 style="width:50px">
+		</div>
+		<div class="w3-cell w3-cell-middle w3-small">
+			<!-- DISPLAY NAME OR ANONYMOUS -->
+			<span  class="user-name">
+                {{ ad.brand }}
+			</span>
+		</div>
+	</header>
+	<!-- POST TEXT AND IMAGES-->
+	<div class="w3-container w3-padding-large">
+		<p class="w3-medium post-text-normalize justify-text">{{ ad.text }}</p>
+		{% if ad.images %}
+		<div class="modalContainer photos">
+			{% for image in ad.images %}
+			<div class="thumbnail" style="display: inline-block;">
+				<img data-ad-id="{{ ad.id }}" class="post-image"  src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}" alt="рекламное фото">
+			</div>
+			 {% endfor %}
+			<!-- The Modal -->
+			<div data-ad-id="{{ ad.id }}" class="modal">
+				<!-- The Close Button -->
+				<span class="close">&times;</span>
+				<!-- Modal Content (The Image) -->
+				<div class="modal-image-container"><img class="modal-content"></div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
+	<footer  class="w3-container w3-border-top w3-padding-small w3-center">
+		<span class="w3-text-awesome">Реклама</span>
+	</footer>
+</div>
+<!-- END POST CARD -->

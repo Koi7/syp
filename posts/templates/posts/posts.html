@@ -1,5 +1,6 @@
 {% extends "posts/base.html" %}
 {% load static from staticfiles %}
+{% load ad_loader %}
 {% block extra_links %}
 	<link rel="stylesheet" href="{% static 'posts/styles/dist/forms.min.css' %}">
 {% endblock %}
@@ -59,7 +60,10 @@
 			</div>
 		</div>
 		<p id="filter-loader" class="w3-center w3-text-awesome no-display">загрузка...</p>
-		<div id="post-list-container">		
+		{% if cross_place_ad %}
+			{% paste_ad cross_place_ad %}
+		{% endif %}
+		<div id="post-list-container">
 			<!-- POST LIST -->
 			{% if posts_list %}
 			{% include 'posts/includes/post_list.html' %}

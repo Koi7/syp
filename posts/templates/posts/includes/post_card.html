@@ -68,10 +68,18 @@
 		{% endif %}
 	</div>
 	<!-- POST CONTROLS (LIKE, MESSAGE, WHO LIKED) -->
-	<footer data-post-id="{{ post.id }}" class="w3-container w3-border-top w3-padding-small">
+	<footer data-post-id="{{ post.id }}" class="w3-container w3-border-top w3-padding-large">
 		<!-- BOTTOM CONTROLS -->
-		<div data-post-id="{{ post.id }}" class="w3-padding-small w3-right-align">
+		<div data-post-id="{{ post.id }}" class="w3-right-align">
 			<!-- SHOW SEND MESSAGE CONTROLS BUTTON-->
+			{% if editable %}
+				{% if post.accepted %}
+			<span class="w3-left w3-text-green">Опубликовано</span>
+				{% endif %}
+				{% if not post.rejected and not post.accepted%}
+			<span class="w3-left w3-text-yellow">Ожидает публикации</span>
+				{% endif %}
+			{% endif %}
 			{% if not editable %}
 			<i data-post-id="{{ post.id }}" class="icon-paper-plane-empty pointer w3-padding-small w3-text-blue show-send-message-controls"
 			 aria-hidden="true" title="Оставить послание"></i>

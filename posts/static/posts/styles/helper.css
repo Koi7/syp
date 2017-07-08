@@ -8,7 +8,7 @@
     text-decoration: underline!important;
 }
 .link-no-style{
-	text-decoration: none !important;
+	text-decoration: none!important;
 }
 .pointer{
 	cursor: pointer !important;
@@ -73,15 +73,19 @@
 	resize: none;
 }
 
-.d-block{
+.d-block {
 	display: block!important;
 }
 
-.d-inline{
+.d-inline {
 	display: inline;
 }
 
-.no-margin{
+.d-inline-block {
+	display: inline-block;
+}
+
+.no-margin {
 	margin: 0;
 }
 

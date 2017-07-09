@@ -17,12 +17,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from posts.views import IndexView, About, Contacts, logout_view
+from posts.views import IndexView, About, Contacts, logout_view, LoginView
 from syp import settings
 
 urlpatterns = [
     url(ur'^$', IndexView.as_view(), name='index'),
-    url(ur'^вход', IndexView.as_view(), name='index'),
+    url(ur'^вход', LoginView.as_view(), name='login'),
     url(ur'^па/', admin.site.urls),
     url(ur'^посты/', include('posts.urls')),
     url(ur'^выход', logout_view, name='logout_view'),

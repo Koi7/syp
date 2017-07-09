@@ -26,7 +26,7 @@ GOOGLE_PLACES_API_KEY = 'AIzaSyDDRQjJN5IIrMzl4i9Po670KmuKP5ENAhM'
 VK_API_URL = 'https://api.vk.com/method/users.get'
 GOOGLE_API_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/json'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 AUTHENTICATION_BACKENDS = ['posts.models.HashBackend', 'django.contrib.auth.backends.ModelBackend', ]
@@ -135,10 +135,33 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = 'http://ищутебякрым.рф/static/'
+STATIC_URL = 'https://ищутебякрым.рф/static/'
 STATIC_ROOT = '/home/i/izmaylyf/syp/public_html/static'
 
 CSS_DIR = 'posts/styles/dist/'
 JS_DIR = 'posts/js/'
 IMAGES_DIR = 'posts/images/'
 VENDOR_DIR = 'posts/bower_components'
+
+# ADMINS
+ADMINS = [('Izmaylov Ramazan', 'izmaylov.ramazan@yandex.ru')]
+
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/home/i/izmaylyf/syp/public_html/syp.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

@@ -1,5 +1,4 @@
 # coding=utf-8
-# -*- coding: utf-8 -*-
 import os
 
 from django.http import HttpResponse
@@ -16,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from models import Post, Like, PostImage, Ad
 from django.core.paginator import Paginator
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from faker import Factory
 import json
 import hashlib
@@ -68,6 +68,7 @@ class IndexView(View):
             }
             return render(request, self.template_name, context)
 
+class LoginView(View):
     @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def post(self, request):
         if settings.DEV:
@@ -81,9 +82,12 @@ class IndexView(View):
                 user = authenticate(uid=uid, hash=hash)
                 if user is not None:
                     user.vkuser.place = int(request.POST.get('place'))
-                    user.vkuser.photo_rec = ''
                     import random
                     user.vkuser.sex = random.randint(0, 1)
+                    if user.vkuser.sex == 0:
+                        user.vkuser.photo_rec = static('posts/images/male_placeholder.svg')
+                    else:
+                        user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
                     # Generate name according to given sex.
                     if user.vkuser.sex == 0:
                         user.first_name = fake.first_name_male()
@@ -106,20 +110,14 @@ class IndexView(View):
         else:
             user = authenticate(uid=request.POST.get('uid'), hash=request.POST.get('hash'))
             if user is not None:
-                if user.vkuser.place == "":
-                    user.first_name = request.POST.get('first_name')
-                    user.last_name = request.POST.get('last_name')
-                    user.vkuser.photo_rec = request.POST.get('photo_rec')
-                    user.save()
-                    json = JsonResponse({
-                        'success': 'true',
-                        'redirect': 'specify_place',
-                    })
+                user.first_name = request.POST.get('first_name')
+                user.last_name = request.POST.get('last_name')
+                user.vkuser.photo_rec = request.POST.get('photo_rec')
+                if user.vkuser.sex == 0:
+                    user.vkuser.photo_rec = static('posts/images/male_placeholder.svg')
                 else:
-                    json = JsonResponse({
-                        'success': True,
-                        'redirect': 'posts',
-                    })
+                    user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
+                user.save()
                 login(request, user)
                 return json
             else:
@@ -426,7 +424,6 @@ class Posts(View):
         filtered_posts = filter(place, tag, order, is_anonymous)
 
         # GET AD
-        cross_place_ad = Ad.objects.get(brand='defwe')
 
         # INIT PAGINATOR
 
@@ -443,7 +440,6 @@ class Posts(View):
             'posts_list': filtered_posts_page,
             'has_next': filtered_posts_page.has_next(),
             'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
-            'cross_place_ad': cross_place_ad
         }
 
         return render(request, self.template_name, context)

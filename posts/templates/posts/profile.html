@@ -18,15 +18,7 @@
     <!-- PROFILE HEADER -->
     <header class="w3-container w3-padding-large w3-center">
         <!-- USER PHOTO -->
-        {% if request.user.vkuser.photo_rec %}
         <img src="{{ request.user.vkuser.photo_rec }}" class="w3-circle" style="width:100px">
-        {% else %}
-        {% if request.user.vkuser.sex == 0 %}
-        <img src="{% static 'posts/images/male_placeholder.svg' %}" class="w3-circle" style="width:200px" alt="Нет фотографии">
-        {% else %}
-        <img src="{% static 'posts/images/female_placeholder.svg' %}" class="w3-circle" style="width:200px" alt="Нет фотографии">
-        {% endif %}
-        {% endif %}
         <br>
         <!-- USERNAME -->
         <span>{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>

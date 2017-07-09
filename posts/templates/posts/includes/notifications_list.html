@@ -7,22 +7,14 @@
 				<img src="{% static 'posts/images/stuff_notification.svg' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
 			</div>
 			<div class=" w3-cell w3-cell-middle">
-				<p class="no-margin">			
-
-					{{ notification.verb_str }}
-
-				</p>
+				<p class="no-margin">{{ notification.verb_str }}</p>
 			<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>
 			</div>
 		</div>
 	{% else %}
 		<div class="margin-center">
 			<div class="w3-container w3-cell w3-cell-middle">
-				{% if notification.actor.vkuser.photo_rec %}
 				<img src="{{ notification.actor.vkuser.photo_rec }}" class="w3-circle" style="width:50px;" alt="фото профиля">
-				{% else %}
-				<img src="{% static 'posts/images/man.svg' %}" class="w3-circle" style="width:50px;" alt="фото профиля">
-				{% endif %}	
 			</div>
 			<div class=" w3-cell w3-cell-middle">
 				<p class="no-margin">

@@ -5,7 +5,7 @@
 {% endblock %}
 {% block fakeauth %}
     <h1>Fake Auth</h1>
-    <form action="{% url 'index' %}" method="POST"> {% csrf_token %}
+    <form action="{% url 'login' %}" method="POST"> {% csrf_token %}
         <table>
             <tr>
                 <td>UID</td>

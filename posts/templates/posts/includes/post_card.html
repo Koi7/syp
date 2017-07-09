@@ -5,16 +5,11 @@
 	<header data-post-id="{{ post.id }}" class="w3-container w3-padding-large">
 		<!-- USER PHOTO -->
 		<div class="w3-cell w3-cell-middle">
-			{% if not post.is_anonymous and post.author.vkuser.photo_rec %}
-			<img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
-			 style="width:50px">
-			{% endif %}
-			{% if not post.is_anonymous and not post.author.vkuser.photo_rec  %}
-			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/man.svg' %}" class="w3-left w3-circle w3-margin-right"
-			 style="width:50px">
-			{% endif %}
 			{% if post.is_anonymous %}
-			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/anonymous.svg' %}" class="w3-left w3-circle w3-margin-right"
+			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/anonymous.png' %}" class="w3-left w3-circle w3-margin-right"
+			 style="width:50px">
+			{% else %}
+			<img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
 			 style="width:50px">
 			{% endif %}
 		</div>

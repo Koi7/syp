@@ -15,7 +15,7 @@ make_accepted.short_description = 'Одобрить'
 def make_rejected(modeladmin, request, queryset):
 	for post in queryset:
 		post.rejected = True
-		post.save()	
+		post.save()
 make_rejected.short_description = 'Отвергнуть'
 # customize
 class PostAdmin(admin.ModelAdmin):

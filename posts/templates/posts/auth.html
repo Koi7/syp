@@ -7,8 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'posts/styles/dist/w3c.css' %}">
         <link rel="stylesheet" href="{% static 'posts/styles/dist/helper.min.css' %}">
-        <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
-        <script type="text/javascript" src="{% static 'posts/js/syp_auth.js' %}"></script>
+        <script type="text/javascript" src="//vk.com/js/api/openapi.js?146"></script>
+        <script type="text/javascript" src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
         <script type="text/javascript">
             VK.init({apiId: "{{ APP_ID }}" });
@@ -25,16 +25,40 @@
         <section class="w3-display-middle">
             <h2 class="w3-center"><span id="logo">Ищу тебя</span></h2>
             <p>Севастополь. Симферополь. Ялта.</p>
-            <div id="vk_auth">
-                <script type="application/javascript">
-                    initAuthWidjet();
-                </script>
+            <div id="vk_auth" class="margin-center">
             </div>
             {% csrf_token %}
         </section>
         <footer class="w3-display-bottommiddle w3-bar w3-center w3-small">
-            <span>&copy Р.Ю. Измайлов, 2017</span>
+            <span>&copy ищутебякрым.рф, 2017</span>
         </footer>
+        <script>
+            function initAuthWidjet() {
+                VK.Widgets.Auth("vk_auth", {
+                    width: "200px", onAuth: function (data) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'вход',
+                            data: {
+                                uid: data.uid,
+                                first_name: data.first_name,
+                                last_name: data.last_name,
+                                photo_rec: data.photo_rec,
+                                hash: data.hash,
+                                csrfmiddlewaretoken: getCookie('csrftoken')
+                            },
+                            success: function (response) {
+                                if (response['success']) {
+                                    window.location = 'посты';
+                                }
+                            },
+                            dataType: 'json'
+                        });
+                    }
+                });
+            }
+            initAuthWidjet();
+        </script>
     </body>
 </html>
 

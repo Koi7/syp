@@ -280,7 +280,6 @@ class VKUser(models.Model):
     age = models.IntegerField('Возраст', default=0)
     sex = models.IntegerField('Пол', choices=SEX_CHOICES, default=-1)
     has_closed_attention = models.BooleanField(default=False)
-
     class Meta:
         verbose_name_plural = 'Пользователи'
 

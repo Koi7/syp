@@ -69,7 +69,6 @@ class IndexView(View):
             return render(request, self.template_name, context)
 
 class LoginView(View):
-    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
     def post(self, request):
         if settings.DEV:
             need_new_user = True if request.POST.get('new') == 'on' else False
@@ -119,7 +118,7 @@ class LoginView(View):
                     user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
                 user.save()
                 login(request, user)
-                return json
+                return JsonResponse({'success': 'true'})
             else:
                 return JsonResponse({'fail': 'true'})
 

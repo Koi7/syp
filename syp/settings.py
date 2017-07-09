@@ -165,3 +165,5 @@ LOGGING = {
         },
     },
 }
+
+CONN_MAX_AGE = 	28000

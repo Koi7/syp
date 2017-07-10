@@ -8,6 +8,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_delete, post_save
+from django.contrib.auth.signals import user_logged_in
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import mark_safe
@@ -269,13 +270,12 @@ class VKUser(models.Model):
         (2, "Ялта"),
     )
     SEX_CHOICES = (
-        (-1, "не определено"),
-        (0, "парень"),
+        (2, "парень"),
         (1, "девушка"),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
-    place = models.IntegerField('Город', choices=PLACE_CHOICES, default=1)
+    place = models.IntegerField('Город', choices=PLACE_CHOICES, default=0)
     post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
     age = models.IntegerField('Возраст', default=0)
     sex = models.IntegerField('Пол', choices=SEX_CHOICES, default=-1)
@@ -327,18 +327,19 @@ class VKUser(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.vkuser.save()
 
-        # @receiver(user_logged_in, sender=User)
-        # def update_user_profile(user, **kwargs):
-        #     if not user.is_superuser:
-        #         response = requests.get(settings.VK_API_URL, params={'v': '5.60',
-        #                                                              'lang': settings.LANGUAGE_CODE[0:2],
-        #                                                              'fields': 'photo_50,first_name,last_name',
-        #                                                              'user_ids': user.username})
-        #         for user_data in json.loads(response.text)['response']:
-        #             user.vkuser.photo_rec = user_data['photo_50']
-        #             user.first_name = user_data['first_name']
-        #             user.last_name = user_data['last_name']
-        #         user.vkuser.save()
+    @receiver(user_logged_in, sender=User)
+    def update_user_profile(user, **kwargs):
+        if not user.is_superuser and not settings.DEV:
+            response = requests.get(settings.VK_API_URL, params={'v': '5.60',
+                                                                    'lang': settings.LANGUAGE_CODE[0:2],
+                                                                    'fields': 'photo_50,first_name,last_name,sex',
+                                                                    'user_ids': user.username})
+            for user_data in json.loads(response.text)['response']:
+                user.vkuser.photo_rec = user_data['photo_50']
+                user.first_name = user_data['first_name']
+                user.last_name = user_data['last_name']
+                user.vkuser.sex = user_data['sex']
+            user.vkuser.save()
 
 class PostImage(models.Model):
     id = models.CharField(max_length=255, primary_key=True)

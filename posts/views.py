@@ -82,8 +82,8 @@ class LoginView(View):
                 if user is not None:
                     user.vkuser.place = int(request.POST.get('place'))
                     import random
-                    user.vkuser.sex = random.randint(0, 1)
-                    if user.vkuser.sex == 0:
+                    user.vkuser.sex = random.randint(1, 2)
+                    if user.vkuser.sex == 2:
                         user.vkuser.photo_rec = static('posts/images/male_placeholder.svg')
                     else:
                         user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
@@ -112,10 +112,8 @@ class LoginView(View):
                 user.first_name = request.POST.get('first_name')
                 user.last_name = request.POST.get('last_name')
                 user.vkuser.photo_rec = request.POST.get('photo_rec')
-                if user.vkuser.sex == 0:
+                if not user.vkuser.photo_rec:
                     user.vkuser.photo_rec = static('posts/images/male_placeholder.svg')
-                else:
-                    user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
                 user.save()
                 login(request, user)
                 return JsonResponse({'success': 'true'})

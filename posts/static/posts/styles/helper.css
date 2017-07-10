@@ -2,8 +2,12 @@
     display: inline-block;
     border: 1px solid white;
     width: 100%; 
+}
+
+.thin, #logo {
     font-weight: 100!important;
 }
+
 .classic-hover:hover {
     text-decoration: underline!important;
 }

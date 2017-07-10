@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from posts.views import IndexView, About, Contacts, logout_view, LoginView
+from posts.views import IndexView, About, Contacts, logout_view, LoginView, Ban
 from syp import settings
 
 urlpatterns = [
@@ -25,9 +25,10 @@ urlpatterns = [
     url(ur'^вход', LoginView.as_view(), name='login'),
     url(ur'^па/', admin.site.urls),
     url(ur'^посты/', include('posts.urls')),
+    url(ur'^бан', Ban.as_view(), name='ban'),
     url(ur'^выход', logout_view, name='logout_view'),
-    url(ur'^проект$', About.as_view(), name='about'),
-    url(ur'^контакты$', Contacts.as_view(), name='contacts'),
+    url(ur'^проект', About.as_view(), name='about'),
+    url(ur'^контакты', Contacts.as_view(), name='contacts'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'posts.views.not_found'

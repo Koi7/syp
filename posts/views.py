@@ -13,7 +13,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
-from models import Post, Like, PostImage, Ad
+from models import Post, Like, PostImage, Ad, BlackList
 from django.core.paginator import Paginator
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from faker import Factory
@@ -47,12 +47,25 @@ def filter(place='any', tag='any', order='desc', is_anonymous=-1):
 def anonimous_check(user):
     return user.is_anonymous()
 
+def not_in_blacklist(user):
+    is_banned = BlackList.objects.filter(vk_id=user.username).exists()
+    if is_banned:
+        return False
+    return True
+
+def in_blacklist(user):
+    is_banned = BlackList.objects.filter(vk_id=user.username).exists()
+    if is_banned:
+        return True
+    return False
+
 # CLASS-BASED VIEWS
 
 class IndexView(View):
     template_name = 'posts/auth.html'
     dev_template_name = 'posts/dev_auth.html'
-    @method_decorator(user_passes_test(anonimous_check, login_url='/posts', redirect_field_name=None))
+
+    @method_decorator(user_passes_test(anonimous_check, login_url='posts', redirect_field_name=None))
     def get(self, request):
         if settings.DEV:
             context = {
@@ -69,6 +82,8 @@ class IndexView(View):
             return render(request, self.template_name, context)
 
 class LoginView(View):
+    
+    @method_decorator(user_passes_test(anonimous_check, login_url='posts', redirect_field_name=None))
     def post(self, request):
         if settings.DEV:
             need_new_user = True if request.POST.get('new') == 'on' else False
@@ -175,6 +190,7 @@ class PhotoUploader(View):
 class AddPostView(View):
     template_name = 'posts/add_post.html'
 
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, 'posts/add_post.html')
@@ -222,37 +238,6 @@ class AddPostView(View):
             'success': True
             })
 
-class EditPost(View):
-    template_name = 'posts/edit_post.html'
-
-    @method_decorator(login_required(redirect_field_name=None))
-    def get(self, request, post_id):
-        post_to_edit = Post.objects.get(id=post_id)
-        if request.user == post_to_edit.user:
-            context = {
-                'text': post_to_edit.text,
-                'is_anonymous': post_to_edit.is_anonymous,
-                'post_id': post_to_edit.id,
-                'tag_list': Tag.objects.all(),
-            }
-            return render(request, 'posts/edit_post.html', context)
-
-    @method_decorator(login_required(redirect_field_name=None))
-    def post(self, request):
-        post_to_edit = Post.objects.get(id=request.POST.get('post_id'))
-        if request.user == post_to_edit.user:
-            post_to_edit.text = request.POST.get('text')
-            post_to_edit.is_anonymous = True if request.POST.get('is_anonymous') == 'on' else False
-            for tag_value in request.POST.getlist('tags'):
-                post_tag = PostTag()
-                post_tag.post = post_to_edit
-                post_tag.tag = Tag.objects.get(value=tag_value)
-                post_tag.save()
-            if request.FILES['photo']:
-                delete_image(post_to_edit.image.path)
-                post_to_edit.image = request.FILES['photo']
-            post_to_edit.save()
-            return redirect('posts')
 
 class DeletePost(View):
 
@@ -267,6 +252,7 @@ class DeletePost(View):
 
 class LikePost(View):
     redirect_to = 'posts'
+
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         post = Post.objects.get(id=request.POST.get('post_id'))
@@ -318,6 +304,8 @@ class WhoLiked(View):
     template_name = 'posts/who_liked.html'
     ajax_template_name = 'posts/like_list.html'
     like_items_per_request = 30
+
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         # get post
@@ -354,6 +342,7 @@ class WhoLiked(View):
 class MyPost(View):
     template_name = 'posts/my_post.html'
 
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         user_post = []
@@ -367,6 +356,8 @@ class LikedPosts(View):
     template_name = 'posts/liked.html'
     ajax_template_name = 'posts/includes/post_card.html'
     posts_per_request = 1
+
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         users_like_objects = Like.objects.filter(user=request.user)
@@ -402,6 +393,8 @@ class Posts(View):
     ajax_post_list_template = 'posts/includes/post_list.html'
     no_results_template = 'posts/no_results_html'
     post_per_request = 1
+
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
 
@@ -509,6 +502,8 @@ class Notifications(View):
     template_name = 'posts/notifications.html'
     render_template_name = 'posts/notifications_list.html'
     notifications_per_request = 5
+
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, offset=None):
 
@@ -578,6 +573,7 @@ class CloseAttention(View):
 class Profile(View):
     template_name = 'posts/profile.html'
 
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, self.template_name)
@@ -591,9 +587,19 @@ class About(View):
 class Contacts(View):
     template_name = 'posts/contacts.html'
 
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         return render(request, self.template_name)
+
+class Ban(View):
+    template_name = 'posts/ban.html'
+    @method_decorator(user_passes_test(in_blacklist, login_url='/', redirect_field_name=None))
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        logout(request)
+        return render(request, self.template_name)
+
 
 @login_required(redirect_field_name=None)
 def logout_view(request):

@@ -208,6 +208,9 @@
                     } else {
                         alertify.error(data.error_message);
                     }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alertify.error('Что-то пошло не так.');
                 }
             });
         });

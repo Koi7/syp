@@ -58,6 +58,9 @@
               // remove load more section
               $('section#load-more-section').remove();
             }
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            alertify.error('Что-то пошло не так.');
           }
         });
       });

@@ -24,6 +24,9 @@ var init = function  () {
                         window.location = response['redirect'];
                     }
                 },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alertify.error('Что-то пошло не так.');
+                },
                 dataType: 'json'
             });
 	    });

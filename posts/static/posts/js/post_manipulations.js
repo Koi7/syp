@@ -27,6 +27,9 @@ function filter() {
 				$('p#filter-loader').toggle(toggleRate);
 				$('div#post-list-container').html(data.rendered_template);
 			}
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alertify.error('Что-то пошло не так.');
 		}
 	});
 }
@@ -55,6 +58,9 @@ function LikeEvent(){
 			} else {
 				alertify.error('Вы не можете лайкать свои же посты. В этом нет смысла =).');
 			}
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alertify.error('Что-то пошло не так.');
 		}
 	});
 }
@@ -90,6 +96,9 @@ function ClickSendButtonEventHandler(){
 					}
 				}
 				$('i.show-send-message-controls[data-post-id=' + $(this).data('post-id') + ']').trigger('click');
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alertify.error('Что-то пошло не так.');
 			}
 		});
 
@@ -130,7 +139,10 @@ function loadMore() {
 			},
 			dataType: "json",
 			context: this,
-			success: onSuccess
+			success: onSuccess,
+			error: function (xhr, ajaxOptions, thrownError) {
+				alertify.error('Что-то пошло не так.');
+			}
 		});
 	} else {
 		$.ajax({
@@ -141,7 +153,10 @@ function loadMore() {
 			},
 			dataType: "json",
 			context: this,
-			success: onSuccess
+			success: onSuccess,
+			error: function (xhr, ajaxOptions, thrownError) {
+				alertify.error('Что-то пошло не так.');
+			}
 		});
 	}
 

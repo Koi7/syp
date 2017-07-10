@@ -135,7 +135,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = 'https://ищутебякрым.рф/static/'
+STATIC_URL = u'https://ищутебякрым.рф/static/'
 STATIC_ROOT = '/home/i/izmaylyf/syp/public_html/static'
 
 CSS_DIR = 'posts/styles/dist/'

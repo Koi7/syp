@@ -37,7 +37,10 @@
 		 					$('li.w3-vk-card').remove();
 		 					$('div#no-result-container-ajax').toggle();
 		 				}
-		 			}
+		 			},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alertify.error('Что-то пошло не так.');
+					}
 		 		});
 			});
 		});

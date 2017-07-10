@@ -62,6 +62,9 @@
                 success: function(data) {
                         $('#place').text(data.place);
                         alertify.success("Сохранено");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alertify.error('Что-то пошло не так.');
                 }
             });
         });
@@ -79,6 +82,9 @@
                         if(data.success){
                             location.reload();
                         }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alertify.error('Что-то пошло не так.');
                     }
                 });
             });

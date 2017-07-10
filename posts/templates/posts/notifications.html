@@ -55,7 +55,10 @@
 		 					// remove button
 		 					$(this).remove();
 		 				}
-		 			}
+		 			},
+					error: function (xhr, ajaxOptions, thrownError) {
+						alertify.error('Что-то пошло не так.');
+					}
 		 		});
 			});
 		}

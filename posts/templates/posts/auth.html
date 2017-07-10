@@ -52,6 +52,9 @@
                                     window.location = '{% url "posts" %}';
                                 }
                             },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alertify.error('Что-то пошло не так.');
+                            },
                             dataType: 'json'
                         });
                     }

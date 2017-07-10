@@ -82,7 +82,7 @@
 			<span data-post-id="{{ post.id }}" class="w3-text-gray w3-border-left pa-r-six"></span>
 			{% endif %}
 			<!-- LIKE INDICATOR -->
-			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' %}?post_id={{ post.id }}" class="link-no-style">
+			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' %}?post_id={{ post.id }}" class="link-no-style" title="Кто лайкнул">
 				<span data-post-id="{{ post.id }}" class="likes-amount w3-text-blue w3-padding-small">{{ post.likes }}</span>
 			</a>
 			<!-- LIKE BUTTON -->

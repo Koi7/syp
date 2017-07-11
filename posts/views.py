@@ -59,6 +59,11 @@ def in_blacklist(user):
         return True
     return False
 
+def mark_read(unread_notifications):
+    for notification in unread_notifications:
+        notification.mark_read = True
+        notification.save()
+
 # CLASS-BASED VIEWS
 
 class IndexView(View):
@@ -103,7 +108,7 @@ class LoginView(View):
                     else:
                         user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
                     # Generate name according to given sex.
-                    if user.vkuser.sex == 0:
+                    if user.vkuser.sex == 1:
                         user.first_name = fake.first_name_male()
                         user.last_name = fake.last_name_male()
                     else:
@@ -500,65 +505,101 @@ class PostsFilter(View):
 
 class Notifications(View):
     template_name = 'posts/notifications.html'
-    render_template_name = 'posts/notifications_list.html'
-    notifications_per_request = 5
-
+    render_template_name = 'posts/includes/notifications_list.html'
+    read_notifications_per_request = 1
+    unread_notifications_per_request = 1
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
-    def get(self, request, offset=None):
+    def get(self, request):
+
+        # make viwed notifications read
+
+        self.make_read(request.user.vkuser.mark_read_notifications)
 
         # load data       
 
         read_notifications = request.user.vkuser.read_notifications
         unread_notifications = request.user.vkuser.unread_notifications
         context = {}
-        print len(read_notifications)
 
         # init paginators
-
-        read_paginator = Paginator(read_notifications, self.notifications_per_request)
-
+        read_paginator = Paginator(read_notifications, self.read_notifications_per_request)
+        unread_paginator = Paginator(unread_notifications, self.unread_notifications_per_request)
         # build context
 
-        # not ajax
-        if not offset:
-            page_read = read_paginator.page(1)
+        page_read = read_paginator.page(1)
+        page_unread = unread_paginator.page(1)
+        context = {
+            'read_notifications': page_read,
+            'unread_notifications': page_unread,
+            'read_has_next': page_read.has_next(),
+            'unread_has_next': page_unread.has_next(),
+            'read_next_page': page_read.next_page_number() if page_read.has_next() else 0,
+            'unread_next_page': page_unread.next_page_number() if page_unread.has_next() else 0,
+        }
+                
+        mark_read(page_unread)
 
-            context = {
-                'read_notifications': page_read,
-                'unread_notifications': unread_notifications,
-                'has_next': page_read.has_next(),
-                'next_page': page_read.next_page_number() if page_read.has_next() else 0,
-            }
+        return render(request, self.template_name, context)   
 
-            self.mark_read(context['unread_notifications'])
 
-            return render(request, self.template_name, context)
-
-        # ajax
-        if offset > 1:
-
-            page_read = read_paginator.page(offset)
-
-            context = {
-                'notifications_list': read_paginator.page(offset)
-            }
-
-            rendered_template = render_to_string(self.render_template_name, context)
-
-            return JsonResponse({
-                'success': True,
-                'rendered_template': rendered_template,
-                'has_next': page_read.has_next(),
-                })
-
-    
+    def make_read(self, mark_read_notifications):
+        for mark_read_notification in mark_read_notifications:
+            mark_read_notification.unread = False
+            mark_read_notification.save()
         
 
-    def mark_read(self, unread_notifications):
-        for notification in unread_notifications:
-            notification.unread = False
-            notification.save()
+
+
+class NotificationsAjax(View):
+
+    render_template_name = 'posts/includes/notifications_list.html'
+    read_notifications_per_request = 1
+    unread_notifications_per_request = 1
+    @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
+    @method_decorator(login_required(redirect_field_name=None))
+    def get(self, request):
+        offset = request.GET.get('offset')
+        # ajax
+        if offset > 1:
+            target = request.GET.get('target')
+            if target == 'read':
+                read_notifications = request.user.vkuser.read_notifications
+                read_paginator = Paginator(read_notifications, self.read_notifications_per_request)
+                page_read = read_paginator.page(offset)
+
+                context = {
+                    'notifications_list': page_read
+                }
+
+                rendered_template = render_to_string(self.render_template_name, context)
+                return JsonResponse({
+                    'success': True,
+                    'rendered_template': rendered_template,
+                    'has_next': page_read.has_next(),
+                    'next_page': page_read.next_page_number() if page_read.has_next() else 0,
+                    })
+
+            if target == 'unread':
+                unread_notifications = request.user.vkuser.unread_notifications
+                unread_paginator = Paginator(unread_notifications, self.read_notifications_per_request)
+                page_unread = unread_paginator.page(offset)
+                
+                context = {
+                    'notifications_list': page_unread
+                }
+                rendered_template = render_to_string(self.render_template_name, context)
+                mark_read(page_unread)
+                return JsonResponse({
+                    'success': True,
+                    'rendered_template': rendered_template,
+                    'has_next': page_unread.has_next(),
+                    'next_page': page_unread.next_page_number() if page_unread.has_next() else 0,
+                    })
+
+ 
+
+
 
 class CloseAttention(View):
 

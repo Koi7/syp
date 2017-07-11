@@ -9,8 +9,6 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_delete, post_save
 from django.contrib.auth.signals import user_logged_in
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.utils.html import mark_safe
 from PIL import Image as Img, ExifTags
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -313,6 +311,10 @@ class VKUser(models.Model):
     def read_notifications(self):
         return list(self.user.notification_set.filter(unread=False))
 
+    @property
+    def mark_read_notifications(self):
+        return list(self.user.notification_set.filter(mark_read=True))
+
     @property 
     def photo(self):
         return mark_safe("".join('<img src="{}" width="100" heigth="100">'.format(self.photo_rec)))
@@ -383,32 +385,28 @@ class Notification(models.Model):
     VERB_CHOICES = (
         (-1, 'no'),
         (0, 'лайкну{} ваш пост.'),
-        (1, 'остави{} послание к вашему посту.'),
         (2, 'Ваш пост опубликован.'),
         (3, 'Ваш пост нарушает правила сайта, поэтому он не будет опубликован.')
     )
     user = models.ForeignKey(User)
-    actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor', null=True)
-    actor_object_id = models.CharField(max_length=255, default="")
-    actor = GenericForeignKey('actor_content_type', 'actor_object_id')    
+    actor = models.ForeignKey(VKUser, null=True)  
     verb = models.IntegerField(choices=VERB_CHOICES, default=-1)
     target = models.ForeignKey(Post)
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     unread = models.BooleanField(default=True)
+    mark_read = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']
     
     @property
     def verb_str(self):
-        if self.verb == 0 or self.verb == 1:
-            if self.actor.vkuser.sex == 0:
+        if self.verb == 0:
+            if self.actor.sex == 2:
                 return self.get_verb_display().format('л')
-            if self.actor.vkuser.sex == 1:
+            if self.actor.sex == 1:
                 return self.get_verb_display().format('ла')
-            if self.actor.vkuser.sex == -1:
-                return self.get_verb_display().format('л(-а)')
         else:
             return self.get_verb_display()
 
@@ -418,18 +416,13 @@ class Notification(models.Model):
         # If reciever is called on create method - return.
         # Create notification only if reciever is called on save method!!!
         if created:
-            return
-        new_notification = Notification(
-            user=instance.post.author,
-            actor_content_type=ContentType.objects.get_for_model(instance.user),
-            actor_object_id=instance.user.id,
-            target=instance.post
-        )
-        if instance.message:
-            new_notification.verb = 1
-        else:
+            new_notification = Notification(
+                user=instance.post.author,
+                actor=instance.user.vkuser,
+                target=instance.post
+            )
             new_notification.verb = 0
-        new_notification.save()
+            new_notification.save()
 
     @receiver(post_save, sender=Post)
     def notify_accepted(instance, created, **kwargs):
@@ -475,7 +468,7 @@ class Notification(models.Model):
     def deleted_all_related_notifications_like(instance, **kwargs):
         """ Deletes any Notification object connected to Like object being deleted. """
         try:
-            notifications_to_delete = Notification.objects.filter(user=instance.post.author, target=instance.post, verb=0) | Notification.objects.filter(user=instance.post.author, target=instance.post, verb=1)
+            notifications_to_delete = Notification.objects.filter(user=instance.post.author, actor=instance.user.vkuser, target=instance.post, verb=0)
             for notification in notifications_to_delete:
                 notification.delete()
         except Notification.DoesNotExist:

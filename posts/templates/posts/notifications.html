@@ -1,6 +1,6 @@
 {% extends "posts/base.html" %}
 {% load static from staticfiles %}
-{% block title %}Уведомления{% endblock %}
+{% block title %} Ищу Тебя | Уведомления {% endblock %}
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Уведомления</h1>
@@ -9,14 +9,18 @@
 <h3 class="w3-vk-card-noshadow w3-padding-tiny  w3-text-awesome">Новые</h3>
 <ul id="unread_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=unread_notifications %}</ul>
 {% endif %}
+<!-- LOAD MORE BUTTON -->
+{% if unread_has_next %}
+{% include 'posts/includes/load_more_button_with_loader.html' with src="unread" %}
+{% endif %}
 <!-- READ NOTIFICATIONS -->
 {% if read_notifications %}
 <h3 class="w3-vk-card-noshadow w3-padding-tiny w3-text-awesome">Просмотренные</h3>
 <ul id="read_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=read_notifications %}</ul>
 {% endif %}
 <!-- LOAD MORE BUTTON -->
-{% if has_next %}
-{% include 'posts/includes/load_more_button_with_loader' %}
+{% if read_has_next %}
+{% include 'posts/includes/load_more_button_with_loader.html' with src="read" %}
 {% endif %}
 <!-- NO NOTIFICATIONS -->
 {% if not unread_notifications and not read_notifications %}
@@ -26,42 +30,41 @@
 {% block extra_scripts %}
 <script>
 	$(document).ready(function () {
-		var load_more_btn = $('button#load-more-btn');
-		if (load_more_btn) {
-			load_more_btn.click(function () {
-				$(this).toggle();
-				$('span#loading-indicator').toggle();
-		 		$.ajax({
-		 			type: 'GET',
-		 			url: '{% url "notifications" %}',
-		 			data: {
-		 				offset: $(this).data('offset')
-		 			},
-		 			dataType: "json",
-		 			context: this,
-		 			success: function (data) {
-		 				$('ul#read_list').append(data.rendered_template);
-		 				// increment if has next page
-		 				if (data.has_next) {
-		 					// hide loader
-		 					$('span#loading-indicator').toggle();
-		 					//show button
-		 					$(this).toggle();
-		 					// increment 
-		 					$(this).data('offset', data.next_page);
-		 				} else {
-		 					// remove loader
-		 					$('span#loading-indicator').remove();
-		 					// remove button
-		 					$(this).remove();
-		 				}
-		 			},
-					error: function (xhr, ajaxOptions, thrownError) {
-						alertify.error('Что-то пошло не так.');
+		$('button.more-notifications').click(function () {
+			$(this).toggle();
+			$(this).next().toggle();
+			var target = $(this).data('target');
+			$.ajax({
+				type: 'GET',
+				url: '{% url "notifications_ajax" %}',
+				data: {
+					offset: $(this).data('offset'),
+					target: target
+				},
+				dataType: "json",
+				context: this,
+				success: function (data) {
+					$('ul#' + target + '_list').append(data.rendered_template);
+					// increment if has next page
+					if (data.has_next) {
+						// hide loader
+						$(this).next().toggle();
+						//show button
+						$(this).toggle();
+						// increment 
+						$(this).data('offset', data.next_page);
+					} else {
+						// remove loader
+						$(this).next().remove();
+						// remove button
+						$(this).remove();
 					}
-		 		});
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					alertify.error(xhr.responseText);
+				}
 			});
-		}
+		});
 	});
 </script>
 {% endblock %}

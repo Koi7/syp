@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.conf.urls import url
 from posts.views import AddPostView, Posts, DeletePost, LikePost, WhoLiked, LikedPosts, \
-    Profile, LeaveMessage, MyPost, SaveProfileEditions, DeleteUser, PhotoUploader, PostsFilter, Notifications, CloseAttention, About, Contacts
+    Profile, LeaveMessage, MyPost, SaveProfileEditions, DeleteUser, PhotoUploader, PostsFilter, Notifications, CloseAttention, About, Contacts, NotificationsAjax
 
 urlpatterns = [
     url(ur'^$', Posts.as_view(), name='posts'),
@@ -19,5 +19,6 @@ urlpatterns = [
     url(ur'^удалить_фото(?:/(?P<qquuid>\S+))?', PhotoUploader.as_view(), name='delete_photo'),
     url(ur'^фильтр$', PostsFilter.as_view(), name='posts_filter'),
     url(ur'^уведомления$', Notifications.as_view(), name='notifications'),
+    url(ur'^уведомления/еще$', NotificationsAjax.as_view(), name='notifications_ajax'),
     url(ur'^предупрежден$', CloseAttention.as_view(), name='close_attention'),
 ]

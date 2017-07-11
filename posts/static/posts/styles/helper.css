@@ -1,3 +1,12 @@
+button:active, button:focus {
+  outline: none;
+}
+button::-moz-focus-inner {
+  border: 0;
+}
+a:focus { 
+    outline: none; 
+}
 #logo {
     display: inline-block;
     border: 1px solid white;

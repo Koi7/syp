@@ -108,7 +108,7 @@ class LoginView(View):
                     else:
                         user.vkuser.photo_rec = static('posts/images/female_placeholder.svg')
                     # Generate name according to given sex.
-                    if user.vkuser.sex == 1:
+                    if user.vkuser.sex == 2:
                         user.first_name = fake.first_name_male()
                         user.last_name = fake.last_name_male()
                     else:

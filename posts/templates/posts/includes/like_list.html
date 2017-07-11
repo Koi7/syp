@@ -2,7 +2,7 @@
 {% for like in like_list %}
 <li class="w3-vk-card w3-white w3-padding w3-display-container">
   <div class="w3-cell w3-cell-middle">
-    <img src="{{ request.user.vkuser.photo_rec }}" class="w3-circle w3-margin-right" style="width:50px">
+    <a href="https://vk.com/id{{like.user.username}}" target="_blank"><img src="{{ like.user.vkuser.photo_rec }}" class="w3-circle w3-margin-right" style="width:50px"></a>
   </div>
   <div class="w3-cell w3-cell-middle">
     <span>

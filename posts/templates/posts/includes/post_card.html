@@ -9,16 +9,16 @@
 			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/anonymous.png' %}" class="w3-left w3-circle w3-margin-right"
 			 style="width:50px">
 			{% else %}
-			<img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
-			 style="width:50px">
+			<a href="https://vk.com/id{{ post.author.username }}" target="_blank"><img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
+			 style="width:50px"></a>
 			{% endif %}
 		</div>
 		<div class="w3-cell w3-cell-middle w3-small">
 			<!-- DISPLAY NAME OR ANONYMOUS -->
-			<span data-post-id="{{ post.id }}" class="user-name">
+			<span data-post-id="{{ post.id }}" class="user-name w3-text-blue">
 				{% if not post.is_anonymous %}
 
-					{{ post.author.first_name }} {{ post.author.last_name }}
+					<a href="https://vk.com/id{{ post.author.username }}" target="_blank" class="link-no-style classic-hover">{{ post.author.first_name }} {{ post.author.last_name }}</a>
 
 				{% else %}
 

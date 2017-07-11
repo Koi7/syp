@@ -395,7 +395,6 @@ class Notification(models.Model):
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     unread = models.BooleanField(default=True)
-    mark_read = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']

@@ -59,9 +59,9 @@ def in_blacklist(user):
         return True
     return False
 
-def mark_read(unread_notifications):
-    for notification in unread_notifications:
-        notification.mark_read = True
+def make_read(notifications):
+    for notification in notifications:
+        notification.unread = False
         notification.save()
 
 # CLASS-BASED VIEWS
@@ -514,8 +514,6 @@ class Notifications(View):
 
         # make viwed notifications read
 
-        self.make_read(request.user.vkuser.mark_read_notifications)
-
         # load data       
 
         read_notifications = request.user.vkuser.read_notifications
@@ -535,18 +533,11 @@ class Notifications(View):
             'read_has_next': page_read.has_next(),
             'unread_has_next': page_unread.has_next(),
             'read_next_page': page_read.next_page_number() if page_read.has_next() else 0,
-            'unread_next_page': page_unread.next_page_number() if page_unread.has_next() else 0,
-        }
-                
-        mark_read(page_unread)
-
-        return render(request, self.template_name, context)   
+        }    
+        make_read(page_unread)        
+        return render(request, self.template_name, context)
 
 
-    def make_read(self, mark_read_notifications):
-        for mark_read_notification in mark_read_notifications:
-            mark_read_notification.unread = False
-            mark_read_notification.save()
         
 
 
@@ -582,19 +573,19 @@ class NotificationsAjax(View):
 
             if target == 'unread':
                 unread_notifications = request.user.vkuser.unread_notifications
-                unread_paginator = Paginator(unread_notifications, self.read_notifications_per_request)
+                unread_paginator = Paginator(unread_notifications, self.unread_notifications_per_request)
                 page_unread = unread_paginator.page(offset)
                 
                 context = {
                     'notifications_list': page_unread
                 }
+                
                 rendered_template = render_to_string(self.render_template_name, context)
-                mark_read(page_unread)
+                make_read(page_unread)
                 return JsonResponse({
                     'success': True,
                     'rendered_template': rendered_template,
                     'has_next': page_unread.has_next(),
-                    'next_page': page_unread.next_page_number() if page_unread.has_next() else 0,
                     })
 
  

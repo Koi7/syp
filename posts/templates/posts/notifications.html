@@ -51,8 +51,13 @@
 						$(this).next().toggle();
 						//show button
 						$(this).toggle();
-						// increment 
-						$(this).data('offset', data.next_page);
+						// increment
+						if (target === "read") {
+							$(this).data('offset', data.next_page);
+						} else {
+							$(this).data('offset', 1);
+						}
+						
 					} else {
 						// remove loader
 						$(this).next().remove();

@@ -9,6 +9,7 @@
       <link rel="stylesheet" href="{% static 'posts/styles/dist/w3c.css' %}">
       <link rel="stylesheet" href="{% static 'posts/styles/dist/helper.min.css' %}">
       <link rel="stylesheet" href="{% static 'posts/styles/dist/fontawesome-webfont.min.css' %}">
+      <link rel="shortcut icon" type="image/png" href="{% static 'posts/images/favicon.ico' %}"/>
       {% endblock %}
       {% block extra_links %}{% endblock %}
       {% block scripts %}
@@ -22,7 +23,7 @@
     <!-- NAV -->
     {% block nav %}
     <nav class="w3-sidenav w3-red w3-collapse w3-top w3-padding" style="z-index:3;width:300px;" id="mySidenav"><br>
-      <a href="javascript:void(0)" onclick="w3_close()" class="w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%">закрыть</a>
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-small w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%">закрыть</a>
       <div class="w3-container">
         <h2 class="w3-padding-64 w3-center"><span id="logo">Ищу тебя</span></h2>
       </div>

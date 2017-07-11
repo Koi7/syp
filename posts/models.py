@@ -15,7 +15,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from datetime import timedelta
 from django.utils import timezone
 from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFit
+from imagekit.processors import ResizeToFit, Transpose
 import StringIO
 import hashlib
 import json
@@ -349,7 +349,7 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post, null=True)
     filename = models.CharField(max_length=255, null=True)
     image = ProcessedImageField(upload_to=get_image_path,
-                                processors=[ResizeToFit(500, 500)],
+                                processors=[Transpose(), ResizeToFit(500, 500)],
                                 format='JPEG',
                                 options={'quality': 70},
                                 blank=True,

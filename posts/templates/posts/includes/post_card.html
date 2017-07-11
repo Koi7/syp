@@ -71,8 +71,11 @@
 				{% if post.accepted %}
 			<span class="w3-left w3-text-green">Опубликовано</span>
 				{% endif %}
-				{% if not post.rejected and not post.accepted%}
+				{% if not post.rejected and not post.accepted %}
 			<span class="w3-left w3-text-yellow">Ожидает публикации</span>
+				{% endif %}
+				{% if post.rejected %}
+			<span class="w3-left w3-text-red">Не опубликован</span>
 				{% endif %}
 			<!-- LIKE INDICATOR -->
 			<a data-post-id="{{ post.id }}" href="{% url 'who_liked' %}?post_id={{ post.id }}" class="link-no-style" title="Кто лайкнул?">

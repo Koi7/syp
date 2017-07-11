@@ -440,7 +440,7 @@ class Notification(models.Model):
     @receiver(post_save, sender=Post)
     def notify_rejected(instance, created, **kwargs):
         if instance.rejected:
-            new_notification = Notification(user=instance.author, verb=3, target=instance, verb_long=reject_message)
+            new_notification = Notification(user=instance.author, verb=3, target=instance)
             new_notification.save()
         else:
             try:

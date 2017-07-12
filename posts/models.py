@@ -16,6 +16,7 @@ from datetime import timedelta
 from django.utils import timezone
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFit, Transpose
+from django.core.exceptions import ObjectDoesNotExist
 import StringIO
 import hashlib
 import json
@@ -458,6 +459,10 @@ class Notification(models.Model):
                 notification.delete()
         except Notification.DoesNotExist:
             pass
+        except ObjectDoesNotExist:
+            notifications_to_delete = Notification.objects.filter(user=instance.post.author, target=instance.post, verb=0)
+            for notification in notifications_to_delete:
+                notification.delete()
 
 # custom authentication backend
 class HashBackend(object):

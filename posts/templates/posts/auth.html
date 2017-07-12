@@ -19,7 +19,12 @@
     <body class="w3-red w3-display-container">
         <section class="w3-display-middle">
             <h2 class="w3-center"><span id="logo">Ищу тебя</span></h2>
-            <p>Севастополь. Симферополь. Ялта.</p>
+            <p class="w3-hide-small">Севастополь. Симферополь. Ялта.</p>
+            <section class="w3-hide-large w3-hide-medium">
+                <p class="w3-center">Севастополь.</p>
+                <p class="w3-center">Симферополь.</p>
+                <p class="w3-center">Ялта.</p>
+            </section>
             <div id="vk_auth" class="margin-center">
             </div>
             {% csrf_token %}

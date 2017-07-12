@@ -1,5 +1,5 @@
 <!-- LOAD MORE BUTTON WITH LOADER -->
 <section id='load-more-section' class="w3-center w3-section">
-	<button  {% if src %} data-offset="{% if src == 'read' %}{{ read_next_page }}{% else %}{{ read_next_page }}{% endif %}" data-target="{{src}}"{% else %} data-offset="{{ next_page }}" id="load-more-btn" {% endif %} class="more-notifications w3-btn w3-text-blue d-inline w3-white">показать ещё</button>
+	<button  {% if src %} data-offset="{% if src == 'read' %}{{ read_next_page }}{% else %}{{ unread_next_page }}{% endif %}" data-target="{{src}}"{% else %} data-offset="{{ next_page }}" id="load-more-btn" {% endif %} class="more-notifications w3-btn w3-text-blue d-inline w3-white">показать ещё</button>
 	<span {% if not src %}id="load-more-loader"{% endif %} class="no-display w3-text-awesome">загрузка...</span>
 </section>

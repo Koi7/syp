@@ -56,7 +56,7 @@ function LikeEvent(){
 				}
 				$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 			} else {
-				alertify.error('Вы не можете лайкать свои же посты. В этом нет смысла =).');
+				alertify.error('В этом нет смысла.');
 			}
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
@@ -69,6 +69,9 @@ function ClickSendButtonEventHandler(){
 	var post_id = $(this).data('post-id');
 	var input_value = $.trim($('input.w3-input[data-post-id=' + post_id + ']').val());
 	if (input_value){
+		if (input_value.length > 500) {
+			alertify.error('Слишком длинное послание. Максимум - 500 символов.');
+		}
 		$.ajax({
 			type: "POST",
 			url: leaveMessageUrl, 			
@@ -90,7 +93,7 @@ function ClickSendButtonEventHandler(){
 					$('span.likes-amount[data-post-id=' + post_id + ']').text(data.likes_amount);
 				} else {
 					if (data.self_like) {
-						alertify.error('Безсмысленно отправлять послание самому себе =).');
+						alertify.error('В этом нет смысла.');
 					} else {
 						alertify.error(data.err_msg);
 					}

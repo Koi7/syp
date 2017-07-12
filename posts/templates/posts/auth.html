@@ -7,13 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{% static 'posts/styles/dist/w3c.css' %}">
         <link rel="stylesheet" href="{% static 'posts/styles/dist/helper.min.css' %}">
-        <link rel="shortcut icon" type="image/png" href="{% static 'posts/images/favicon.ico' %}"/>
-        <script type="text/javascript" src="//vk.com/js/api/openapi.js?146"></script>
-        <script type="text/javascript" src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'posts/js/util.js' %}"></script>
-        <script type="text/javascript">
-            VK.init({apiId: "{{ APP_ID }}" });
-        </script>
+        <link rel="shortcut icon" type="image/png" href="{% static 'posts/images/favicon.png' %}"/>
         <title>Ищу тебя | Вход</title>
         <style>
             /* provide full height*/
@@ -33,6 +27,20 @@
         <footer class="w3-display-bottommiddle w3-bar w3-center w3-small">
             <span>&copy ищутебякрым.рф, 2017</span>
         </footer>
+        <!--scripts-->
+        <script src="//vk.com/js/api/openapi.js?146"></script>
+        <script src="{% static 'posts/bower_components/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'posts/js/util.js' %}"></script>
+        <script>
+            VK.init({apiId: "{{ APP_ID }}" });
+        </script>
+        <script src="{% static 'posts/bower_components/alertifyjs/dist/js/alertify.js' %}"></script>
+        <script>
+        // alertify settings
+        alertify.logPosition("bottom right");
+        alertify.okBtn("Да");
+        alertify.cancelBtn("Нет");
+        </script>
         <script>
             function initAuthWidjet() {
                 VK.Widgets.Auth("vk_auth", {
@@ -54,7 +62,7 @@
                                 }
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-                                alert('Что-то пошло не так.');
+                                alertify.error('Что-то пошло не так.');
                             },
                             dataType: 'json'
                         });

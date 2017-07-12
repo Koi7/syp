@@ -307,8 +307,8 @@ class LeaveMessage(View):
 
 class WhoLiked(View):
     template_name = 'posts/who_liked.html'
-    ajax_template_name = 'posts/like_list.html'
-    like_items_per_request = 30
+    ajax_template_name = 'posts/includes/like_list.html'
+    like_items_per_request = 25
 
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
@@ -360,7 +360,7 @@ class MyPost(View):
 class LikedPosts(View):
     template_name = 'posts/liked.html'
     ajax_template_name = 'posts/includes/post_card.html'
-    posts_per_request = 1
+    posts_per_request = 25
 
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
@@ -397,7 +397,7 @@ class Posts(View):
     template_name = 'posts/posts.html'
     ajax_post_list_template = 'posts/includes/post_list.html'
     no_results_template = 'posts/no_results_html'
-    post_per_request = 1
+    post_per_request = 25
 
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
@@ -443,7 +443,7 @@ class PostsFilter(View):
     template_name = 'posts/includes/post_list.html'
     template_name_li = 'posts/includes/post_card.html'
     no_results_template = 'posts/includes/no_results.html'
-    post_per_request = 1
+    post_per_request = 25
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request, *args, **kwargs):
 
@@ -506,8 +506,8 @@ class PostsFilter(View):
 class Notifications(View):
     template_name = 'posts/notifications.html'
     render_template_name = 'posts/includes/notifications_list.html'
-    read_notifications_per_request = 1
-    unread_notifications_per_request = 1
+    read_notifications_per_request = 5
+    unread_notifications_per_request = 25
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
@@ -533,6 +533,7 @@ class Notifications(View):
             'read_has_next': page_read.has_next(),
             'unread_has_next': page_unread.has_next(),
             'read_next_page': page_read.next_page_number() if page_read.has_next() else 0,
+            'unread_next_page': 1 if page_read.has_next() else 0,
         }    
         make_read(page_unread)        
         return render(request, self.template_name, context)
@@ -545,8 +546,8 @@ class Notifications(View):
 class NotificationsAjax(View):
 
     render_template_name = 'posts/includes/notifications_list.html'
-    read_notifications_per_request = 1
-    unread_notifications_per_request = 1
+    read_notifications_per_request = 5
+    unread_notifications_per_request = 25
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):

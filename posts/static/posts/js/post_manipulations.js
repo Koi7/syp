@@ -71,6 +71,7 @@ function ClickSendButtonEventHandler(){
 	if (input_value){
 		if (input_value.length > 500) {
 			alertify.error('Слишком длинное послание. Максимум - 500 символов.');
+			return;
 		}
 		$.ajax({
 			type: "POST",

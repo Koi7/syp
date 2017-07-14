@@ -21,9 +21,6 @@
         <span>{{ request.user.first_name }}  {{ request.user.last_name}}</span><br>
         <!-- PLACE & AGE -->
         <span id="place" class="w3-text-gray">{{ request.user.vkuser.place_str }}</span>
-        {% if request.user.vkuser.age > 0 %}
-        <span id="age">{{request.user.vkuser.age}} лет</span>
-        {% endif %}
     </header>
     <!-- CONTROLS -->
     <footer id="profile_editor">

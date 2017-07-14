@@ -330,6 +330,18 @@ class VKUser(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.vkuser.save()
 
+    @receiver(user_logged_in, sender=User)
+    def update_user_profile(user, **kwargs):
+        if user.vkuser.sex == -1 and not user.is_superuser:
+            response = requests.get(settings.VK_API_URL, params={'v': '5.62',
+                                                                    'lang': settings.LANGUAGE_CODE[0:2],
+                                                                    'fields': 'sex,photo_100',
+                                                                    'user_ids': user.username})
+            for user_data in json.loads(response.text)['response']:
+                user.vkuser.sex = user_data['sex']
+                user.vkuser.photo_rec = user_data['photo_100']
+            user.vkuser.save()
+
 class PostImage(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     user = models.ForeignKey(User, null=True)

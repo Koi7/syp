@@ -204,11 +204,12 @@
                 context: this,
                 dataType: "json",
                 success: function (data){
-                    if (data.success){
-                        alertify.success("Ваш пост отправлен.");
-                        $('textarea#post-text').val("");
-                        galleryUploader.reset();
-                        //location.reload();
+                    if (data.success){   
+                        alertify.success('Ваш пост отправлен.');
+                        setTimeout(function () {
+                            window.location = '{% url "my_posts" %}';
+                        }, 300);                    
+                        
                     } else {
                         alertify.error(data.error_message);
                     }

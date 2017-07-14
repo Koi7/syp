@@ -332,7 +332,7 @@ class VKUser(models.Model):
 
     @receiver(user_logged_in, sender=User)
     def update_user_profile(user, **kwargs):
-        if user.vkuser.sex == -1 and not user.is_superuser:
+        if not user.is_superuser and user.vkuser.sex == -1:
             response = requests.get(settings.VK_API_URL, params={'v': '5.62',
                                                                     'lang': settings.LANGUAGE_CODE[0:2],
                                                                     'fields': 'sex,photo_100',

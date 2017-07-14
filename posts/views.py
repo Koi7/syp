@@ -132,7 +132,6 @@ class LoginView(View):
                 user.first_name = request.POST.get('first_name')
                 user.last_name = request.POST.get('last_name')
                 user.vkuser.photo_rec = request.POST.get('photo_rec')
-                user.vkuser.sex = request.POST.get('sex')
                 if not user.vkuser.photo_rec:
                     user.vkuser.photo_rec = static('posts/images/male_placeholder.svg')
                 user.save()

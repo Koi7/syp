@@ -17,6 +17,7 @@ from django.utils import timezone
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFit, Transpose
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 import StringIO
 import hashlib
 import json
@@ -384,6 +385,7 @@ class Notification(models.Model):
     VERB_CHOICES = (
         (-1, 'no'),
         (0, 'лайкну{} ваш пост.'),
+        (1, 'остави{} вам послание.'),
         (2, 'Ваш пост опубликован.'),
         (3, 'Ваш пост нарушает правила сайта, поэтому он не будет опубликован.')
     )
@@ -391,6 +393,7 @@ class Notification(models.Model):
     actor = models.ForeignKey(VKUser, null=True)  
     verb = models.IntegerField(choices=VERB_CHOICES, default=-1)
     target = models.ForeignKey(Post)
+    like = models.ForeignKey(Like, null=True)
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     unread = models.BooleanField(default=True)
@@ -400,27 +403,52 @@ class Notification(models.Model):
     
     @property
     def verb_str(self):
-        if self.verb == 0:
+        if self.verb == 0 or self.verb == 1:
             if self.actor.sex == 2:
                 return self.get_verb_display().format('л')
             if self.actor.sex == 1:
                 return self.get_verb_display().format('ла')
-        else:
-            return self.get_verb_display()
+        return self.get_verb_display()
 
     @receiver(post_save, sender=Like)
     def notify_like_and_message(instance, created, **kwargs):
         """Create new notification if there a new like."""
         # If reciever is called on create method - return.
         # Create notification only if reciever is called on save method!!!
-        if created:
-            new_notification = Notification(
-                user=instance.post.author,
-                actor=instance.user.vkuser,
-                target=instance.post
-            )
-            new_notification.verb = 0
-            new_notification.save()
+        if created:         
+            if not instance.message:
+                # like if message is empty
+                new_notification = Notification(
+                    user=instance.post.author,
+                    actor=instance.user.vkuser,
+                    target=instance.post,
+                    like=instance
+                )
+                new_notification.verb = 0
+                new_notification.save()
+                return
+            else:
+                # message otherwise
+                new_notification = Notification(
+                    user=instance.post.author,
+                    actor=instance.user.vkuser,
+                    target=instance.post,
+                    like=instance
+                )
+                new_notification.verb = 1
+                new_notification.save()
+                return
+        else:
+            if instance.message:
+                new_notification = Notification(
+                    user=instance.post.author,
+                    actor=instance.user.vkuser,
+                    target=instance.post,
+                    like=instance
+                )
+                new_notification.verb = 1
+                new_notification.save()
+        
 
     @receiver(post_save, sender=Post)
     def notify_accepted(instance, created, **kwargs):
@@ -451,30 +479,10 @@ class Notification(models.Model):
                 pass
 
 
-    @receiver(post_delete, sender=Post)
-    def deleted_all_related_notifications_post(instance, **kwargs):
-        """ Deletes any Notification object connected to Post object being deleted. """
-        try:
-            # try to delete notification
-            notifications_to_delete = Notification.objects.filter(target=instance)
-            for notification in notifications_to_delete:
-                notification.delete()
-        except Notification.DoesNotExist:
+
             pass
 
-    @receiver(post_delete, sender=Like)
-    def deleted_all_related_notifications_like(instance, **kwargs):
-        """ Deletes any Notification object connected to Like object being deleted. """
-        try:
-            notifications_to_delete = Notification.objects.filter(user=instance.post.author, actor=instance.user.vkuser, target=instance.post, verb=0)
-            for notification in notifications_to_delete:
-                notification.delete()
-        except Notification.DoesNotExist:
-            pass
-        except ObjectDoesNotExist:
-            notifications_to_delete = Notification.objects.filter(user=instance.post.author, target=instance.post, verb=0)
-            for notification in notifications_to_delete:
-                notification.delete()
+
 
 # custom authentication backend
 class HashBackend(object):

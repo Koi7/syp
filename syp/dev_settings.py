@@ -34,6 +34,10 @@ VK_APP_ID = '5617320'
 VK_API_SECRET = 'LMJz5kREFjV0oRogCw3N'
 LOGIN_URL = '/'
 
+# link builder
+VK_BASE_URL = u'https://vk.com/'
+ENV_BASE = u'http://192.168.0.105:8000/'
+
 DEV = True
 # Application definition
 

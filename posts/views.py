@@ -327,6 +327,7 @@ class WhoLiked(View):
             # serve ajax            
             context = {
                 'like_list': like_list_paginator_page,
+                'VK_BASE_URL': settings.VK_BASE_URL,
             }
             rendered_template = render_to_string(self.ajax_template_name, context)
             return JsonResponse({
@@ -340,7 +341,8 @@ class WhoLiked(View):
                 'like_list': like_list_paginator_page,
                 'has_next':  like_list_paginator_page.has_next(),
                 'next_page': like_list_paginator_page.next_page_number() if like_list_paginator_page.has_next() else 0,
-                'post_id': post_id
+                'post_id': post_id,
+                'VK_BASE_URL': settings.VK_BASE_URL,
             }
             return render(request, self.template_name, context)
 
@@ -354,6 +356,7 @@ class MyPost(View):
         user_post.append(request.user.vkuser.post)
         context = {
             'posts_list': user_post,
+            'VK_BASE_URL': settings.VK_BASE_URL,
         }
         return render(request, self.template_name, context)
 
@@ -377,13 +380,15 @@ class LikedPosts(View):
             context = {
                 'posts_list': liked_post_list_paginator_page,
                 'has_next': liked_post_list_paginator_page.has_next(),
-                'next_page': liked_post_list_paginator_page.next_page_number() if liked_post_list_paginator_page.has_next() else 0
+                'next_page': liked_post_list_paginator_page.next_page_number() if liked_post_list_paginator_page.has_next() else 0,
+                'VK_BASE_URL': settings.VK_BASE_URL,
             }
             return render(request, self.template_name, context)
         elif offset > 1:
             context = {
                 'posts_list': liked_post_list_paginator_page,
                 'request': request,
+                'VK_BASE_URL': settings.VK_BASE_URL,
             }
             rendered_template = render_to_string(self.ajax_template_name, context)
             return JsonResponse({
@@ -435,6 +440,7 @@ class Posts(View):
             'posts_list': filtered_posts_page,
             'has_next': filtered_posts_page.has_next(),
             'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
+            'VK_BASE_URL': settings.VK_BASE_URL,
         }
 
         return render(request, self.template_name, context)
@@ -478,12 +484,13 @@ class PostsFilter(View):
                     'posts_list': filtered_posts_page,
                     'has_next': filtered_posts_page.has_next(),
                     'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
-                    'request': request
+                    'request': request,
+                    'VK_BASE_URL': settings.VK_BASE_URL,
                 }
                 rendered_template = render_to_string(self.template_name, context)
             else:
                 context = {
-                    'message': 'Ничего не нашлось.'
+                    'message': 'Ничего не нашлось.',
                 }
                 rendered_template = render_to_string(self.no_results_template, context)
             return JsonResponse({
@@ -494,6 +501,7 @@ class PostsFilter(View):
             context = {
                 'posts_list': filtered_posts_page,
                 'request': request,
+                'VK_BASE_URL': settings.VK_BASE_URL,
             }
             rendered_template = render_to_string(self.template_name_li, context)
             return JsonResponse({
@@ -534,6 +542,7 @@ class Notifications(View):
             'unread_has_next': page_unread.has_next(),
             'read_next_page': page_read.next_page_number() if page_read.has_next() else 0,
             'unread_next_page': 1 if page_read.has_next() else 0,
+            'VK_BASE_URL': settings.VK_BASE_URL,
         }    
         make_read(page_unread)        
         return render(request, self.template_name, context)
@@ -561,7 +570,8 @@ class NotificationsAjax(View):
                 page_read = read_paginator.page(offset)
 
                 context = {
-                    'notifications_list': page_read
+                    'notifications_list': page_read,
+                    'VK_BASE_URL': settings.VK_BASE_URL,
                 }
 
                 rendered_template = render_to_string(self.render_template_name, context)
@@ -570,6 +580,7 @@ class NotificationsAjax(View):
                     'rendered_template': rendered_template,
                     'has_next': page_read.has_next(),
                     'next_page': page_read.next_page_number() if page_read.has_next() else 0,
+                    'VK_BASE_URL': settings.VK_BASE_URL,
                     })
 
             if target == 'unread':
@@ -578,7 +589,8 @@ class NotificationsAjax(View):
                 page_unread = unread_paginator.page(offset)
                 
                 context = {
-                    'notifications_list': page_unread
+                    'notifications_list': page_unread,
+                    'VK_BASE_URL': settings.VK_BASE_URL,
                 }
                 
                 rendered_template = render_to_string(self.render_template_name, context)

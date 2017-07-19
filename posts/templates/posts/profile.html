@@ -27,7 +27,7 @@
         <!-- CHANGE PLACE -->
         <div class="w3-container w3-padding-large pure-form">
             <p class="w3-text-gray">Город</p>
-            <select id="place_input" class="w3-select" name="option">
+            <select id="place_input" class="w3-select" name="option" title="Изменить город">
                 <option value="0" {% if request.user.vkuser.place == 0 %} selected {% endif %}>Севастополь</option>
                 <option value="1" {% if request.user.vkuser.place == 1 %} selected {% endif %}>Симферополь</option>
                 <option value="2" {% if request.user.vkuser.place == 2 %} selected {% endif %}>Ялта</option>

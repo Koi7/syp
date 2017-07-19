@@ -9,7 +9,7 @@
 			<img data-post-id="{{ post.id }}" src="{% static 'posts/images/anonymous.png' %}" class="w3-left w3-circle w3-margin-right"
 			 style="width:50px">
 			{% else %}
-			<a href="https://vk.com/id{{ post.author.username }}" target="_blank"><img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
+			<a href="{{ VK_BASE_URL }}id{{ post.author.username }}" target="_blank"><img data-post-id="{{ post.id }}" src="{{ post.author.vkuser.photo_rec }}" class="w3-left w3-circle w3-margin-right"
 			 style="width:50px"></a>
 			{% endif %}
 		</div>
@@ -17,13 +17,9 @@
 			<!-- DISPLAY NAME OR ANONYMOUS -->
 			<span data-post-id="{{ post.id }}" class="user-name w3-text-blue">
 				{% if not post.is_anonymous %}
-
-					<a href="https://vk.com/id{{ post.author.username }}" target="_blank" class="link-no-style classic-hover">{{ post.author.first_name }} {{ post.author.last_name }}</a>
-
+					<a href="{{ VK_BASE_URL }}id{{ post.author.username }}" target="_blank" class="link-no-style classic-hover">{{ post.author.first_name }} {{ post.author.last_name }}</a>
 				{% else %}
-
 					Аноним
-
 				{% endif %}
 			</span>
 			<br>
@@ -36,7 +32,7 @@
 		{% if editable %}
 		<div class="w3-display-topright w3-padding-tiny">
 			<!-- DELETE BUTTON -->
-			<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center">
+			<button data-post-id="{{ post.id }}" class="delete w3-btn w3-white w3-text-blue w3-center" title="Удалить пост">
 				<i data-post-id="{{ post.id }}" class="icon-trash-empty" aria-hidden="true"></i>
 			</button>
 		</div>

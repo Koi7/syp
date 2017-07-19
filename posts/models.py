@@ -384,10 +384,10 @@ class Like(models.Model):
 class Notification(models.Model):
     VERB_CHOICES = (
         (-1, 'no'),
-        (0, 'лайкну{} ваш пост.'),
-        (1, 'остави{} вам послание.'),
-        (2, 'Ваш пост опубликован.'),
-        (3, 'Ваш пост нарушает правила сайта, поэтому он не будет опубликован.')
+        (0, 'лайкну{} ваш <a target="_blank" href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a>.'),
+        (1, 'остави{} вам <a target="_blank" href="{}посты/лайки?post_id={}" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">послание</a>.'),
+        (2, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> опубликован.'),
+        (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.')
     )
     user = models.ForeignKey(User)
     actor = models.ForeignKey(VKUser, null=True)  
@@ -403,12 +403,17 @@ class Notification(models.Model):
     
     @property
     def verb_str(self):
-        if self.verb == 0 or self.verb == 1:
+        if self.verb == 0:
             if self.actor.sex == 2:
-                return self.get_verb_display().format('л')
+                return mark_safe(self.get_verb_display().format('л', settings.ENV_BASE))
             if self.actor.sex == 1:
-                return self.get_verb_display().format('ла')
-        return self.get_verb_display()
+                return mark_safe(self.get_verb_display().format('ла', settings.ENV_BASE))
+        if self.verb == 1:
+            if self.actor.sex == 2:
+                return mark_safe(self.get_verb_display().format('л', settings.ENV_BASE, self.target.id))
+            if self.actor.sex == 1:
+                return mark_safe(self.get_verb_display().format('ла', settings.ENV_BASE, self.target.id))
+        return mark_safe(self.get_verb_display().format(settings.ENV_BASE))
 
     @receiver(post_save, sender=Like)
     def notify_like_and_message(instance, created, **kwargs):

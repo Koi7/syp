@@ -35,6 +35,10 @@ VK_APP_ID = '6104299'
 VK_API_SECRET = 'k026By0upRxg92JGw5LP'
 LOGIN_URL = '/'
 
+# link builder
+VK_BASE_URL = u'https://vk.com/'
+ENV_BASE = u'https://ищутебякрым.рф/'
+
 DEV = False
 # Application definition
 

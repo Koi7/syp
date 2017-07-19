@@ -384,8 +384,8 @@ class Like(models.Model):
 class Notification(models.Model):
     VERB_CHOICES = (
         (-1, 'no'),
-        (0, 'лайкну{} ваш <a target="_blank" href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a>.'),
-        (1, 'остави{} вам <a target="_blank" href="{}посты/понравилось?post_id={}" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">послание</a>.'),
+        (0, 'лайкну{} ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a>.'),
+        (1, 'остави{} вам <a href="{}посты/понравилось?post_id={}" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">послание</a>.'),
         (2, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> опубликован.'),
         (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.')
     )

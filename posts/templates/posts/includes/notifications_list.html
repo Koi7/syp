@@ -14,11 +14,11 @@
 	{% else %}
 		<div class="margin-center">
 			<div class="w3-container w3-cell w3-cell-middle">
-				<a href="{{ VK_BASE_URL }}id{{ notification.actor.user.username }}"><img src="{{ notification.actor.photo_rec }}" class="w3-circle" style="width:50px;" alt="фото профиля"></a>
+				<a target="_blank" href="{{ VK_BASE_URL }}id{{ notification.actor.user.username }}"><img src="{{ notification.actor.photo_rec }}" class="w3-circle" style="width:50px;" alt="фото профиля"></a>
 			</div>
 			<div class=" w3-cell w3-cell-middle">
 				<p class="no-margin">
-				<span class="w3-text-blue"><a href="{{ VK_BASE_URL }}id{{ notification.actor.user.username }}"class="link-no-style classic-hover">{{ notification.actor.user.first_name }} {{ notification.actor.user.last_name }}</a></span>
+				<span class="w3-text-blue"><a target="_blank" href="{{ VK_BASE_URL }}id{{ notification.actor.user.username }}"class="link-no-style classic-hover">{{ notification.actor.user.first_name }} {{ notification.actor.user.last_name }}</a></span>
 				{{ notification.verb_str }}
 				</p>
 			<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>

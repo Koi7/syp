@@ -389,7 +389,7 @@ class Notification(models.Model):
         (2, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> опубликован.'),
         (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.')
     )
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True)
     actor = models.ForeignKey(VKUser, null=True)  
     verb = models.IntegerField(choices=VERB_CHOICES, default=-1)
     target = models.ForeignKey(Post)

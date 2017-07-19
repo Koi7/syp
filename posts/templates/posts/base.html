@@ -20,7 +20,7 @@
   <body>
     <!-- NAV -->
     {% block nav %}
-    <nav class="w3-sidenav w3-red w3-collapse w3-top w3-padding" style="z-index:3;width:300px;" id="mySidenav"><br>
+    <nav class="w3-sidenav w3-red w3-collapse w3-top w3-padding" id="sidenav"><br>
       <a href="javascript:void(0)" onclick="w3_close()" class="w3-small w3-padding-xlarge w3-hide-large w3-display-topleft w3-hover-white" style="width:100%">закрыть</a>
       <div class="w3-container">
         <h2 class="w3-padding-64 w3-center"><span class="logo">Ищу тебя</span></h2>
@@ -32,7 +32,7 @@
       {% endif %}
       </a>
       <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Мой пост</a>
-      <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Лайкнутые</a>
+      <a href="{% url 'liked' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Закладки</a>
       <a href="{% url 'add_post' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Новый пост</a>
       <a href="{% url 'profile'%}" onclick="w3_close()" class="w3-padding w3-hover-white" >Профиль</a>
       <div class="w3-display-bottommiddle w3-bar w3-center w3-small" style="margin-top: 115px;">
@@ -76,11 +76,11 @@
     <script>
     // Script to open and close sidenav
     function w3_open() {
-        document.getElementById("mySidenav").style.display = "block";
+        document.getElementById("sidenav").style.display = "block";
         document.getElementById("myOverlay").style.display = "block";
     }
     function w3_close() {
-        document.getElementById("mySidenav").style.display = "none";
+        document.getElementById("sidenav").style.display = "none";
         document.getElementById("myOverlay").style.display = "none";
     }
     </script>

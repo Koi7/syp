@@ -7,6 +7,15 @@ button::-moz-focus-inner {
 a:focus { 
     outline: none; 
 }
+nav#sidenav {
+    z-index:3;
+    width:300px;
+}
+/* Edge Scrollbar Fix */
+nav#sidenav {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
 .logo {
     display: inline-block;
     border: 1px solid white;

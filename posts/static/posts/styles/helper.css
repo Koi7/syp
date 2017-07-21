@@ -16,13 +16,13 @@ nav#sidenav {
 }
 
 
-.logo {
+#logo {
     display: inline-block;
     border: 1px solid white;
     width: 100%; 
 }
 
-.thin, .logo {
+.thin, #logo {
     font-weight: 100!important;
 }
 

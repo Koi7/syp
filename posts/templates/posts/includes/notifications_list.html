@@ -8,7 +8,7 @@
 			</div>
 			<div class=" w3-cell w3-cell-middle">
 				<p class="no-margin">{{ notification.verb_str }}</p>
-			<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>
+			<p class="no-margin w3-text-awesome w3-small">{{ notification.timestamp }}</p>
 			</div>
 		</div>
 	{% else %}
@@ -21,7 +21,7 @@
 				<span class="w3-text-blue"><a target="_blank" href="{{ VK_BASE_URL }}id{{ notification.actor.user.username }}"class="link-no-style classic-hover">{{ notification.actor.user.first_name }} {{ notification.actor.user.last_name }}</a></span>
 				{{ notification.verb_str }}
 				</p>
-			<p class="no-margin w3-text-gray w3-small">{{ notification.timestamp }}</p>
+			<p class="no-margin w3-text-awesome w3-small">{{ notification.timestamp }}</p>
 			</div>
 		</div>
 	{% endif %}

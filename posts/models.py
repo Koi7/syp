@@ -301,21 +301,13 @@ class VKUser(models.Model):
         return liked_posts
 
     @property
-    def unread_notifications_amount(self):
+    def notifications_amount(self):
         return len(self.user.notification_set.filter(unread=True))
 
 
     @property
-    def unread_notifications(self):
-        return list(self.user.notification_set.filter(unread=True))
-
-    @property
-    def read_notifications(self):
-        return list(self.user.notification_set.filter(unread=False))
-
-    @property
-    def mark_read_notifications(self):
-        return list(self.user.notification_set.filter(mark_read=True))
+    def notifications(self):
+        return list(self.user.notification_set.all())
 
     @property 
     def photo(self):
@@ -342,6 +334,12 @@ class VKUser(models.Model):
                 user.vkuser.sex = user_data['sex']
                 user.vkuser.photo_rec = user_data['photo_100']
             user.vkuser.save()
+    
+    def mark_read(self):
+        unread = self.user.notification_set.filter(unread=True)
+        for notification in unread:
+            notification.unread = False
+            notification.save()
 
 class PostImage(models.Model):
     id = models.CharField(max_length=255, primary_key=True)

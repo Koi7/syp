@@ -1,3 +1,6 @@
+html {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
 button:active, button:focus {
   outline: none;
 }
@@ -11,11 +14,7 @@ nav#sidenav {
     z-index:3;
     width:300px;
 }
-/* Edge Scrollbar Fix */
-nav#sidenav {
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
+
 
 .logo {
     display: inline-block;
@@ -204,9 +203,13 @@ input:focus{
 /* Modal content respectS side nav on large screens */
 @media (min-width:993px) {
     .modal-image-container {
-        margin-left:340px;
-        margin-right:40px;
- }
+            margin-left:340px;
+            margin-right:40px;
+    }
+    /* Edge Scrollbar Fix */
+    nav#sidenav {
+        overflow-x: hidden;
+    }
 }
 
 @-webkit-keyframes zoom {

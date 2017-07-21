@@ -4,47 +4,35 @@
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Уведомления</h1>
-<!-- UNREAD NOTIFICATIONS -->
-{% if unread_notifications %}
-<h3 class="w3-vk-card-noshadow w3-padding-tiny  w3-text-awesome">Новые</h3>
-<ul id="unread_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=unread_notifications %}</ul>
+<!-- NOTIFICATIONS -->
+{% if notifications_list %}
+<ul id="notifications_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' %}</ul>
 {% endif %}
 <!-- LOAD MORE BUTTON -->
-{% if unread_has_next %}
-{% include 'posts/includes/load_more_button_with_loader.html' with src="unread" %}
-{% endif %}
-<!-- READ NOTIFICATIONS -->
-{% if read_notifications %}
-<h3 class="w3-vk-card-noshadow w3-padding-tiny w3-text-awesome">Просмотренные</h3>
-<ul id="read_list" class="w3-ul w3-margin">{% include 'posts/includes/notifications_list.html' with notifications_list=read_notifications %}</ul>
-{% endif %}
-<!-- LOAD MORE BUTTON -->
-{% if read_has_next %}
-{% include 'posts/includes/load_more_button_with_loader.html' with src="read" %}
+{% if has_next %}
+{% include 'posts/includes/load_more_button_with_loader.html' %}
 {% endif %}
 <!-- NO NOTIFICATIONS -->
-{% if not unread_notifications and not read_notifications %}
+{% if not notifications_list %}
 {% include 'posts/includes/no_results.html' with message="Нет увидомлений пока." %}
 {% endif %}
 {% endblock %}
 {% block extra_scripts %}
 <script>
 	$(document).ready(function () {
-		$('button.more-notifications').click(function () {
+		$('button#load-more-btn').click(function () {
 			$(this).toggle();
 			$(this).next().toggle();
-			var target = $(this).data('target');
 			$.ajax({
 				type: 'GET',
 				url: '{% url "notifications_ajax" %}',
 				data: {
-					offset: $(this).data('offset'),
-					target: target
+					offset: $(this).data('offset')
 				},
 				dataType: "json",
 				context: this,
 				success: function (data) {
-					$('ul#' + target + '_list').append(data.rendered_template);
+					$('ul#notifications_list').append(data.rendered_template);
 					// increment if has next page
 					if (data.has_next) {
 						// hide loader
@@ -52,12 +40,8 @@
 						//show button
 						$(this).toggle();
 						// increment
-						if (target === "read") {
-							$(this).data('offset', data.next_page);
-						} else {
-							$(this).data('offset', 1);
-						}
-						
+						alert(data.next_page);
+						$(this).data('offset', data.next_page);						
 					} else {
 						// remove loader
 						$(this).next().remove();

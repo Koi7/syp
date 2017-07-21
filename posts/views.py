@@ -514,8 +514,7 @@ class PostsFilter(View):
 class Notifications(View):
     template_name = 'posts/notifications.html'
     render_template_name = 'posts/includes/notifications_list.html'
-    read_notifications_per_request = 5
-    unread_notifications_per_request = 25
+    notifications_per_request = 25
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
@@ -524,27 +523,23 @@ class Notifications(View):
 
         # load data       
 
-        read_notifications = request.user.vkuser.read_notifications
-        unread_notifications = request.user.vkuser.unread_notifications
+        notifications = request.user.vkuser.notifications
         context = {}
 
         # init paginators
-        read_paginator = Paginator(read_notifications, self.read_notifications_per_request)
-        unread_paginator = Paginator(unread_notifications, self.unread_notifications_per_request)
+        paginator = Paginator(notifications, self.notifications_per_request)
         # build context
 
-        page_read = read_paginator.page(1)
-        page_unread = unread_paginator.page(1)
+        page = paginator.page(1)
         context = {
-            'read_notifications': page_read,
-            'unread_notifications': page_unread,
-            'read_has_next': page_read.has_next(),
-            'unread_has_next': page_unread.has_next(),
-            'read_next_page': page_read.next_page_number() if page_read.has_next() else 0,
-            'unread_next_page': 1 if page_read.has_next() else 0,
+            'notifications_list': page,
+            'has_next': page.has_next(),
+            'next_page': page.next_page_number() if page.has_next() else 0,
             'VK_BASE_URL': settings.VK_BASE_URL,
-        }    
-        make_read(page_unread)        
+        }   
+
+        # mark all unread notifications as read 
+        request.user.vkuser.mark_read()      
         return render(request, self.template_name, context)
 
 
@@ -555,51 +550,31 @@ class Notifications(View):
 class NotificationsAjax(View):
 
     render_template_name = 'posts/includes/notifications_list.html'
-    read_notifications_per_request = 5
-    unread_notifications_per_request = 25
+    notifications_per_request = 25
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
         offset = request.GET.get('offset')
         # ajax
         if offset > 1:
-            target = request.GET.get('target')
-            if target == 'read':
-                read_notifications = request.user.vkuser.read_notifications
-                read_paginator = Paginator(read_notifications, self.read_notifications_per_request)
-                page_read = read_paginator.page(offset)
+            notifications = request.user.vkuser.notifications
+            paginator = Paginator(notifications, self.notifications_per_request)
+            page = paginator.page(offset)
 
-                context = {
-                    'notifications_list': page_read,
-                    'VK_BASE_URL': settings.VK_BASE_URL,
-                }
+            context = {
+                'notifications_list': page,
+                'VK_BASE_URL': settings.VK_BASE_URL,
+            }
 
-                rendered_template = render_to_string(self.render_template_name, context)
-                return JsonResponse({
-                    'success': True,
-                    'rendered_template': rendered_template,
-                    'has_next': page_read.has_next(),
-                    'next_page': page_read.next_page_number() if page_read.has_next() else 0,
-                    'VK_BASE_URL': settings.VK_BASE_URL,
-                    })
+            rendered_template = render_to_string(self.render_template_name, context)
+            return JsonResponse({
+                'success': True,
+                'rendered_template': rendered_template,
+                'has_next': page.has_next(),
+                'next_page': page.next_page_number() if page.has_next() else 0,
+                'VK_BASE_URL': settings.VK_BASE_URL,
+            })
 
-            if target == 'unread':
-                unread_notifications = request.user.vkuser.unread_notifications
-                unread_paginator = Paginator(unread_notifications, self.unread_notifications_per_request)
-                page_unread = unread_paginator.page(offset)
-                
-                context = {
-                    'notifications_list': page_unread,
-                    'VK_BASE_URL': settings.VK_BASE_URL,
-                }
-                
-                rendered_template = render_to_string(self.render_template_name, context)
-                make_read(page_unread)
-                return JsonResponse({
-                    'success': True,
-                    'rendered_template': rendered_template,
-                    'has_next': page_unread.has_next(),
-                    })
 
  
 

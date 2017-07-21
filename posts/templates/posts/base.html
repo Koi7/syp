@@ -27,8 +27,8 @@
       </div>
       <a href="{% url 'posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Посты</a>
       <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-padding w3-hover-white w3-hide-medium w3-hide-small" >Уведомления
-      {% if request.user.vkuser.unread_notifications_amount %}
-      <span class="w3-badge">{{  request.user.vkuser.unread_notifications_amount }}</span>
+      {% if request.user.vkuser.notifications_amount %}
+      <span class="w3-badge">{{  request.user.vkuser.notifications_amount }}</span>
       {% endif %}
       </a>
       <a href="{% url 'my_posts' %}" onclick="w3_close()" class="w3-padding w3-hover-white" >Мой пост</a>
@@ -54,8 +54,8 @@
         <div class="w3-col s2 w3-right-align">
           <a href="{% url 'notifications' %}" onclick="w3_close()" class="w3-btn w3-red" >
                 <i class="icon-bell"></i>
-                {% if request.user.vkuser.unread_notifications_amount %}
-                <span class="w3-text-white">{{  request.user.vkuser.unread_notifications_amount }}</span>
+                {% if request.user.vkuser.notifications_amount %}
+                <span class="w3-text-white">{{  request.user.vkuser.notifications_amount }}</span>
                 {% endif %}
           </a>
         </div>

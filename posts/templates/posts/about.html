@@ -1,53 +1,53 @@
-    {% extends "posts/base.html" %}
-    {% load static from staticfiles %}
-    {% block title %} Ищу Тебя | О проекте {% endblock %}
-    {% block content %}
-    <!-- PAGE HEADER -->
-    <h1 class="w3-padding-tiny w3-text-awesome w3-center">О проекте</h1>
-    <!-- POST LIST CONTAINER -->
-    <div class="w3-container">
-        <article class="justify-text w3-text-awesome w3-large">
-            <p>Ищу Тебя - проект, позволяющий быстрей 
-            и удобней заводить новые знакомства. <br></p>
-            <p class="no-display">Суть проста: нужно всего лишь написать пост, в котором
-            вы описываете искомого человека. Затем пост публикуется и его 
-            могут видеть другие люди. Если человек прочитал ваш пост и он показался ему интересным,
-            то он может ненавязчиво изъявить желание начать общение способом привычным
-            для пользователей соц. сетей - "поставить лайк".</p> 
-            <div class="no-display">
-                <p>Прототипом для проекта послужили 
-                одноименные группы на сайте vk.com.
-                Эти группы обладают рядом ограничений и неудобств:</p>
-                <ul>
-                    <li>звездная болезнь администрации;</li>
-                    <li>ограниченное число постов в сутки;</li>
-                    <li>отсутствие возможности сортировки постов по анонимности, по городу, по времени написания и т.д.</li>
-                </ul>
-            </div>
-            <div class="no-display">
-                <p>Проект позволяет:</p>
-                <ul>
-                    <li>публиковать неограничееное число постов</li>
-                    <li>использовать теги (например: ищу парня, ищу друга, ищу с/о и т.д.)</li>
-                    <li>фильтровать посты по городу, по анонимности, по дате публикации, по тегам</li>
-                    <li>не только "поставить лайк", но оставить послание к посту (не комментарий), которое автор поста точно прочитает</li>
-                    <li>получать уведомления о новых лайках и посланиях.</li>
-                </ul>
-            </div>
-            <button id="more" class="w3-btn w3-white w3-text-blue">подробнее</button>
-        </article>
-    </div>
-    {% endblock %}
-    {% block extra_scripts %}
-    <script>
-        function showNext() {
-            var toShow = $(this).parent().find('div.no-display:first');
-            toShow.hide().removeClass('no-display').show(300);
-            var hasNext = $(this).parent().find('div.no-display:first');
-            if (!hasNext.is('div.no-display:first')) {
-                $(this).hide();
-            }
+{% extends "posts/base.html" %}
+{% load static from staticfiles %}
+{% block title %} Ищу Тебя | О проекте {% endblock %}
+{% block content %}
+<!-- PAGE HEADER -->
+<h1 class="w3-padding-tiny w3-text-awesome w3-center">О проекте</h1>
+<!-- POST LIST CONTAINER -->
+<div class="w3-container">
+    <article class="justify-text w3-text-awesome w3-large">
+        <p>Ищу Тебя - проект, позволяющий быстрей 
+        и удобней заводить новые знакомства. <br></p>
+        <p class="no-display">Суть проста: нужно всего лишь написать пост, в котором
+        вы описываете искомого человека. Затем пост публикуется и его 
+        могут видеть другие люди. Если человек прочитал ваш пост и он показался ему интересным,
+        то он может ненавязчиво изъявить желание начать общение способом привычным
+        для пользователей соц. сетей - "поставить лайк".</p> 
+        <div class="no-display">
+            <p>Прототипом для проекта послужили 
+            одноименные группы на сайте vk.com.
+            Эти группы обладают рядом ограничений и неудобств:</p>
+            <ul>
+                <li>звездная болезнь администрации;</li>
+                <li>ограниченное число постов в сутки;</li>
+                <li>отсутствие возможности сортировки постов по анонимности, по городу, по времени написания и т.д.</li>
+            </ul>
+        </div>
+        <div class="no-display">
+            <p>Проект позволяет:</p>
+            <ul>
+                <li>публиковать неограничееное число постов;</li>
+                <li>использовать теги (например: ищу парня, ищу друга, ищу с/о и т.д.);</li>
+                <li>фильтровать посты по городу, по анонимности, по дате публикации, по тегам;</li>
+                <li>не только "поставить лайк", но оставить послание к посту (не комментарий), которое автор поста точно прочитает;</li>
+                <li>получать уведомления о новых лайках и посланиях.</li>
+            </ul>
+        </div>
+        <button id="more" class="w3-btn w3-white w3-text-blue">подробнее</button>
+    </article>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    function showNext() {
+        var toShow = $(this).parent().find('div.no-display:first');
+        toShow.hide().removeClass('no-display').show(300);
+        var hasNext = $(this).parent().find('div.no-display:first');
+        if (!hasNext.is('div.no-display:first')) {
+            $(this).hide();
         }
-        $('button#more').click(showNext);
-    </script>
-    {% endblock %}
+    }
+    $('button#more').click(showNext);
+</script>
+{% endblock %}

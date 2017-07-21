@@ -83,6 +83,10 @@
                 });
             });
         });
+
+        $('button#logout-btn').click(function(){
+            window.location = '{% url "logout_view" %}';
+        });
     });
 </script>
 {% endblock %}

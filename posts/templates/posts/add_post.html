@@ -84,7 +84,7 @@
         </div>
 </script>
 {% endblock %}
-{% block title %}Новый пост{% endblock %}
+{% block title %}Ищу Тебя | Новый пост{% endblock %}
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-center w3-text-awesome">Новый пост</h1>
@@ -138,101 +138,101 @@
 <script src="{% static 'posts/bower_components/switchery/dist/switchery.min.js' %}"></script>
 <script src="{% static 'posts/bower_components/fine-uploader/dist/fine-uploader.min.js' %}"></script>
 <script>
-    $(document).ready(function (){
-        // init SWITCHERY
-        var element = document.querySelector('#js-switch');;
-        var init = new Switchery(element, {size: "small"});
-        // init FINE UPLOADER
-        var galleryUploader = new qq.FineUploader({
-            element: document.getElementById("fine-uploader-gallery"),
-            template: 'qq-template-gallery',
-            request: {
-                endpoint: "{% url 'upload_photo' %}",
+$(document).ready(function (){
+    // init SWITCHERY
+    var element = document.querySelector('#js-switch');;
+    var init = new Switchery(element, {size: "small"});
+    // init FINE UPLOADER
+    var galleryUploader = new qq.FineUploader({
+        element: document.getElementById("fine-uploader-gallery"),
+        template: 'qq-template-gallery',
+        request: {
+            endpoint: "{% url 'upload_photo' %}",
+            customHeaders: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        },
+        deleteFile: {
+                enabled: true, // defaults to false
+                endpoint: "{% url 'delete_photo' %}",
                 customHeaders: {
                     'X-CSRFToken': getCookie('csrftoken')
                 }
-            },
-            deleteFile: {
-                    enabled: true, // defaults to false
-                    endpoint: "{% url 'delete_photo' %}",
-                    customHeaders: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-            },
-            thumbnails: {
-                placeholders: {
-                    waitingPath: '{% static "posts/bower_components/fine-uploader/dist/placeholders/waiting-generic.png" %}',
-                    notAvailablePath: '{% static "posts/bower_components//fine-uploader/dist/placeholders/not_available-generic.png" %}'
-                }
-            },
-            validation: {
-                allowedExtensions: ['jpeg', 'jpg', 'gif', 'png'],
-                itemLimit: 3,
-                sizeLimit: 5000000
+        },
+        thumbnails: {
+            placeholders: {
+                waitingPath: '{% static "posts/bower_components/fine-uploader/dist/placeholders/waiting-generic.png" %}',
+                notAvailablePath: '{% static "posts/bower_components//fine-uploader/dist/placeholders/not_available-generic.png" %}'
             }
-        });
-
-        // add event handler to send button
-        $('#send').click(function() {
-            // prevent sending if there is no text
-
-            text =  $('textarea#post-text').val();
-
-            if (!text){
-                alertify.error('Нечего отправлять. Заполните форму.');
-                return;
-            }
-
-            if (text.length > 2000) {
-                alertify.error('Слишком длинный текст. Максимум - 2000 символов.');
-                return; 
-            }
-
-            text = $('textarea#post-text').val();
-
-            $.ajax({
-                type: "POST",
-                url: "{% url 'add_post' %}",          
-                data: {
-                    csrfmiddlewaretoken: getCookie('csrftoken'),
-                    text: text,
-                    is_anonymous: document.querySelector('#js-switch').checked,
-                    photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
-                    tag: $('#tags').val(),
-                    place: $('select#place_select').val()
-                },
-                context: this,
-                dataType: "json",
-                success: function (data){
-                    if (data.success){   
-                        alertify.success('Ваш пост отправлен.');
-                        setTimeout(function () {
-                            window.location = '{% url "my_posts" %}';
-                        }, 300);                    
-                        
-                    } else {
-                        alertify.error(data.error_message);
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alertify.error('Что-то пошло не так.');
-                }
-            });
-        });
-
-        alertify.okBtn("Ок");
-
-        if ($('div#send-controls-container').hasClass('show-attention')) {
-            alertify.alert('У вас уже есть пост. Если вы напишете новый - предыдущий будет удален!');
-            $.ajax({
-                type: "POST",
-                url: "{% url 'close_attention' %}",          
-                data: {
-                    csrfmiddlewaretoken: getCookie('csrftoken')
-                },
-                dataType: "json"
-            });
-        }   
+        },
+        validation: {
+            allowedExtensions: ['jpeg', 'jpg', 'gif', 'png'],
+            itemLimit: 3,
+            sizeLimit: 5000000
+        }
     });
+
+    // add event handler to send button
+    $('#send').click(function() {
+        // prevent sending if there is no text
+
+        text =  $('textarea#post-text').val();
+
+        if (!text){
+            alertify.error('Нечего отправлять. Заполните форму.');
+            return;
+        }
+
+        if (text.length > 2000) {
+            alertify.error('Слишком длинный текст. Максимум - 2000 символов.');
+            return; 
+        }
+
+        text = $('textarea#post-text').val();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'add_post' %}",          
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                text: text,
+                is_anonymous: document.querySelector('#js-switch').checked,
+                photos_json_string: JSON.stringify(galleryUploader.getUploads({ status: qq.status.UPLOAD_SUCCESSFUL })),
+                tag: $('#tags').val(),
+                place: $('select#place_select').val()
+            },
+            context: this,
+            dataType: "json",
+            success: function (data){
+                if (data.success){   
+                    alertify.success('Ваш пост отправлен.');
+                    setTimeout(function () {
+                        window.location = '{% url "my_posts" %}';
+                    }, 300);                    
+                    
+                } else {
+                    alertify.error(data.error_message);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alertify.error('Что-то пошло не так.');
+            }
+        });
+    });
+
+    alertify.okBtn("Ок");
+
+    if ($('div#send-controls-container').hasClass('show-attention')) {
+        alertify.alert('У вас уже есть пост. Если вы напишете новый - предыдущий будет удален!');
+        $.ajax({
+            type: "POST",
+            url: "{% url 'close_attention' %}",          
+            data: {
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            },
+            dataType: "json"
+        });
+    }   
+});
 </script>
 {% endblock %}

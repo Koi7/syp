@@ -6,13 +6,13 @@
 	<header class="w3-container w3-padding-large">
 		<!-- USER PHOTO -->
 		<div class="w3-cell w3-cell-middle">
-			<img src="{{ ad.brand_icon.url }}" class="w3-left w3-circle w3-margin-right"
-			 style="width:50px">
+			<a href="{{ ad.brand_ofsite }}" target="_blank"><img src="{{ ad.brand_icon.url }}" class="w3-left w3-circle w3-margin-right"
+			 style="width:50px"></a>
 		</div>
 		<div class="w3-cell w3-cell-middle w3-small">
 			<!-- DISPLAY NAME OR ANONYMOUS -->
-			<span  class="user-name">
-                {{ ad.brand }}
+			<span  class="user-name w3-medium">
+                <a href="{{ ad.brand_ofsite }}" target="_blank" class="w3-text-blue link-no-style classic-hover">{{ ad.brand }}</a>
 			</span>
 		</div>
 	</header>

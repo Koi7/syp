@@ -48,10 +48,12 @@ class Ad(models.Model):
     quality = 70
 
     brand = models.CharField('Брэнд', max_length=50)
-    brand_icon = models.ImageField(upload_to=get_ad_image_path, blank=True, null=True)
+    brand_icon = models.ImageField('Логотип', upload_to=get_ad_image_path, blank=True, null=True)
+    brand_ofsite = models.CharField('Сайт брэнда', max_length=150, default="")
     text = models.CharField('Текст', max_length=2000)
     place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
     pub_datetime = models.DateTimeField('Создано', auto_now_add=True)
+    days = models.IntegerField('Срок (дней)', default=-1)
     accepted = models.BooleanField('Одобрено', default=False)
     image1 = ProcessedImageField(upload_to=get_ad_image_path,
                                         processors=[ResizeToFit(image_width, image_height)],
@@ -93,36 +95,7 @@ class Ad(models.Model):
         verbose_name = 'Рекламу'
         verbose_name_plural = 'Реклама'
     
-    def save(self, *args, **kwargs):
-        for image in self.images_callable():
-            if image:
-                img = Img.open(StringIO.StringIO(image.read()))
-                if img.mode != 'RGB':
-                    img = img.convert('RGB')
-                img.thumbnail((500, 500), Img.ANTIALIAS)
-                output = StringIO.StringIO()
-                img.save(output, format='JPEG', quality=70)
-                try:
-                    for orientation in ExifTags.TAGS.keys():
-                        if ExifTags.TAGS[orientation]=='Orientation':
-                            break
-                    exif=dict(img._getexif().items())
-                    # fix orientation
-                    if exif[orientation] == 3:
-                        img=img.rotate(180, expand=True)
-                    elif exif[orientation] == 6:
-                        img=img.rotate(270, expand=True)
-                    elif exif[orientation] == 8:
-                        img=img.rotate(90, expand=True)
-                    # determine basic orientation (landscape | portrait)
-                    if exif[orientation] == 6 or exif[orientation] == 8:
-                        self.is_portrait = True
-                except AttributeError:
-                    pass
-                output.seek(0)
-                img.save(output, format='JPEG', quality=70)
-                image = InMemoryUploadedFile(output,'ImageField', "%s.jpg" % image.name.split('.')[0], 'image/jpeg', output.len, None)
-        super(Ad, self).save(*args, **kwargs)    
+
 
     @property
     def images(self):
@@ -165,7 +138,23 @@ class Ad(models.Model):
             if image:
                 image_tags.append('<img src="{}" width="100" heigth="100">'.format(image.url))
         return mark_safe("".join(image_tags))
+    
+    @property
+    def is_active(self):
+        delta = self.pub_datetime + timedelta(days=self.days)
+        today = timezone.now()
+        diff = today - delta
+        if diff.days < 0:
+            return True
+        else:
+            return False
+    @property
+    def brand_ofsite_as_link(self):
+        return mark_safe('<a href="{}" target="_blank">{}</a>'.format(self.brand_ofsite, self.brand))
 
+    @property
+    def brand_icon_as_image(self):
+        return mark_safe('<img src="{}" width="100" heigth="100">'.format(self.brand_icon.url))
 
 # erase image on instance delete
 @receiver(post_delete, sender=Ad)

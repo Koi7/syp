@@ -413,7 +413,6 @@ class Posts(View):
             View for default page of logged user.
             Returns relevant posts list.
         """
-
         # GET PARAMETERS 
 
         place = request.user.vkuser.place if not request.GET.get('place') else request.GET.get('place')
@@ -422,10 +421,15 @@ class Posts(View):
         is_anonymous = 'any' if not request.GET.get('is_anonymous') else request.GET.get('is_anonymous')
 
         # FILTER POSTS
-        filtered_posts = filter(place, tag, order, is_anonymous)
 
-        # GET AD
+        filtered_posts = filter(place, tag, order, is_anonymous)        
+        # RESOLVE AD
 
+        ad = None
+        if Ad.objects.filter(place=-1).exists():
+            ad = Ad.objects.filter(place=-1).first()
+        elif Ad.objects.filter(place=request.user.vkuser.place).exists():
+            ad = Ad.objects.filter(place=request.user.vkuser.place).first()
         # INIT PAGINATOR
 
         filtered_posts_paginator = Paginator(filtered_posts, self.post_per_request)
@@ -442,6 +446,7 @@ class Posts(View):
             'has_next': filtered_posts_page.has_next(),
             'next_page': filtered_posts_page.next_page_number() if filtered_posts_page.has_next() else 0,
             'VK_BASE_URL': settings.VK_BASE_URL,
+            'ad': ad
         }
 
         return render(request, self.template_name, context)

@@ -98,19 +98,33 @@ class AdAdmin(admin.ModelAdmin):
 
 	list_display = (
 			'brand',
+			'brand_icon_as_image',			
+			'brand_ofsite_as_link',
 			'place',
 			'text',
 			'pub_datetime',
+			'days',
 			'accepted',
+			'is_active',
 			'get_images_tags'
 	)
 
 	list_select_related = True
 
 	list_filter = ['accepted', 'place']
+
 	def get_images_tags(self, obj):
 			return obj.images_as_tags
 	get_images_tags.short_description = 'Фото'
+	def is_active(self, obj):
+			return obj.is_active
+	is_active.short_description = 'Активна?'
+	def brand_ofsite_as_link(self, obj):
+			return obj.brand_ofsite_as_link
+	brand_ofsite_as_link.short_description = 'Офсайт'
+	def brand_icon_as_image(self, obj):
+			return obj.brand_icon_as_image
+	brand_icon_as_image.short_description = 'Лого'
 
 # Register your models here.
 admin.site.register(Post, PostAdmin)

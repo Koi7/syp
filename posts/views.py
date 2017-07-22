@@ -328,12 +328,13 @@ class WhoLiked(View):
             context = {
                 'like_list': like_list_paginator_page,
                 'VK_BASE_URL': settings.VK_BASE_URL,
+                'request': request,
             }
             rendered_template = render_to_string(self.ajax_template_name, context)
             return JsonResponse({
                 'rendered_template': rendered_template,
                 'has_next':  like_list_paginator_page.has_next(),
-                'next_page': like_list_paginator_page.next_page_number() if like_list_paginator_page.has_next() else 0
+                'next_page': like_list_paginator_page.next_page_number() if like_list_paginator_page.has_next() else 0,
             })
         else:
             # serve default request

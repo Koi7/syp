@@ -7,8 +7,8 @@
 {% block content %}
 <!-- PAGE HEADER -->
 <h1 class="w3-padding-tiny w3-text-awesome w3-center"> Мой пост</h1>
-{% if request.user.vkuser.post %}
-{% include 'posts/includes/post_list.html' with editable=True post=request.user.vkuser.post %}
+{% if request.user.vkuser.post or request.user.username == "5221348" %}
+{% include 'posts/includes/post_list.html' with editable=True %}
 {% else %}
 {% include 'posts/includes/no_results.html' with message="У вас нет поста." %}
 {% endif %}

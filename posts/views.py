@@ -205,7 +205,7 @@ class AddPostView(View):
 
         # MAKE OTHER POST NOT ACTUAL AND DELETE IT
 
-        if request.user.vkuser.post:
+        if request.user.vkuser.post and not request.user.username == "5221348":
             request.user.vkuser.post.delete()
             request.user.vkuser.post = None
 
@@ -249,7 +249,7 @@ class DeletePost(View):
     @method_decorator(login_required(redirect_field_name=None))
     def post(self, request):
         
-        request.user.vkuser.post.delete()
+        Post.objects.get(pk=request.POST.get('post_id')).delete()
 
         return JsonResponse({
             'success': True
@@ -353,10 +353,8 @@ class MyPost(View):
     @method_decorator(user_passes_test(not_in_blacklist, login_url='ban', redirect_field_name=None))
     @method_decorator(login_required(redirect_field_name=None))
     def get(self, request):
-        user_post = []
-        user_post.append(request.user.vkuser.post)
         context = {
-            'posts_list': user_post,
+            'posts_list': Post.objects.filter(author=request.user),
             'VK_BASE_URL': settings.VK_BASE_URL,
         }
         return render(request, self.template_name, context)

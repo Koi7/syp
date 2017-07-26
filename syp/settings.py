@@ -96,6 +96,10 @@ DATABASES = {
         'USER': 'izmaylyf_syp',
         'PASSWORD': '19941995koikoi',
         'HOST': 'localhost',
+        'OPTIONS': {
+            # !!!!!! THIS MATTERS !!!!!!
+            'charset': 'utf8mb4',
+        }
     }
 }
 

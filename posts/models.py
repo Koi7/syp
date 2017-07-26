@@ -51,7 +51,7 @@ class Ad(models.Model):
     brand_icon = models.ImageField('Логотип', upload_to=get_ad_image_path, blank=True, null=True)
     brand_ofsite = models.CharField('Сайт брэнда', max_length=150, default="")
     text = models.CharField('Текст', max_length=2000)
-    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
+    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1, db_index=True)
     pub_datetime = models.DateTimeField('Создано', auto_now_add=True)
     days = models.IntegerField('Срок (дней)', default=-1)
     accepted = models.BooleanField('Одобрено', default=False)
@@ -203,12 +203,12 @@ class Post(models.Model):
         (4, "ищу компанию"),
         (5, "ищу с/о"),
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Автор', db_index=True)
     text = models.CharField('Текст', max_length=2000)
     pub_datetime = models.DateTimeField('Прислано', auto_now_add=True)
-    is_anonymous = models.BooleanField('Анонимный?', default=True)
-    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1)
-    tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1)
+    is_anonymous = models.BooleanField('Анонимный?', default=True, db_index=True)
+    place = models.IntegerField('Место', choices=PLACE_CHOICES, default=-1, db_index=True)
+    tag = models.IntegerField('Тэг', choices=TAG_CHOICES, default=-1, db_index=True)
     accepted = models.BooleanField('Одобрено', default=False)
     rejected = models.BooleanField('Отвергнуто', default=False)
 
@@ -265,7 +265,7 @@ class VKUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     photo_rec = models.CharField(max_length=200)
     place = models.IntegerField('Город', choices=PLACE_CHOICES, default=0)
-    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True, blank=True)
     age = models.IntegerField('Возраст', default=0)
     sex = models.IntegerField('Пол', choices=SEX_CHOICES, default=-1)
     has_closed_attention = models.BooleanField(default=False)
@@ -361,8 +361,8 @@ def erase_images(instance, **kwargs):
 
     
 class Like(models.Model):
-    user = models.ForeignKey(User)
-    post = models.ForeignKey(Post)
+    user = models.ForeignKey(User, db_index=True)
+    post = models.ForeignKey(Post, db_index=True)
     message = models.CharField(max_length=500, default="")
     created = models.DateTimeField(auto_now_add=True)
     class Meta:
@@ -376,14 +376,14 @@ class Notification(models.Model):
         (2, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> опубликован.'),
         (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.')
     )
-    user = models.ForeignKey(User, null=True)
-    actor = models.ForeignKey(VKUser, null=True)  
+    user = models.ForeignKey(User, null=True, db_index=True)
+    actor = models.ForeignKey(VKUser, null=True, db_index=True)  
     verb = models.IntegerField(choices=VERB_CHOICES, default=-1)
-    target = models.ForeignKey(Post)
-    like = models.ForeignKey(Like, null=True)
+    target = models.ForeignKey(Post, db_index=True)
+    like = models.ForeignKey(Like, null=True, db_index=True)
     message = models.CharField(max_length=2000, default="")
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-    unread = models.BooleanField(default=True)
+    unread = models.BooleanField(default=True, db_index=True)
 
     class Meta:
         ordering = ['-timestamp']
@@ -469,9 +469,6 @@ class Notification(models.Model):
                     notification.delete()
             except Notification.DoesNotExist:
                 pass
-
-
-
             pass
 
 

@@ -314,11 +314,8 @@ class VKUser(models.Model):
 
     @receiver(user_logged_in, sender=User)
     def update_user_profile(user, **kwargs):
-        if not user.is_superuser and user.vkuser.sex == -1:
-            response = requests.get(settings.VK_API_URL, params={'v': '5.62',
-                                                                    'lang': settings.LANGUAGE_CODE[0:2],
-                                                                    'fields': 'sex,photo_100',
-                                                                    'user_ids': user.username})
+        if not user.is_superuser and not settings.DEV:
+            response = requests.get(settings.VK_API_URL, params={'v': '5.62', 'lang': settings.LANGUAGE_CODE[0:2], 'fields': 'sex,photo_100', 'user_ids': user.username})
             for user_data in json.loads(response.text)['response']:
                 user.vkuser.sex = user_data['sex']
                 user.vkuser.photo_rec = user_data['photo_100']

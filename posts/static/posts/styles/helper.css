@@ -22,6 +22,10 @@ nav#sidenav {
     width: 100%; 
 }
 
+#notifications_list li, #like-list li{
+    padding: 6px 16px 6px 16px!important;
+}
+
 .thin, #logo {
     font-weight: 100!important;
 }

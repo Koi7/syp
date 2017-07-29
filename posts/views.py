@@ -205,7 +205,7 @@ class AddPostView(View):
 
         # MAKE OTHER POST NOT ACTUAL AND DELETE IT
 
-        if request.user.vkuser.post and not request.user.username == "5221348":
+        if request.user.vkuser.post and not request.user.username == "251791530":
             request.user.vkuser.post.delete()
             request.user.vkuser.post = None
 

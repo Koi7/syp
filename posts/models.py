@@ -248,6 +248,15 @@ class Post(models.Model):
     def __unicode__(self):
         return u'{} {} {} {}'.format(self.id, self.text, self.pub_datetime, self.is_anonymous)
 
+@receiver(post_save, sender=Post)
+def notify_new_post(instance, created, **kwargs):
+    if created:
+        from django.core.mail import send_mail
+        try:
+            send_mail("Новый пост", "Новый пост на сайте!", u"admin@ищутебякрым.рф", ["izmaylov.ramazan@yandex.ru"], fail_silently=False,)
+        except:
+            pass
+
 # custom user one-to-one model
 class VKUser(models.Model):
     # 0  is Sevast
@@ -371,7 +380,7 @@ class Notification(models.Model):
         (0, 'лайкну{} ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a>.'),
         (1, 'остави{} вам <a href="{}посты/понравилось?post_id={}" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">послание</a>.'),
         (2, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> опубликован.'),
-        (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.')
+        (3, 'Ваш <a href="{}посты/мой" class="w3-text-blue link-no-style classic-hover" title="Список людей, которым понравился пост.">пост</a> нарушает правила сайта, поэтому он не будет опубликован.'),
     )
     user = models.ForeignKey(User, null=True, db_index=True)
     actor = models.ForeignKey(VKUser, null=True, db_index=True)  

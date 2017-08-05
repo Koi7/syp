@@ -41,6 +41,13 @@ ENV_BASE = u'https://ищутебякрым.рф/'
 
 DEV = False
 # Application definition
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.beget.com'
+EMAIL_HOST_USER = 'admin@xn--90ahikkxkh7c0a5b.xn--p1ai'
+EMAIL_HOST_PASSWORD = '19941995koikoi'
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = False
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',

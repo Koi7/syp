@@ -1,0 +1,80 @@
+{% extends 'page_other.html' %}
+{% load compress %}
+{% block style %}
+	{% load compile_static %}
+	{% load static %}
+    {% compress css %}
+	<link rel="stylesheet" href="{% static "css/conacts.less"|compile %}" />
+      <link href="{{STATIC_URL}}libs/formStyler/jquery.formstyler.css" rel="stylesheet" />
+  <link href="{{STATIC_URL}}libs/formStyler/jquery.formstyler.theme.css?3" rel="stylesheet" />
+    {% endcompress %}
+{% endblock %}
+
+{% block script %}
+    {% compress js %}
+	<script type="text/javascript" src="{{STATIC_URL}}js/contacts.js?1"></script>
+  <script src="{{STATIC_URL}}libs/formStyler/jquery.formstyler.js"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+	
+{% include 'include/index/breadcrumbs.html' %}
+
+
+<main>
+    <div class="row">
+        <aside id="help_page_aside">
+            <ul id="help_page_rubrikator">
+                <li><a href="/help/?idsection=18171">Начисление кэшбэка/проблемы с начислением кэшбэка</a></li>
+                <li><a href="/help/?idsection=18109">Финансовые вопросы</a></li>
+                <li><a href="/help/?idsection=18069">Общие вопросы по сайту</a></li>
+                <li><a href="/help/?idsection=18007">Настройки аккаунта</a></li>
+                <li><a href="/help/?idsection=18367">Бонусная программа "Приведи друга"</a></li>
+                <li class="help_page_writeus">
+                Не нашли ответ на ваш вопрос?
+                <span class="sendus">Напишите нам</span>
+                </li>
+            </ul>
+            <!-- <div class="help_page_writeus"> -->
+            <!-- </div> -->
+            <img src="{{ STATIC_URL }}sprites/side_banner.png" alt="">
+        </aside>
+        <section class="main-content">
+            <div id="feeadback_form" class="blck">
+
+                <h1>Форма обратной связи:</h1>
+                <p>
+                    У Вас есть вопросы по нашему сервису? <br>
+                    Мы будем рады оперативно на них ответить <br>
+                    или просто пообщаться с Вами. <br>
+                    Пожалуйста, пишите и не стесняйтесь! 🙋‍♂️
+                </p>
+                <form id="ContactsForm" action="{{request.path}}" method="POST" class="main_form form_promo">
+                    <div class="field_block">
+                        <div class="subs_input">ваш e-mail</div>
+                        <input id="bonus_send_e" class="input_element" type="text" placeholder="например, unic101@gmail.com">
+                    </div>
+                    <div class="field_block">
+                        <div class="subs_input">тема вопроса</div>
+                        <select class="input_element" name="desc" id="contact_theme">
+                            {% for d in desc %}
+                                <option value="{{d}}">{{d}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="textarea_block">
+                        <div class="subs_input">напишите, что случилось</div>
+                        <textarea id="contact_message" placeholder="Среднее время ответа – 1-2 часа в рабочее время."></textarea>
+                    </div>
+                    <div class="submit_block">
+                    <input type="submit" value="Отправить" class="button submit">
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</main>
+<script src="{{STATIC_URL}}js/functions/select_styler.js"></script>
+{% endblock %}
